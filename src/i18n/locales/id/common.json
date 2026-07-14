@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "purchasing": "Purchasing",
+    "stockIn": "Barang Masuk",
+    "stockOut": "Barang Keluar",
+    "stockBalance": "Stok Tersisa",
+    "users": "Manajemen User",
+    "master": "Data Master"
+  },
+  "auth": {
+    "login": "Masuk",
+    "email": "Email",
+    "password": "Password",
+    "loginSuccess": "Selamat datang, {{name}}",
+    "loginFailed": "Email atau password salah"
+  },
+  "common": {
+    "save": "Simpan",
+    "cancel": "Batal",
+    "edit": "Edit",
+    "delete": "Hapus",
+    "search": "Cari",
+    "loading": "Memuat..."
+  }
+}

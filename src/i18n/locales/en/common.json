@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "purchasing": "Purchasing",
+    "stockIn": "Stock In",
+    "stockOut": "Stock Out",
+    "stockBalance": "Stock Balance",
+    "users": "User Management",
+    "master": "Master Data"
+  },
+  "auth": {
+    "login": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "loginSuccess": "Welcome, {{name}}",
+    "loginFailed": "Invalid email or password"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "loading": "Loading..."
+  }
+}
