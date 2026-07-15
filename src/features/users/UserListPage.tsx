@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useUsers, useResetPassword, useDeleteUser } from "./user.hooks";
 import { UserFormDialog } from "./UserFormDialog";
+import { useConfirm } from "@/store/confirmStore";
 import type { User } from "@/types/auth.types";
 
 export default function UserListPage() {
@@ -17,6 +18,7 @@ export default function UserListPage() {
   const { data, isLoading } = useUsers({ search: debouncedSearch, page, limit: 10 });
   const resetPasswordMutation = useResetPassword();
   const deleteMutation = useDeleteUser();
+  const confirm = useConfirm();
 
   useEffect(() => setPage(1), [debouncedSearch]);
 
@@ -30,16 +32,21 @@ export default function UserListPage() {
     setDialogOpen(true);
   };
 
-  const handleResetPassword = (row: User) => {
-    if (confirm(`Reset password untuk "${row.name}"?`)) {
-      resetPasswordMutation.mutate(row.id);
-    }
+  const handleResetPassword = async (row: User) => {
+    const ok = await confirm({
+      description: `Reset password untuk "${row.name}"? Password baru akan digenerate otomatis.`,
+      confirmText: "Ya, Reset",
+    });
+    if (ok) resetPasswordMutation.mutate(row.id);
   };
 
-  const handleDeactivate = (row: User) => {
-    if (confirm(`Nonaktifkan user "${row.name}"?`)) {
-      deleteMutation.mutate(row.id);
-    }
+  const handleDeactivate = async (row: User) => {
+    const ok = await confirm({
+      description: `Nonaktifkan user "${row.name}"? User ini tidak akan bisa login lagi sampai diaktifkan ulang.`,
+      variant: "destructive",
+      confirmText: "Ya, Nonaktifkan",
+    });
+    if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<User>[] = [

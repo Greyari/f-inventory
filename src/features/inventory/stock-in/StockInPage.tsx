@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockIns, useDeleteStockIn } from "./stock-in.hooks";
 import { StockInFormDialog } from "./StockInFormDialog";
+import { useConfirm } from "@/store/confirmStore";
 import { useHasPermission } from "@/store/authStore";
 import type { StockIn } from "@/types/inventory.types";
 
@@ -18,13 +19,17 @@ export default function StockInPage() {
 
   const { data, isLoading } = useStockIns({ search: debouncedSearch, page, limit: 10 });
   const deleteMutation = useDeleteStockIn();
+  const confirm = useConfirm();
 
   useEffect(() => setPage(1), [debouncedSearch]);
 
-  const handleDelete = (row: StockIn) => {
-    if (confirm(`Hapus data barang masuk "${row.referenceNo}"?`)) {
-      deleteMutation.mutate(row.id);
-    }
+  const handleDelete = async (row: StockIn) => {
+    const ok = await confirm({
+      description: `Hapus data barang masuk "${row.referenceNo}"? Tindakan ini tidak bisa dibatalkan.`,
+      variant: "destructive",
+      confirmText: "Ya, Hapus",
+    });
+    if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<StockIn>[] = [

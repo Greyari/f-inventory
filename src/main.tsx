@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { AppRouter } from "@/routes/AppRouter";
+import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import "@/i18n";
 import "./index.css";
 
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AppRouter />
       <Toaster richColors position="top-right" />
+      <ConfirmDialog />
     </QueryClientProvider>
   </StrictMode>
 );

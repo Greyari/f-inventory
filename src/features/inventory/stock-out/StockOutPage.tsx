@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockOuts, useDeleteStockOut } from "./stock-out.hooks";
 import { StockOutFormDialog } from "./StockOutFormDialog";
+import { useConfirm } from "@/store/confirmStore";
 import { useHasPermission } from "@/store/authStore";
 import type { StockOut } from "@/types/inventory.types";
 
@@ -18,13 +19,17 @@ export default function StockOutPage() {
 
   const { data, isLoading } = useStockOuts({ search: debouncedSearch, page, limit: 10 });
   const deleteMutation = useDeleteStockOut();
+  const confirm = useConfirm();
 
   useEffect(() => setPage(1), [debouncedSearch]);
 
-  const handleDelete = (row: StockOut) => {
-    if (confirm(`Hapus data barang keluar "${row.referenceNo}"?`)) {
-      deleteMutation.mutate(row.id);
-    }
+  const handleDelete = async (row: StockOut) => {
+    const ok = await confirm({
+      description: `Hapus data barang keluar "${row.referenceNo}"? Tindakan ini tidak bisa dibatalkan.`,
+      variant: "destructive",
+      confirmText: "Ya, Hapus",
+    });
+    if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<StockOut>[] = [

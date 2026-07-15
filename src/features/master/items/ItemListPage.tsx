@@ -6,10 +6,12 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useItems, useDeleteItem } from "./item.hooks";
 import { ItemFormDialog } from "./ItemFormDialog";
 import { useHasPermission } from "@/store/authStore";
+import { useConfirm } from "@/store/confirmStore";
 import type { Item } from "@/types/inventory.types";
 
 export default function ItemListPage() {
   const canManage = useHasPermission("items.manage");
+  const confirm = useConfirm();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
@@ -33,10 +35,13 @@ export default function ItemListPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (row: Item) => {
-    if (confirm(`Hapus item "${row.itemName}"?`)) {
-      deleteMutation.mutate(row.id);
-    }
+  const handleDelete = async (row: Item) => {
+    const ok = await confirm({
+      description: `Hapus item "${row.itemName}"? Tindakan ini tidak bisa dibatalkan.`,
+      variant: "destructive",
+      confirmText: "Ya, Hapus",
+    });
+    if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<Item>[] = [

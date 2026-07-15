@@ -6,10 +6,12 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useSuppliers, useDeleteSupplier } from "./supplier.hooks";
 import { SupplierFormDialog } from "./SupplierFormDialog";
 import { useHasPermission } from "@/store/authStore";
+import { useConfirm } from "@/store/confirmStore";
 import type { Supplier } from "@/types/inventory.types";
 
 export default function SupplierListPage() {
   const canManage = useHasPermission("suppliers.manage");
+  const confirm = useConfirm();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
@@ -33,10 +35,13 @@ export default function SupplierListPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (row: Supplier) => {
-    if (confirm(`Hapus supplier "${row.name}"?`)) {
-      deleteMutation.mutate(row.id);
-    }
+  const handleDelete = async (row: Supplier) => {
+    const ok = await confirm({
+      description: `Hapus supplier "${row.name}"? Tindakan ini tidak bisa dibatalkan.`,
+      variant: "destructive",
+      confirmText: "Ya, Hapus",
+    });
+    if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<Supplier>[] = [

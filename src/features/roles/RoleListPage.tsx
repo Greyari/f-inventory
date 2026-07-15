@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useRoles, useDeleteRole } from "./role.hooks";
 import { RoleFormDialog } from "./RoleFormDialog";
+import { useConfirm } from "@/store/confirmStore";
 import type { Role } from "@/types/auth.types";
 
 export default function RoleListPage() {
@@ -16,6 +17,7 @@ export default function RoleListPage() {
 
   const { data, isLoading } = useRoles({ search: debouncedSearch, page, limit: 10 });
   const deleteMutation = useDeleteRole();
+  const confirm = useConfirm();
 
   useEffect(() => setPage(1), [debouncedSearch]);
 
@@ -29,11 +31,14 @@ export default function RoleListPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (row: Role) => {
+  const handleDelete = async (row: Role) => {
     if (row.isSystem) return;
-    if (confirm(`Hapus role "${row.name}"?`)) {
-      deleteMutation.mutate(row.id);
-    }
+    const ok = await confirm({
+      description: `Hapus role "${row.name}"? Tindakan ini tidak bisa dibatalkan.`,
+      variant: "destructive",
+      confirmText: "Ya, Hapus",
+    });
+    if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<Role>[] = [

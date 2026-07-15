@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { usePurchases, useDeletePurchase } from "./purchasing.hooks";
+import { useConfirm } from "@/store/confirmStore";
 import { useHasPermission } from "@/store/authStore";
 import type { Purchase, PurchaseStatus } from "@/types/inventory.types";
 
@@ -37,13 +38,17 @@ export default function PurchaseListPage() {
     limit: 10,
   });
   const deleteMutation = useDeletePurchase();
+  const confirm = useConfirm();
 
   useEffect(() => setPage(1), [debouncedSearch, status]);
 
-  const handleDelete = (row: Purchase) => {
-    if (confirm(`Hapus PR "${row.prNumber}"?`)) {
-      deleteMutation.mutate(row.id);
-    }
+  const handleDelete = async (row: Purchase) => {
+    const ok = await confirm({
+      description: `Hapus PR "${row.prNumber}"? Tindakan ini tidak bisa dibatalkan.`,
+      variant: "destructive",
+      confirmText: "Ya, Hapus",
+    });
+    if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<Purchase>[] = [

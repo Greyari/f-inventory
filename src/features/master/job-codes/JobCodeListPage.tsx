@@ -6,10 +6,12 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useJobCodes, useDeleteJobCode } from "./job-code.hooks";
 import { JobCodeFormDialog } from "./JobCodeFormDialog";
 import { useHasPermission } from "@/store/authStore";
+import { useConfirm } from "@/store/confirmStore";
 import type { JobCode } from "@/types/inventory.types";
 
 export default function JobCodeListPage() {
   const canManage = useHasPermission("job-codes.manage");
+  const confirm = useConfirm();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
@@ -34,10 +36,13 @@ export default function JobCodeListPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (row: JobCode) => {
-    if (confirm(`Hapus job code "${row.code}"?`)) {
-      deleteMutation.mutate(row.id);
-    }
+  const handleDelete = async (row: JobCode) => {
+    const ok = await confirm({
+      description: `Hapus job code "${row.code}"? Tindakan ini tidak bisa dibatalkan.`,
+      variant: "destructive",
+      confirmText: "Ya, Hapus",
+    });
+    if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<JobCode>[] = [
