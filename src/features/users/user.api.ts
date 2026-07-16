@@ -21,6 +21,12 @@ export const userApi = {
     );
     return data.data;
   },
+
+  setActiveStatus: async (id: string, isActive: boolean) => {
+    const { data } = await apiClient.patch<ApiSuccess<User>>(`/users/${id}`, { isActive });
+    return data.data;
+  },
+
   remove: async (id: string) => {
     await apiClient.delete(`/users/${id}`);
   },

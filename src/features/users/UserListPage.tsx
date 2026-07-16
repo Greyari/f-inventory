@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Plus, Pencil, KeyRound, UserX } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-import { useUsers, useResetPassword, useDeleteUser } from "./user.hooks";
 import { UserFormDialog } from "./UserFormDialog";
 import { useConfirm } from "@/store/confirmStore";
 import type { User } from "@/types/auth.types";
+import { Plus, Pencil, KeyRound, UserX, UserCheck, Trash2 } from "lucide-react";
+import { useUsers, useResetPassword, useSetActiveStatus, useDeleteUser } from "./user.hooks";
 
 export default function UserListPage() {
   const [search, setSearch] = useState("");
@@ -17,6 +17,7 @@ export default function UserListPage() {
 
   const { data, isLoading } = useUsers({ search: debouncedSearch, page, limit: 10 });
   const resetPasswordMutation = useResetPassword();
+  const setActiveStatusMutation = useSetActiveStatus();
   const deleteMutation = useDeleteUser();
   const confirm = useConfirm();
 
@@ -45,6 +46,27 @@ export default function UserListPage() {
       description: `Nonaktifkan user "${row.name}"? User ini tidak akan bisa login lagi sampai diaktifkan ulang.`,
       variant: "destructive",
       confirmText: "Ya, Nonaktifkan",
+    });
+    if (ok) deleteMutation.mutate(row.id);
+  };
+
+  const handleToggleActive = async (row: User) => {
+    const willActivate = !row.isActive;
+    const ok = await confirm({
+      description: willActivate
+        ? `Aktifkan kembali user "${row.name}"?`
+        : `Nonaktifkan user "${row.name}"? User ini tidak akan bisa login lagi sampai diaktifkan ulang.`,
+      variant: willActivate ? "default" : "destructive",
+      confirmText: willActivate ? "Ya, Aktifkan" : "Ya, Nonaktifkan",
+    });
+    if (ok) setActiveStatusMutation.mutate({ id: row.id, isActive: willActivate });
+  };
+
+  const handleDelete = async (row: User) => {
+    const ok = await confirm({
+      description: `Hapus user "${row.name}" secara permanen? Tindakan ini tidak bisa dibatalkan.`,
+      variant: "destructive",
+      confirmText: "Ya, Hapus Permanen",
     });
     if (ok) deleteMutation.mutate(row.id);
   };
@@ -98,16 +120,23 @@ export default function UserListPage() {
             <Button variant="ghost" size="icon" onClick={() => openEdit(row)} title="Edit">
               <Pencil className="h-4 w-4" />
             </Button>
+            <Button variant="ghost" size="icon" onClick={() => handleResetPassword(row)} title="Reset Password">
+              <KeyRound className="h-4 w-4" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => handleResetPassword(row)}
-              title="Reset Password"
+              onClick={() => handleToggleActive(row)}
+              title={row.isActive ? "Nonaktifkan" : "Aktifkan"}
             >
-              <KeyRound className="h-4 w-4" />
+              {row.isActive ? (
+                <UserX className="h-4 w-4 text-destructive" />
+              ) : (
+                <UserCheck className="h-4 w-4 text-green-600" />
+              )}
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => handleDeactivate(row)} title="Nonaktifkan">
-              <UserX className="h-4 w-4 text-destructive" />
+            <Button variant="ghost" size="icon" onClick={() => handleDelete(row)} title="Hapus Permanen">
+              <Trash2 className="h-4 w-4 text-destructive" />
             </Button>
           </>
         )}

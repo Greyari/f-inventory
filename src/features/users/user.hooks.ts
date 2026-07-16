@@ -48,14 +48,29 @@ export function useResetPassword() {
   });
 }
 
+export function useSetActiveStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      userApi.setActiveStatus(id, isActive),
+    onSuccess: (_data, variables) => {
+      toast.success(variables.isActive ? "User berhasil diaktifkan" : "User berhasil dinonaktifkan");
+      qc.invalidateQueries({ queryKey: [KEY] });
+    },
+    onError: (_err, variables) => {
+      toast.error(variables.isActive ? "Gagal mengaktifkan user" : "Gagal menonaktifkan user");
+    },
+  });
+}
+
 export function useDeleteUser() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: userApi.remove,
     onSuccess: () => {
-      toast.success("User berhasil dinonaktifkan");
+      toast.success("User berhasil dihapus permanen");
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal menonaktifkan user"),
+    onError: () => toast.error("Gagal menghapus user"),
   });
 }
