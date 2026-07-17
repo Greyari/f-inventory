@@ -11,6 +11,7 @@ const StockBalancePage = lazy(() => import("@/features/inventory/stock-balance/S
 const UserManagementPage = lazy(() => import("@/features/users/UserManagementPage"));
 const MasterDataPage = lazy(() => import("@/features/master/MasterDataPage"));
 const ForbiddenPage = lazy(() => import("@/features/auth/ForbiddenPage"));
+const NotFoundPage = lazy(() => import("@/features/auth/NotFoundPage"));
 
 function Loading() {
   return (
@@ -35,18 +36,15 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children: [
           { path: "/dashboard", element: withSuspense(<DashboardPage />) },
-
           { path: "/inventory/stock-in", element: withSuspense(<StockInPage />) },
           { path: "/inventory/stock-out", element: withSuspense(<StockOutPage />) },
           { path: "/inventory/stock-balance", element: withSuspense(<StockBalancePage />) },
 
-          // Butuh users.manage ATAU roles.manage (halaman ini punya 2 tab: User & Role/Akses)
           {
             element: <ProtectedRoute requiredPermission={["users.manage", "roles.manage"]} />,
             children: [{ path: "/users", element: withSuspense(<UserManagementPage />) }],
           },
 
-          // Butuh salah satu permission master data
           {
             element: <ProtectedRoute requiredPermission={["job-codes.manage", "items.manage"]} />,
             children: [{ path: "/master", element: withSuspense(<MasterDataPage />) }],
@@ -57,6 +55,8 @@ const router = createBrowserRouter([
       },
     ],
   },
+
+  { path: "*", element: withSuspense(<NotFoundPage />) },
 ]);
 
 export function AppRouter() {

@@ -25,7 +25,11 @@ apiClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isAuthEndpoint =
+      originalRequest?.url?.includes("/auth/login") ||
+      originalRequest?.url?.includes("/auth/refresh");
+
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
 
       if (isRefreshing) {
@@ -49,9 +53,6 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // GET/query request gak selalu punya toast.error sendiri (beda dengan mutation
-    // yang biasanya punya onError eksplisit) — tanpa ini, error kayak 403 "gak
-    // punya akses" cuma bikin tabel keliatan kosong tanpa penjelasan ke user.
     if (
       error.response &&
       error.response.status !== 401 &&
