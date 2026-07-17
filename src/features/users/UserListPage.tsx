@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { UserFormDialog } from "./UserFormDialog";
 import { useConfirm } from "@/store/confirmStore";
 import type { User } from "@/types/auth.types";
-import { Plus, Pencil, KeyRound, UserX, UserCheck, Trash2 } from "lucide-react";
-import { useUsers, useResetPassword, useSetActiveStatus, useDeleteUser } from "./user.hooks";
+import { Plus, Pencil, UserX, UserCheck, Trash2 } from "lucide-react";
+import { useUsers, useSetActiveStatus, useDeleteUser } from "./user.hooks";
 
 export default function UserListPage() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
@@ -16,7 +18,6 @@ export default function UserListPage() {
   const [editingData, setEditingData] = useState<User | null>(null);
 
   const { data, isLoading } = useUsers({ search: debouncedSearch, page, limit: 10 });
-  const resetPasswordMutation = useResetPassword();
   const setActiveStatusMutation = useSetActiveStatus();
   const deleteMutation = useDeleteUser();
   const confirm = useConfirm();
@@ -33,49 +34,32 @@ export default function UserListPage() {
     setDialogOpen(true);
   };
 
-  const handleResetPassword = async (row: User) => {
-    const ok = await confirm({
-      description: `Reset password untuk "${row.name}"? Password baru akan digenerate otomatis.`,
-      confirmText: "Ya, Reset",
-    });
-    if (ok) resetPasswordMutation.mutate(row.id);
-  };
-
-  const handleDeactivate = async (row: User) => {
-    const ok = await confirm({
-      description: `Nonaktifkan user "${row.name}"? User ini tidak akan bisa login lagi sampai diaktifkan ulang.`,
-      variant: "destructive",
-      confirmText: "Ya, Nonaktifkan",
-    });
-    if (ok) deleteMutation.mutate(row.id);
-  };
-
   const handleToggleActive = async (row: User) => {
     const willActivate = !row.isActive;
     const ok = await confirm({
       description: willActivate
-        ? `Aktifkan kembali user "${row.name}"?`
-        : `Nonaktifkan user "${row.name}"? User ini tidak akan bisa login lagi sampai diaktifkan ulang.`,
+        ? t("users.confirmActivate", { name: row.name })
+        : t("users.confirmDeactivate", { name: row.name }),
       variant: willActivate ? "default" : "destructive",
-      confirmText: willActivate ? "Ya, Aktifkan" : "Ya, Nonaktifkan",
+      confirmText: willActivate ? t("common.activate") : t("users.confirmDeactivateButton"),
     });
     if (ok) setActiveStatusMutation.mutate({ id: row.id, isActive: willActivate });
   };
 
   const handleDelete = async (row: User) => {
     const ok = await confirm({
-      description: `Hapus user "${row.name}" secara permanen? Tindakan ini tidak bisa dibatalkan.`,
+      description: t("users.confirmDelete", { name: row.name }),
       variant: "destructive",
-      confirmText: "Ya, Hapus Permanen",
+      confirmText: t("users.confirmDeleteButton"),
     });
     if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<User>[] = [
-    { header: "Nama", accessor: (r) => <span className="font-medium">{r.name}</span> },
-    { header: "Email", accessor: (r) => r.email },
+    { header: t("users.colName"), accessor: (r) => <span className="font-medium">{r.name}</span> },
+    { header: t("users.colEmail"), accessor: (r) => r.email },
     {
-      header: "Role",
+      header: t("users.colRole"),
       accessor: (r) => (
         <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700">
           {r.role?.name ?? "-"}
@@ -83,7 +67,7 @@ export default function UserListPage() {
       ),
     },
     {
-      header: "Status",
+      header: t("users.colStatus"),
       accessor: (r) => (
         <span
           className={
@@ -92,7 +76,7 @@ export default function UserListPage() {
               : "rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700"
           }
         >
-          {r.isActive ? "Aktif" : "Nonaktif"}
+          {r.isActive ? t("common.active") : t("common.inactive")}
         </span>
       ),
     },
@@ -106,28 +90,25 @@ export default function UserListPage() {
         isLoading={isLoading}
         searchValue={search}
         onSearchChange={setSearch}
-        searchPlaceholder="Cari nama atau email..."
+        searchPlaceholder={t("users.searchPlaceholder")}
         keyExtractor={(r) => r.id}
         meta={data?.meta}
         onPageChange={setPage}
         actions={
           <Button size="sm" onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Tambah User
+            <Plus className="h-4 w-4" /> {t("users.addButton")}
           </Button>
         }
         rowActions={(row) => (
           <>
-            <Button variant="ghost" size="icon" onClick={() => openEdit(row)} title="Edit">
+            <Button variant="ghost" size="icon" onClick={() => openEdit(row)} title={t("common.edit")}>
               <Pencil className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => handleResetPassword(row)} title="Reset Password">
-              <KeyRound className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => handleToggleActive(row)}
-              title={row.isActive ? "Nonaktifkan" : "Aktifkan"}
+              title={row.isActive ? t("common.deactivate") : t("common.activate")}
             >
               {row.isActive ? (
                 <UserX className="h-4 w-4 text-destructive" />
@@ -135,7 +116,12 @@ export default function UserListPage() {
                 <UserCheck className="h-4 w-4 text-green-600" />
               )}
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => handleDelete(row)} title="Hapus Permanen">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleDelete(row)}
+              title={t("users.deleteTooltip")}
+            >
               <Trash2 className="h-4 w-4 text-destructive" />
             </Button>
           </>

@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { userApi } from "./user.api";
+import { userApi, type UpdateUserPayload } from "./user.api";
 import type { ListParams } from "@/types/api.types";
-import type { User } from "@/types/auth.types";
 
 const KEY = "users";
 
@@ -14,63 +14,57 @@ export function useUsers(params: ListParams) {
 }
 
 export function useCreateUser() {
+  const { t } = useTranslation();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: userApi.create,
     onSuccess: () => {
-      toast.success("User berhasil ditambahkan");
+      toast.success(t("users.toastCreated"));
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal menambahkan user"),
+    onError: () => toast.error(t("users.toastCreateFailed")),
   });
 }
 
 export function useUpdateUser() {
+  const { t } = useTranslation();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: Partial<User> }) =>
+    mutationFn: ({ id, payload }: { id: string; payload: UpdateUserPayload }) =>
       userApi.update(id, payload),
     onSuccess: () => {
-      toast.success("User berhasil diperbarui");
+      toast.success(t("users.toastUpdated"));
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal memperbarui user"),
-  });
-}
-
-export function useResetPassword() {
-  return useMutation({
-    mutationFn: userApi.resetPassword,
-    onSuccess: (data) => {
-      toast.success(`Password baru: ${data.temporaryPassword}`, { duration: 10000 });
-    },
-    onError: () => toast.error("Gagal reset password"),
+    onError: () => toast.error(t("users.toastUpdateFailed")),
   });
 }
 
 export function useSetActiveStatus() {
+  const { t } = useTranslation();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
       userApi.setActiveStatus(id, isActive),
     onSuccess: (_data, variables) => {
-      toast.success(variables.isActive ? "User berhasil diaktifkan" : "User berhasil dinonaktifkan");
+      toast.success(variables.isActive ? t("users.toastActivated") : t("users.toastDeactivated"));
       qc.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (_err, variables) => {
-      toast.error(variables.isActive ? "Gagal mengaktifkan user" : "Gagal menonaktifkan user");
+      toast.error(variables.isActive ? t("users.toastActivateFailed") : t("users.toastDeactivateFailed"));
     },
   });
 }
 
 export function useDeleteUser() {
+  const { t } = useTranslation();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: userApi.remove,
     onSuccess: () => {
-      toast.success("User berhasil dihapus permanen");
+      toast.success(t("users.toastDeleted"));
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal menghapus user"),
+    onError: () => toast.error(t("users.toastDeleteFailed")),
   });
 }

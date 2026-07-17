@@ -201,7 +201,21 @@
     "confirmResetPasswordButton": "Yes, Reset",
     "confirmDeactivate": "Deactivate user \"{{name}}\"? This user won't be able to log in until reactivated.",
     "confirmDeactivateButton": "Yes, Deactivate",
-    "passwordPlaceholder": "At least 6 characters"
+    "passwordPlaceholder": "At least 6 characters",
+    "passwordEditPlaceholder": "Leave blank to keep current password",
+    "passwordEditHint": "(leave blank to keep unchanged)",
+    "confirmDelete": "Permanently delete user \"{{name}}\"? This action cannot be undone.",
+    "confirmDeleteButton": "Yes, Delete Permanently",
+    "deleteTooltip": "Delete Permanently",
+    "toastCreated": "User created successfully",
+    "toastCreateFailed": "Failed to create user",
+    "toastUpdated": "User updated successfully",
+    "toastUpdateFailed": "Failed to update user",
+    "toastActivated": "User activated successfully",
+    "toastDeactivated": "User deactivated successfully",
+    "toastActivateFailed": "Failed to activate user",
+    "toastDeactivateFailed": "Failed to deactivate user",
+    "toastDeleted": "User permanently deleted"
   },
   "roles": {
     "addButton": "Add Role",

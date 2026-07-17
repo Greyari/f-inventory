@@ -201,7 +201,22 @@
     "confirmResetPasswordButton": "Ya, Reset",
     "confirmDeactivate": "Nonaktifkan user \"{{name}}\"? User ini tidak akan bisa login lagi sampai diaktifkan ulang.",
     "confirmDeactivateButton": "Ya, Nonaktifkan",
-    "passwordPlaceholder": "Minimal 6 karakter"
+    "passwordPlaceholder": "Minimal 6 karakter",
+    "passwordEditPlaceholder": "Kosongkan jika tidak diubah",
+    "passwordEditHint": "(kosongkan jika tidak ingin mengubah)",
+    "confirmDelete": "Hapus user \"{{name}}\" secara permanen? Tindakan ini tidak bisa dibatalkan.",
+    "confirmDeleteButton": "Ya, Hapus Permanen",
+    "deleteTooltip": "Hapus Permanen",
+    "toastCreated": "User berhasil ditambahkan",
+    "toastCreateFailed": "Gagal menambahkan user",
+    "toastUpdated": "User berhasil diperbarui",
+    "toastUpdateFailed": "Gagal memperbarui user",
+    "toastActivated": "User berhasil diaktifkan",
+    "toastDeactivated": "User berhasil dinonaktifkan",
+    "toastActivateFailed": "Gagal mengaktifkan user",
+    "toastDeactivateFailed": "Gagal menonaktifkan user",
+    "toastDeleted": "User berhasil dihapus permanen",
+    "toastDeleteFailed": "Gagal menghapus user"
   },
   "roles": {
     "addButton": "Tambah Role",
