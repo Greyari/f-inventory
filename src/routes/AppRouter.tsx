@@ -16,7 +16,7 @@ const NotFoundPage = lazy(() => import("@/features/auth/NotFoundPage"));
 function Loading() {
   return (
     <div className="flex h-screen items-center justify-center text-muted-foreground">
-      Memuat...
+      Loading...
     </div>
   );
 }
