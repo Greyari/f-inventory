@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, Trash2 } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockIns, useDeleteStockIn } from "./stock-in.hooks";
 import { StockInFormDialog } from "./StockInFormDialog";
-import { useConfirm } from "@/store/confirmStore";
 import { useHasPermission } from "@/store/authStore";
+import { useConfirm } from "@/store/confirmStore";
 import type { StockIn } from "@/types/inventory.types";
 
 export default function StockInPage() {
+  const { t } = useTranslation();
   const canDelete = useHasPermission("stock-in.delete");
   const canCreate = useHasPermission("stock-in.create");
+  const confirm = useConfirm();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
@@ -19,24 +22,35 @@ export default function StockInPage() {
 
   const { data, isLoading } = useStockIns({ search: debouncedSearch, page, limit: 10 });
   const deleteMutation = useDeleteStockIn();
-  const confirm = useConfirm();
 
   useEffect(() => setPage(1), [debouncedSearch]);
 
   const handleDelete = async (row: StockIn) => {
     const ok = await confirm({
-      description: `Hapus data barang masuk "${row.referenceNo}"? Tindakan ini tidak bisa dibatalkan.`,
+      description: t("stockIn.confirmDelete", { ref: row.referenceNo }),
       variant: "destructive",
-      confirmText: "Ya, Hapus",
+      confirmText: t("common.confirmDelete"),
     });
     if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<StockIn>[] = [
-    { header: "No. Referensi", accessor: (r) => <span className="font-medium">{r.referenceNo}</span> },
-    { header: "Tanggal Diterima", accessor: (r) => r.dateReceived },
+    { header: t("stockIn.colReference"), accessor: (r) => <span className="font-medium">{r.referenceNo}</span> },
+    { header: t("stockIn.colDateReceived"), accessor: (r) => r.dateReceived },
+    { header: t("stockIn.colApprovedBy"), accessor: (r) => r.approvedBy, hideOnMobile: true },
     {
-      header: "Item",
+      header: t("stockIn.colProject"),
+      accessor: (r) => (
+        <div className="text-xs">
+          <div className="font-medium text-foreground">{r.projectName}</div>
+          <div className="text-muted-foreground">
+            {r.projectRef?.code} / {r.costCentre?.code} / {r.costCode?.code}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: t("stockIn.colItems"),
       accessor: (r) => (
         <div className="space-y-0.5">
           {r.items.map((it, i) => (
@@ -48,14 +62,13 @@ export default function StockInPage() {
         </div>
       ),
     },
-    { header: "Link PO", accessor: (r) => (r.purchaseId ? "Ya" : "-") },
   ];
 
   return (
     <div>
       <div className="mb-4">
-        <h2 className="text-2xl font-semibold">Barang Masuk</h2>
-        <p className="text-sm text-muted-foreground">Catatan penerimaan barang ke gudang</p>
+        <h2 className="text-2xl font-semibold">{t("stockIn.title")}</h2>
+        <p className="text-sm text-muted-foreground">{t("stockIn.subtitle")}</p>
       </div>
 
       <DataTable
@@ -64,14 +77,14 @@ export default function StockInPage() {
         isLoading={isLoading}
         searchValue={search}
         onSearchChange={setSearch}
-        searchPlaceholder="Cari nomor referensi..."
+        searchPlaceholder={t("stockIn.searchPlaceholder")}
         keyExtractor={(r) => r.id}
         meta={data?.meta}
         onPageChange={setPage}
         actions={
           canCreate && (
             <Button size="sm" onClick={() => setDialogOpen(true)}>
-              <Plus className="h-4 w-4" /> Catat Barang Masuk
+              <Plus className="h-4 w-4" /> {t("stockIn.addButton")}
             </Button>
           )
         }

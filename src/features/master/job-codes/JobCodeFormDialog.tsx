@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ interface JobCodeFormDialogProps {
 }
 
 export function JobCodeFormDialog({ open, onOpenChange, editingData }: JobCodeFormDialogProps) {
+  const { t } = useTranslation();
   const isEdit = !!editingData;
   const createMutation = useCreateJobCode();
   const updateMutation = useUpdateJobCode();
@@ -76,25 +78,25 @@ export function JobCodeFormDialog({ open, onOpenChange, editingData }: JobCodeFo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent title={isEdit ? "Edit Job Code" : "Tambah Job Code"}>
+      <DialogContent title={isEdit ? t("jobCode.formTitleEdit") : t("jobCode.formTitleAdd")}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Label>Kode</Label>
-            <Input {...register("code")} placeholder="mis. CYB-16-05" />
+            <Label>{t("jobCode.code")}</Label>
+            <Input {...register("code")} placeholder="e.g. CYB-16-05" />
             {errors.code && <p className="mt-1 text-xs text-destructive">{errors.code.message}</p>}
           </div>
 
           <div>
-            <Label>Deskripsi</Label>
-            <Input {...register("description")} placeholder="mis. BATCHING PLANT 5" />
+            <Label>{t("jobCode.description")}</Label>
+            <Input {...register("description")} placeholder="e.g. BATCHING PLANT 5" />
             {errors.description && (
               <p className="mt-1 text-xs text-destructive">{errors.description.message}</p>
             )}
           </div>
 
           <div>
-            <Label>Kategori</Label>
-            <Input {...register("category")} list="category-suggestions" placeholder="mis. BUILDING MAINTENANCE (CYB-00)" />
+            <Label>{t("jobCode.category")}</Label>
+            <Input {...register("category")} list="category-suggestions" placeholder="e.g. BUILDING MAINTENANCE (CYB-00)" />
             <datalist id="category-suggestions">
               {CATEGORY_SUGGESTIONS.map((c) => (
                 <option key={c} value={c} />
@@ -107,10 +109,10 @@ export function JobCodeFormDialog({ open, onOpenChange, editingData }: JobCodeFo
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Batal
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Menyimpan..." : "Simpan"}
+              {isSubmitting ? t("common.saving") : t("common.save")}
             </Button>
           </div>
         </form>

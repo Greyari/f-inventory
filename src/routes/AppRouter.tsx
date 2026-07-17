@@ -5,8 +5,6 @@ import { MainLayout } from "@/layouts/MainLayout";
 
 const LoginPage = lazy(() => import("@/features/auth/LoginPage"));
 const DashboardPage = lazy(() => import("@/features/dashboard/DashboardPage"));
-const PurchaseListPage = lazy(() => import("@/features/purchasing/PurchaseListPage"));
-const PurchaseFormPage = lazy(() => import("@/features/purchasing/PurchaseFormPage"));
 const StockInPage = lazy(() => import("@/features/inventory/stock-in/StockInPage"));
 const StockOutPage = lazy(() => import("@/features/inventory/stock-out/StockOutPage"));
 const StockBalancePage = lazy(() => import("@/features/inventory/stock-balance/StockBalancePage"));
@@ -38,10 +36,6 @@ const router = createBrowserRouter([
         children: [
           { path: "/dashboard", element: withSuspense(<DashboardPage />) },
 
-          { path: "/purchasing", element: withSuspense(<PurchaseListPage />) },
-          { path: "/purchasing/new", element: withSuspense(<PurchaseFormPage />) },
-          { path: "/purchasing/:id/edit", element: withSuspense(<PurchaseFormPage />) },
-
           { path: "/inventory/stock-in", element: withSuspense(<StockInPage />) },
           { path: "/inventory/stock-out", element: withSuspense(<StockOutPage />) },
           { path: "/inventory/stock-balance", element: withSuspense(<StockBalancePage />) },
@@ -54,11 +48,7 @@ const router = createBrowserRouter([
 
           // Butuh salah satu permission master data
           {
-            element: (
-              <ProtectedRoute
-                requiredPermission={["job-codes.manage", "items.manage", "suppliers.manage"]}
-              />
-            ),
+            element: <ProtectedRoute requiredPermission={["job-codes.manage", "items.manage"]} />,
             children: [{ path: "/master", element: withSuspense(<MasterDataPage />) }],
           },
 

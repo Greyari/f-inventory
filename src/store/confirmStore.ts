@@ -18,10 +18,10 @@ interface ConfirmState extends ConfirmOptions {
 
 export const useConfirmStore = create<ConfirmState>((set, get) => ({
   isOpen: false,
-  title: "Konfirmasi",
+  title: undefined,
   description: "",
-  confirmText: "Ya, Lanjutkan",
-  cancelText: "Batal",
+  confirmText: undefined,
+  cancelText: undefined,
   variant: "default",
   resolve: null,
 
@@ -29,10 +29,10 @@ export const useConfirmStore = create<ConfirmState>((set, get) => ({
     return new Promise<boolean>((resolve) => {
       set({
         isOpen: true,
-        title: options.title ?? "Konfirmasi",
+        title: options.title,
         description: options.description,
-        confirmText: options.confirmText ?? "Ya, Lanjutkan",
-        cancelText: options.cancelText ?? "Batal",
+        confirmText: options.confirmText,
+        cancelText: options.cancelText,
         variant: options.variant ?? "default",
         resolve,
       });

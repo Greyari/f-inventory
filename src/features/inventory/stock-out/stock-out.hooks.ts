@@ -20,7 +20,8 @@ export function useCreateStockOut() {
     onSuccess: () => {
       toast.success("Barang keluar berhasil dicatat");
       qc.invalidateQueries({ queryKey: [KEY] });
-      qc.invalidateQueries({ queryKey: ["stock-balance"] });
+      qc.invalidateQueries({ queryKey: ["stock-lots"] });
+      qc.invalidateQueries({ queryKey: ["stock-lot-balance"] });
     },
     onError: (error) => {
       // Backend balikin pesan spesifik kalau stok gak cukup (422)
@@ -37,7 +38,8 @@ export function useDeleteStockOut() {
     onSuccess: () => {
       toast.success("Data barang keluar berhasil dihapus");
       qc.invalidateQueries({ queryKey: [KEY] });
-      qc.invalidateQueries({ queryKey: ["stock-balance"] });
+      qc.invalidateQueries({ queryKey: ["stock-lots"] });
+      qc.invalidateQueries({ queryKey: ["stock-lot-balance"] });
     },
     onError: () => toast.error("Gagal menghapus data"),
   });

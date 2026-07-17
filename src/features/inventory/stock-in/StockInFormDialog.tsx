@@ -3,16 +3,22 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Plus, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchableSelect } from "@/components/common/SearchableSelect";
-import { fetchItemOptions } from "@/lib/selectOptions";
+import { fetchItemOptions, fetchJobCodeOptions } from "@/lib/selectOptions";
 import { useCreateStockIn } from "./stock-in.hooks";
 
 const schema = z.object({
   referenceNo: z.string().min(1, "Nomor referensi wajib diisi"),
   dateReceived: z.string().min(1, "Tanggal wajib diisi"),
+  approvedBy: z.string().min(1, "Nama yang meng-acc wajib diisi"),
+  projectName: z.string().min(1, "Nama project wajib diisi"),
+  projectRefId: z.string().min(1, "Project Ref wajib dipilih"),
+  costCentreId: z.string().min(1, "Cost Centre wajib dipilih"),
+  costCodeId: z.string().min(1, "Cost Code wajib dipilih"),
   items: z
     .array(
       z.object({
@@ -26,12 +32,24 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
+const emptyValues = (): FormValues => ({
+  referenceNo: "",
+  dateReceived: new Date().toISOString().slice(0, 10),
+  approvedBy: "",
+  projectName: "",
+  projectRefId: "",
+  costCentreId: "",
+  costCodeId: "",
+  items: [{ itemId: "", qty: 1, location: "" }],
+});
+
 interface StockInFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export function StockInFormDialog({ open, onOpenChange }: StockInFormDialogProps) {
+  const { t } = useTranslation();
   const createMutation = useCreateStockIn();
 
   const {
@@ -40,25 +58,12 @@ export function StockInFormDialog({ open, onOpenChange }: StockInFormDialogProps
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      referenceNo: "",
-      dateReceived: new Date().toISOString().slice(0, 10),
-      items: [{ itemId: "", qty: 1, location: "" }],
-    },
-  });
+  } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: emptyValues() });
 
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
 
   useEffect(() => {
-    if (open) {
-      reset({
-        referenceNo: "",
-        dateReceived: new Date().toISOString().slice(0, 10),
-        items: [{ itemId: "", qty: 1, location: "" }],
-      });
-    }
+    if (open) reset(emptyValues());
   }, [open, reset]);
 
   const onSubmit = async (values: FormValues) => {
@@ -68,39 +73,113 @@ export function StockInFormDialog({ open, onOpenChange }: StockInFormDialogProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent title="Catat Barang Masuk" className="max-w-2xl">
+      <DialogContent title={t("stockIn.formTitle")} className="max-w-2xl">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label>Nomor Referensi (GRN)</Label>
-              <Input {...register("referenceNo")} placeholder="mis. GRN-2026-0031" />
+              <Label>{t("stockIn.referenceNo")}</Label>
+              <Input {...register("referenceNo")} placeholder="e.g. GRN-2026-0031" />
               {errors.referenceNo && (
                 <p className="mt-1 text-xs text-destructive">{errors.referenceNo.message}</p>
               )}
             </div>
             <div>
-              <Label>Tanggal Diterima</Label>
+              <Label>{t("stockIn.dateReceived")}</Label>
               <Input type="date" {...register("dateReceived")} />
+            </div>
+
+            <div className="col-span-2">
+              <Label>{t("stockIn.approvedBy")}</Label>
+              <Input {...register("approvedBy")} placeholder={t("stockIn.approvedByPlaceholder")} />
+              {errors.approvedBy && (
+                <p className="mt-1 text-xs text-destructive">{errors.approvedBy.message}</p>
+              )}
+            </div>
+
+            <div className="col-span-2">
+              <Label>{t("stockIn.project")}</Label>
+              <Input {...register("projectName")} placeholder="e.g. Batching Plant 5" />
+              {errors.projectName && (
+                <p className="mt-1 text-xs text-destructive">{errors.projectName.message}</p>
+              )}
+            </div>
+
+            <div>
+              <Label>{t("stockIn.projectRef")}</Label>
+              <Controller
+                control={control}
+                name="projectRefId"
+                render={({ field }) => (
+                  <SearchableSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    fetchOptions={fetchJobCodeOptions}
+                    error={!!errors.projectRefId}
+                    placeholder={t("common.selectCode")}
+                  />
+                )}
+              />
+              {errors.projectRefId && (
+                <p className="mt-1 text-xs text-destructive">{errors.projectRefId.message}</p>
+              )}
+            </div>
+            <div>
+              <Label>{t("stockIn.costCentre")}</Label>
+              <Controller
+                control={control}
+                name="costCentreId"
+                render={({ field }) => (
+                  <SearchableSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    fetchOptions={fetchJobCodeOptions}
+                    error={!!errors.costCentreId}
+                    placeholder={t("common.selectCode")}
+                  />
+                )}
+              />
+              {errors.costCentreId && (
+                <p className="mt-1 text-xs text-destructive">{errors.costCentreId.message}</p>
+              )}
+            </div>
+            <div>
+              <Label>{t("stockIn.costCode")}</Label>
+              <Controller
+                control={control}
+                name="costCodeId"
+                render={({ field }) => (
+                  <SearchableSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    fetchOptions={fetchJobCodeOptions}
+                    error={!!errors.costCodeId}
+                    placeholder={t("common.selectCode")}
+                  />
+                )}
+              />
+              {errors.costCodeId && (
+                <p className="mt-1 text-xs text-destructive">{errors.costCodeId.message}</p>
+              )}
             </div>
           </div>
 
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <Label className="mb-0">Item</Label>
+              <Label className="mb-0">{t("stockIn.items")}</Label>
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 onClick={() => append({ itemId: "", qty: 1, location: "" })}
               >
-                <Plus className="h-4 w-4" /> Tambah
+                <Plus className="h-4 w-4" /> {t("stockIn.addItem")}
               </Button>
             </div>
 
             <div className="space-y-3">
               {fields.map((field, index) => (
-                <div key={field.id} className="grid grid-cols-12 items-start gap-2">
-                  <div className="col-span-5">
+                <div key={field.id} className="grid grid-cols-1 gap-2 sm:grid-cols-12 sm:items-start">
+                  <div className="sm:col-span-5">
                     <Controller
                       control={control}
                       name={`items.${index}.itemId`}
@@ -109,19 +188,19 @@ export function StockInFormDialog({ open, onOpenChange }: StockInFormDialogProps
                           value={f.value}
                           onChange={f.onChange}
                           fetchOptions={fetchItemOptions}
-                          placeholder="Pilih item..."
+                          placeholder={t("common.selectItem")}
                           error={!!errors.items?.[index]?.itemId}
                         />
                       )}
                     />
                   </div>
-                  <div className="col-span-2">
-                    <Input type="number" step="any" placeholder="Qty" {...register(`items.${index}.qty`)} />
+                  <div className="sm:col-span-2">
+                    <Input type="number" step="any" placeholder={t("stockIn.qty")} {...register(`items.${index}.qty`)} />
                   </div>
-                  <div className="col-span-4">
-                    <Input placeholder="Lokasi (mis. Gudang A)" {...register(`items.${index}.location`)} />
+                  <div className="sm:col-span-4">
+                    <Input placeholder={t("stockIn.locationPlaceholder")} {...register(`items.${index}.location`)} />
                   </div>
-                  <div className="col-span-1">
+                  <div className="sm:col-span-1">
                     {fields.length > 1 && (
                       <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
@@ -135,10 +214,10 @@ export function StockInFormDialog({ open, onOpenChange }: StockInFormDialogProps
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Batal
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Menyimpan..." : "Simpan"}
+              {createMutation.isPending ? t("common.saving") : t("common.save")}
             </Button>
           </div>
         </form>

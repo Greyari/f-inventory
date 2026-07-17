@@ -5,8 +5,7 @@ import type { ApiSuccess } from "@/types/api.types";
 export interface DashboardSummary {
   totalItems: number;
   lowStockCount: number;
-  purchasePending: number;
-  purchaseApprovedThisMonth: number;
+  totalLots: number;
 }
 
 export function useDashboardSummary() {

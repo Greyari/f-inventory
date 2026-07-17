@@ -19,7 +19,7 @@ export function useCreateStockIn() {
     onSuccess: () => {
       toast.success("Barang masuk berhasil dicatat");
       qc.invalidateQueries({ queryKey: [KEY] });
-      qc.invalidateQueries({ queryKey: ["stock-balance"] });
+      qc.invalidateQueries({ queryKey: ["stock-lots"] });
     },
     onError: () => toast.error("Gagal mencatat barang masuk"),
   });
@@ -32,7 +32,7 @@ export function useDeleteStockIn() {
     onSuccess: () => {
       toast.success("Data barang masuk berhasil dihapus");
       qc.invalidateQueries({ queryKey: [KEY] });
-      qc.invalidateQueries({ queryKey: ["stock-balance"] });
+      qc.invalidateQueries({ queryKey: ["stock-lots"] });
     },
     onError: () => toast.error("Gagal menghapus data"),
   });

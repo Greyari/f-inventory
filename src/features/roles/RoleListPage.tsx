@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, Pencil, Trash2, Lock } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { useConfirm } from "@/store/confirmStore";
 import type { Role } from "@/types/auth.types";
 
 export default function RoleListPage() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
@@ -34,16 +36,16 @@ export default function RoleListPage() {
   const handleDelete = async (row: Role) => {
     if (row.isSystem) return;
     const ok = await confirm({
-      description: `Hapus role "${row.name}"? Tindakan ini tidak bisa dibatalkan.`,
+      description: t("roles.confirmDelete", { name: row.name }),
       variant: "destructive",
-      confirmText: "Ya, Hapus",
+      confirmText: t("common.confirmDelete"),
     });
     if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<Role>[] = [
     {
-      header: "Nama Role",
+      header: t("roles.colName"),
       accessor: (r) => (
         <span className="flex items-center gap-1.5 font-medium">
           {r.isSystem && <Lock className="h-3 w-3 text-muted-foreground" />}
@@ -51,24 +53,19 @@ export default function RoleListPage() {
         </span>
       ),
     },
-    { header: "Deskripsi", accessor: (r) => r.description || "-" },
-    { header: "Jumlah User", accessor: (r) => r.userCount ?? 0 },
+    { header: t("roles.colDescription"), accessor: (r) => r.description || "-" },
+    { header: t("roles.colUserCount"), accessor: (r) => r.userCount ?? 0, hideOnMobile: true },
     {
-      header: "Permission",
+      header: t("roles.colPermissions"),
       accessor: (r) => (
-        <span className="text-xs text-muted-foreground">
-          {r.permissions.length} permission dipilih
-        </span>
+        <span className="text-xs text-muted-foreground">{t("roles.permissionsSelected", { count: r.permissions.length })}</span>
       ),
     },
   ];
 
   return (
     <div>
-      <p className="mb-4 text-sm text-muted-foreground">
-        Role bawaan sistem (ikon <Lock className="inline h-3 w-3" />) tidak bisa dihapus atau
-        diganti nama, tapi hak aksesnya tetap bisa disesuaikan.
-      </p>
+      <p className="mb-4 text-sm text-muted-foreground">{t("roles.systemRoleListNote")}</p>
 
       <DataTable
         columns={columns}
@@ -76,18 +73,18 @@ export default function RoleListPage() {
         isLoading={isLoading}
         searchValue={search}
         onSearchChange={setSearch}
-        searchPlaceholder="Cari nama role..."
+        searchPlaceholder={t("roles.searchPlaceholder")}
         keyExtractor={(r) => r.id}
         meta={data?.meta}
         onPageChange={setPage}
         actions={
           <Button size="sm" onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Tambah Role
+            <Plus className="h-4 w-4" /> {t("roles.addButton")}
           </Button>
         }
         rowActions={(row) => (
           <>
-            <Button variant="ghost" size="icon" onClick={() => openEdit(row)} title="Edit">
+            <Button variant="ghost" size="icon" onClick={() => openEdit(row)} title={t("common.edit")}>
               <Pencil className="h-4 w-4" />
             </Button>
             <Button
@@ -95,7 +92,7 @@ export default function RoleListPage() {
               size="icon"
               onClick={() => handleDelete(row)}
               disabled={row.isSystem || (row.userCount ?? 0) > 0}
-              title={row.isSystem ? "Role bawaan sistem" : "Hapus"}
+              title={row.isSystem ? t("roles.systemRoleNote") : t("common.delete")}
             >
               <Trash2 className="h-4 w-4 text-destructive" />
             </Button>

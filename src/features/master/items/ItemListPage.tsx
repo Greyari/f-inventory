@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { useConfirm } from "@/store/confirmStore";
 import type { Item } from "@/types/inventory.types";
 
 export default function ItemListPage() {
+  const { t } = useTranslation();
   const canManage = useHasPermission("items.manage");
   const confirm = useConfirm();
   const [search, setSearch] = useState("");
@@ -37,19 +39,19 @@ export default function ItemListPage() {
 
   const handleDelete = async (row: Item) => {
     const ok = await confirm({
-      description: `Hapus item "${row.itemName}"? Tindakan ini tidak bisa dibatalkan.`,
+      description: t("item.confirmDelete", { name: row.itemName }),
       variant: "destructive",
-      confirmText: "Ya, Hapus",
+      confirmText: t("common.confirmDelete"),
     });
     if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<Item>[] = [
-    { header: "Kode", accessor: (r) => <span className="font-medium">{r.itemCode}</span> },
-    { header: "Nama Barang", accessor: (r) => r.itemName },
-    { header: "Kategori", accessor: (r) => r.category },
-    { header: "Satuan", accessor: (r) => r.unit },
-    { header: "Stok Min.", accessor: (r) => r.minStockLevel },
+    { header: t("item.itemCode"), accessor: (r) => <span className="font-medium">{r.itemCode}</span> },
+    { header: t("item.itemName"), accessor: (r) => r.itemName },
+    { header: t("item.category"), accessor: (r) => r.category, hideOnMobile: true },
+    { header: t("item.unit"), accessor: (r) => r.unit },
+    { header: t("item.minStock"), accessor: (r) => r.minStockLevel, hideOnMobile: true },
   ];
 
   return (
@@ -60,14 +62,14 @@ export default function ItemListPage() {
         isLoading={isLoading}
         searchValue={search}
         onSearchChange={setSearch}
-        searchPlaceholder="Cari kode atau nama barang..."
+        searchPlaceholder={t("item.searchPlaceholder")}
         keyExtractor={(r) => r.id}
         meta={data?.meta}
         onPageChange={setPage}
         actions={
           canManage && (
             <Button size="sm" onClick={openCreate}>
-              <Plus className="h-4 w-4" /> Tambah Item
+              <Plus className="h-4 w-4" /> {t("item.addButton")}
             </Button>
           )
         }

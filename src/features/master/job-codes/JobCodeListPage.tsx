@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { useConfirm } from "@/store/confirmStore";
 import type { JobCode } from "@/types/inventory.types";
 
 export default function JobCodeListPage() {
+  const { t } = useTranslation();
   const canManage = useHasPermission("job-codes.manage");
   const confirm = useConfirm();
   const [search, setSearch] = useState("");
@@ -21,7 +23,6 @@ export default function JobCodeListPage() {
   const { data, isLoading } = useJobCodes({ search: debouncedSearch, page, limit: 10 });
   const deleteMutation = useDeleteJobCode();
 
-  // Reset ke halaman 1 setiap kali kata kunci pencarian berubah
   useEffect(() => {
     setPage(1);
   }, [debouncedSearch]);
@@ -38,22 +39,23 @@ export default function JobCodeListPage() {
 
   const handleDelete = async (row: JobCode) => {
     const ok = await confirm({
-      description: `Hapus job code "${row.code}"? Tindakan ini tidak bisa dibatalkan.`,
+      description: t("jobCode.confirmDelete", { code: row.code }),
       variant: "destructive",
-      confirmText: "Ya, Hapus",
+      confirmText: t("common.confirmDelete"),
     });
     if (ok) deleteMutation.mutate(row.id);
   };
 
   const columns: Column<JobCode>[] = [
-    { header: "Kode", accessor: (r) => <span className="font-medium">{r.code}</span> },
-    { header: "Deskripsi", accessor: (r) => r.description },
+    { header: t("jobCode.code"), accessor: (r) => <span className="font-medium">{r.code}</span> },
+    { header: t("jobCode.description"), accessor: (r) => r.description },
     {
-      header: "Kategori",
+      header: t("jobCode.category"),
       accessor: (r) => <span className="text-xs text-muted-foreground">{r.category}</span>,
+      hideOnMobile: true,
     },
     {
-      header: "Status",
+      header: t("jobCode.status"),
       accessor: (r) => (
         <span
           className={
@@ -62,7 +64,7 @@ export default function JobCodeListPage() {
               : "rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
           }
         >
-          {r.isActive ? "Aktif" : "Nonaktif"}
+          {r.isActive ? t("common.active") : t("common.inactive")}
         </span>
       ),
     },
@@ -76,14 +78,14 @@ export default function JobCodeListPage() {
         isLoading={isLoading}
         searchValue={search}
         onSearchChange={setSearch}
-        searchPlaceholder="Cari kode atau deskripsi..."
+        searchPlaceholder={t("jobCode.searchPlaceholder")}
         keyExtractor={(r) => r.id}
         meta={data?.meta}
         onPageChange={setPage}
         actions={
           canManage && (
             <Button size="sm" onClick={openCreate}>
-              <Plus className="h-4 w-4" /> Tambah Job Code
+              <Plus className="h-4 w-4" /> {t("jobCode.addButton")}
             </Button>
           )
         }

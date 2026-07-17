@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ApiMeta } from "@/types/api.types";
@@ -8,6 +9,7 @@ interface PaginationProps {
 }
 
 export function Pagination({ meta, onPageChange }: PaginationProps) {
+  const { t } = useTranslation();
   const { current_page, per_page, total, last_page } = meta;
 
   if (total === 0) return null;
@@ -21,9 +23,7 @@ export function Pagination({ meta, onPageChange }: PaginationProps) {
   return (
     <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <p className="text-xs text-muted-foreground">
-        Menampilkan <span className="font-medium text-foreground">{from}</span>–
-        <span className="font-medium text-foreground">{to}</span> dari{" "}
-        <span className="font-medium text-foreground">{total}</span> data
+        {t("common.showingResults", { from, to, total })}
       </p>
 
       <div className="flex items-center gap-1">

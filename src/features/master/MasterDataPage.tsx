@@ -1,33 +1,30 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useHasPermission } from "@/store/authStore";
 import JobCodeListPage from "./job-codes/JobCodeListPage";
 import ItemListPage from "./items/ItemListPage";
-import SupplierListPage from "./suppliers/SupplierListPage";
 
-type Tab = "job-codes" | "items" | "suppliers";
+type Tab = "job-codes" | "items";
 
 export default function MasterDataPage() {
+  const { t } = useTranslation();
   const canJobCodes = useHasPermission("job-codes.manage");
   const canItems = useHasPermission("items.manage");
-  const canSuppliers = useHasPermission("suppliers.manage");
 
   const TABS: { key: Tab; label: string; visible: boolean }[] = [
-    { key: "job-codes", label: "Job Code (Project Ref / Cost Centre / Cost Code)", visible: canJobCodes },
-    { key: "items", label: "Item / Barang", visible: canItems },
-    { key: "suppliers", label: "Supplier", visible: canSuppliers },
+    { key: "job-codes", label: t("master.tabJobCode"), visible: canJobCodes },
+    { key: "items", label: t("master.tabItem"), visible: canItems },
   ];
 
   const [tab, setTab] = useState<Tab>(TABS.find((t) => t.visible)?.key ?? "job-codes");
 
   return (
     <div>
-      <h2 className="mb-1 text-2xl font-semibold">Data Master</h2>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Kelola data referensi yang dipakai di form Purchasing dan Inventory.
-      </p>
+      <h2 className="mb-1 text-2xl font-semibold">{t("master.title")}</h2>
+      <p className="mb-6 text-sm text-muted-foreground">{t("master.subtitle")}</p>
 
-      <div className="mb-4 flex gap-1 border-b">
+      <div className="mb-4 flex gap-1 overflow-x-auto border-b">
         {TABS.filter((t) => t.visible).map((t) => (
           <button
             key={t.key}
@@ -46,7 +43,6 @@ export default function MasterDataPage() {
 
       {tab === "job-codes" && canJobCodes && <JobCodeListPage />}
       {tab === "items" && canItems && <ItemListPage />}
-      {tab === "suppliers" && canSuppliers && <SupplierListPage />}
     </div>
   );
 }

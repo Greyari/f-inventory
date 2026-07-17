@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ interface ItemFormDialogProps {
 }
 
 export function ItemFormDialog({ open, onOpenChange, editingData }: ItemFormDialogProps) {
+  const { t } = useTranslation();
   const isEdit = !!editingData;
   const createMutation = useCreateItem();
   const updateMutation = useUpdateItem();
@@ -69,19 +71,19 @@ export function ItemFormDialog({ open, onOpenChange, editingData }: ItemFormDial
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent title={isEdit ? "Edit Item" : "Tambah Item"}>
+      <DialogContent title={isEdit ? t("item.formTitleEdit") : t("item.formTitleAdd")}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label>Kode Barang</Label>
-              <Input {...register("itemCode")} placeholder="mis. ITM-001" />
+              <Label>{t("item.itemCode")}</Label>
+              <Input {...register("itemCode")} placeholder="e.g. ITM-001" />
               {errors.itemCode && (
                 <p className="mt-1 text-xs text-destructive">{errors.itemCode.message}</p>
               )}
             </div>
             <div>
-              <Label>Satuan</Label>
-              <Input {...register("unit")} list="unit-suggestions" placeholder="mis. m, pcs, box" />
+              <Label>{t("item.unit")}</Label>
+              <Input {...register("unit")} list="unit-suggestions" placeholder="e.g. m, pcs, box" />
               <datalist id="unit-suggestions">
                 {UNIT_SUGGESTIONS.map((u) => (
                   <option key={u} value={u} />
@@ -92,23 +94,23 @@ export function ItemFormDialog({ open, onOpenChange, editingData }: ItemFormDial
           </div>
 
           <div>
-            <Label>Nama Barang</Label>
-            <Input {...register("itemName")} placeholder="mis. XLPE Cable 1C x 500mm" />
+            <Label>{t("item.itemName")}</Label>
+            <Input {...register("itemName")} placeholder="e.g. XLPE Cable 1C x 500mm" />
             {errors.itemName && (
               <p className="mt-1 text-xs text-destructive">{errors.itemName.message}</p>
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label>Kategori</Label>
-              <Input {...register("category")} placeholder="mis. Electrical, Consumable" />
+              <Label>{t("item.category")}</Label>
+              <Input {...register("category")} placeholder="e.g. Electrical, Consumable" />
               {errors.category && (
                 <p className="mt-1 text-xs text-destructive">{errors.category.message}</p>
               )}
             </div>
             <div>
-              <Label>Stok Minimum</Label>
+              <Label>{t("item.minStock")}</Label>
               <Input type="number" step="any" {...register("minStockLevel")} />
               {errors.minStockLevel && (
                 <p className="mt-1 text-xs text-destructive">{errors.minStockLevel.message}</p>
@@ -117,16 +119,16 @@ export function ItemFormDialog({ open, onOpenChange, editingData }: ItemFormDial
           </div>
 
           <div>
-            <Label>Deskripsi (opsional)</Label>
-            <Input {...register("description")} placeholder="Catatan tambahan" />
+            <Label>{t("item.description")}</Label>
+            <Input {...register("description")} placeholder={t("item.descriptionPlaceholder")} />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Batal
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Menyimpan..." : "Simpan"}
+              {isSubmitting ? t("common.saving") : t("common.save")}
             </Button>
           </div>
         </form>

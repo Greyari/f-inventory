@@ -12,13 +12,15 @@ i18n
       id: { common: id },
       en: { common: en },
     },
-    lng: "id",
+    // Sengaja TIDAK set `lng` di sini — biar LanguageDetector yang nentuin
+    // (localStorage kalau user pernah pilih, atau bahasa browser).
     fallbackLng: "id",
     defaultNS: "common",
     interpolation: { escapeValue: false },
     detection: {
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
+      lookupLocalStorage: "inventory_lang",
     },
   });
 

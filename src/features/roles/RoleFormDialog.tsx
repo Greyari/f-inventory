@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +24,7 @@ interface RoleFormDialogProps {
 }
 
 export function RoleFormDialog({ open, onOpenChange, editingData }: RoleFormDialogProps) {
+  const { t } = useTranslation();
   const isEdit = !!editingData;
   const isSystemRole = editingData?.isSystem ?? false;
 
@@ -87,29 +89,27 @@ export function RoleFormDialog({ open, onOpenChange, editingData }: RoleFormDial
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent title={isEdit ? "Edit Role" : "Tambah Role"} className="max-w-xl">
+      <DialogContent title={isEdit ? t("roles.formTitleEdit") : t("roles.formTitleAdd")} className="max-w-xl">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {isSystemRole && (
-            <p className="rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-700">
-              Ini role bawaan sistem — nama tidak bisa diubah, tapi permission-nya masih bisa disesuaikan.
-            </p>
+            <p className="rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-700">{t("roles.systemRoleNote")}</p>
           )}
 
           <div>
-            <Label>Nama Role</Label>
-            <Input {...register("name")} disabled={isSystemRole} placeholder="mis. Checker Gudang" />
+            <Label>{t("roles.name")}</Label>
+            <Input {...register("name")} disabled={isSystemRole} placeholder="e.g. Warehouse Checker" />
             {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name.message}</p>}
           </div>
 
           <div>
-            <Label>Deskripsi (opsional)</Label>
-            <Textarea {...register("description")} placeholder="Buat apa role ini" />
+            <Label>{t("roles.description")}</Label>
+            <Textarea {...register("description")} placeholder={t("roles.description")} />
           </div>
 
           <div>
-            <Label>Hak Akses</Label>
+            <Label>{t("roles.permissions")}</Label>
             {loadingPermissions ? (
-              <p className="text-sm text-muted-foreground">Memuat daftar permission...</p>
+              <p className="text-sm text-muted-foreground">{t("roles.loadingPermissions")}</p>
             ) : (
               <div className="max-h-72 space-y-4 overflow-y-auto rounded-md border p-3">
                 {Object.entries(groupedPermissions).map(([group, items]) => {
@@ -123,7 +123,7 @@ export function RoleFormDialog({ open, onOpenChange, editingData }: RoleFormDial
                           onClick={() => toggleGroup(items, allChecked)}
                           className="text-xs text-primary hover:underline"
                         >
-                          {allChecked ? "Batal semua" : "Pilih semua"}
+                          {allChecked ? t("roles.unselectAll") : t("roles.selectAll")}
                         </button>
                       </div>
                       <div className="space-y-1.5">
@@ -148,10 +148,10 @@ export function RoleFormDialog({ open, onOpenChange, editingData }: RoleFormDial
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Batal
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Menyimpan..." : "Simpan"}
+              {isSubmitting ? t("common.saving") : t("common.save")}
             </Button>
           </div>
         </form>

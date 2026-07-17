@@ -2,9 +2,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { apiClient } from "@/lib/axios";
+import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import type { ApiSuccess } from "@/types/api.types";
 import type { LoginResponse } from "@/types/auth.types";
 
@@ -16,6 +18,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
 
@@ -34,24 +37,27 @@ export default function LoginPage() {
         values
       );
       setSession(data.data);
-      toast.success(`Selamat datang, ${data.data.user.name}`);
+      toast.success(t("auth.loginSuccess", { name: data.data.user.name }));
       navigate("/dashboard");
     } catch {
-      toast.error("Email atau password salah");
+      toast.error(t("auth.loginFailed"));
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30">
-      <div className="w-full max-w-sm rounded-lg border bg-background p-8 shadow-sm">
-        <h1 className="mb-1 text-xl font-semibold">Inventory System</h1>
-        <p className="mb-6 text-sm text-muted-foreground">
-          Masuk untuk melanjutkan
-        </p>
+    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
+      <div className="w-full max-w-sm rounded-lg border bg-background p-6 shadow-sm sm:p-8">
+        <div className="mb-6 flex items-start justify-between gap-3">
+          <div>
+            <h1 className="mb-1 text-xl font-semibold">{t("app.name")}</h1>
+            <p className="text-sm text-muted-foreground">{t("auth.loginTitle")}</p>
+          </div>
+          <LanguageSwitcher />
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium">Email</label>
+            <label className="mb-1 block text-sm font-medium">{t("auth.email")}</label>
             <input
               type="email"
               {...register("email")}
@@ -66,7 +72,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Password</label>
+            <label className="mb-1 block text-sm font-medium">{t("auth.password")}</label>
             <input
               type="password"
               {...register("password")}
@@ -85,7 +91,7 @@ export default function LoginPage() {
             disabled={isSubmitting}
             className="w-full rounded-md bg-primary py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
           >
-            {isSubmitting ? "Memproses..." : "Masuk"}
+            {isSubmitting ? t("auth.loggingIn") : t("auth.loginButton")}
           </button>
         </form>
       </div>

@@ -1,31 +1,16 @@
 import { useEffect } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Plus, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchableSelect } from "@/components/common/SearchableSelect";
 import { fetchItemOptions, fetchJobCodeOptions } from "@/lib/selectOptions";
 import { useCreateStockOut } from "./stock-out.hooks";
-
-const schema = z.object({
-  referenceNo: z.string().min(1, "Nomor referensi wajib diisi"),
-  projectId: z.string().optional(),
-  dateIssued: z.string().min(1, "Tanggal wajib diisi"),
-  issuedTo: z.string().optional(),
-  items: z
-    .array(
-      z.object({
-        itemId: z.string().min(1, "Item wajib dipilih"),
-        qty: z.coerce.number().min(0.01, "Qty harus > 0"),
-      })
-    )
-    .min(1, "Minimal 1 item"),
-});
-
-type FormValues = z.infer<typeof schema>;
+import { AllocationRows } from "./AllocationRows";
+import { stockOutSchema, emptyStockOutValues, type StockOutFormValues } from "./stockOutFormSchema";
 
 interface StockOutFormDialogProps {
   open: boolean;
@@ -33,6 +18,7 @@ interface StockOutFormDialogProps {
 }
 
 export function StockOutFormDialog({ open, onOpenChange }: StockOutFormDialogProps) {
+  const { t } = useTranslation();
   const createMutation = useCreateStockOut();
 
   const {
@@ -41,130 +27,222 @@ export function StockOutFormDialog({ open, onOpenChange }: StockOutFormDialogPro
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      referenceNo: "",
-      projectId: "",
-      dateIssued: new Date().toISOString().slice(0, 10),
-      issuedTo: "",
-      items: [{ itemId: "", qty: 1 }],
-    },
+  } = useForm<StockOutFormValues>({
+    resolver: zodResolver(stockOutSchema),
+    defaultValues: emptyStockOutValues(),
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
 
   useEffect(() => {
-    if (open) {
-      reset({
-        referenceNo: "",
-        projectId: "",
-        dateIssued: new Date().toISOString().slice(0, 10),
-        issuedTo: "",
-        items: [{ itemId: "", qty: 1 }],
-      });
-    }
+    if (open) reset(emptyStockOutValues());
   }, [open, reset]);
 
-  const onSubmit = async (values: FormValues) => {
-    await createMutation.mutateAsync(values);
+  const onSubmit = async (values: StockOutFormValues) => {
+    // qty per item = jumlah semua alokasinya, biar selalu konsisten (sesuai validasi backend)
+    const payload = {
+      ...values,
+      items: values.items.map((item) => ({
+        itemId: item.itemId,
+        qty: item.allocations.reduce((sum, a) => sum + Number(a.qty), 0),
+        allocations: item.allocations,
+      })),
+    };
+    await createMutation.mutateAsync(payload);
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent title="Catat Barang Keluar" className="max-w-2xl">
+      <DialogContent title={t("stockOut.formTitle")} className="max-w-3xl">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label>Nomor Referensi</Label>
-              <Input {...register("referenceNo")} placeholder="mis. SO-2026-0031" />
+              <Label>{t("stockOut.referenceNo")}</Label>
+              <Input {...register("referenceNo")} placeholder="e.g. SO-2026-0031" />
               {errors.referenceNo && (
                 <p className="mt-1 text-xs text-destructive">{errors.referenceNo.message}</p>
               )}
             </div>
             <div>
-              <Label>Tanggal Keluar</Label>
+              <Label>{t("stockOut.dateIssued")}</Label>
               <Input type="date" {...register("dateIssued")} />
             </div>
 
             <div>
-              <Label>Untuk Project (opsional)</Label>
+              <Label>{t("stockOut.approvedBy")}</Label>
+              <Input {...register("approvedBy")} placeholder={t("stockOut.approvedByPlaceholder")} />
+              {errors.approvedBy && (
+                <p className="mt-1 text-xs text-destructive">{errors.approvedBy.message}</p>
+              )}
+            </div>
+            <div>
+              <Label>{t("stockOut.issuedTo")}</Label>
+              <Input {...register("issuedTo")} placeholder="e.g. Tim Fabrikasi" />
+            </div>
+
+            <div className="col-span-2">
+              <p className="mb-2 text-xs font-semibold text-muted-foreground">{t("stockOut.destinationLabel")}</p>
+            </div>
+
+            <div className="col-span-2">
+              <Label>{t("stockOut.project")}</Label>
+              <Input {...register("projectName")} placeholder="e.g. Batching Plant 5" />
+              {errors.projectName && (
+                <p className="mt-1 text-xs text-destructive">{errors.projectName.message}</p>
+              )}
+            </div>
+
+            <div>
+              <Label>{t("stockOut.projectRef")}</Label>
               <Controller
                 control={control}
-                name="projectId"
+                name="projectRefId"
                 render={({ field }) => (
                   <SearchableSelect
                     value={field.value}
                     onChange={field.onChange}
                     fetchOptions={fetchJobCodeOptions}
-                    placeholder="Pilih project ref..."
+                    error={!!errors.projectRefId}
+                    placeholder={t("common.selectCode")}
                   />
                 )}
               />
+              {errors.projectRefId && (
+                <p className="mt-1 text-xs text-destructive">{errors.projectRefId.message}</p>
+              )}
             </div>
             <div>
-              <Label>Diserahkan Ke</Label>
-              <Input {...register("issuedTo")} placeholder="mis. Tim Fabrikasi" />
+              <Label>{t("stockOut.costCentre")}</Label>
+              <Controller
+                control={control}
+                name="costCentreId"
+                render={({ field }) => (
+                  <SearchableSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    fetchOptions={fetchJobCodeOptions}
+                    error={!!errors.costCentreId}
+                    placeholder={t("common.selectCode")}
+                  />
+                )}
+              />
+              {errors.costCentreId && (
+                <p className="mt-1 text-xs text-destructive">{errors.costCentreId.message}</p>
+              )}
+            </div>
+            <div>
+              <Label>{t("stockOut.costCodeSource")}</Label>
+              <Controller
+                control={control}
+                name="costCodeId"
+                render={({ field }) => (
+                  <SearchableSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    fetchOptions={fetchJobCodeOptions}
+                    error={!!errors.costCodeId}
+                    placeholder={t("common.selectCode")}
+                  />
+                )}
+              />
+              {errors.costCodeId && (
+                <p className="mt-1 text-xs text-destructive">{errors.costCodeId.message}</p>
+              )}
             </div>
           </div>
 
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <Label className="mb-0">Item</Label>
+              <Label className="mb-0">{t("stockOut.itemsOut")}</Label>
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
-                onClick={() => append({ itemId: "", qty: 1 })}
+                onClick={() =>
+                  append({
+                    itemId: "",
+                    allocations: [{ projectRefId: "", costCentreId: "", costCodeId: "", qty: 1 }],
+                  })
+                }
               >
-                <Plus className="h-4 w-4" /> Tambah
+                <Plus className="h-4 w-4" /> {t("stockOut.addItem")}
               </Button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {fields.map((field, index) => (
-                <div key={field.id} className="grid grid-cols-12 items-start gap-2">
-                  <div className="col-span-8">
-                    <Controller
-                      control={control}
-                      name={`items.${index}.itemId`}
-                      render={({ field: f }) => (
-                        <SearchableSelect
-                          value={f.value}
-                          onChange={f.onChange}
-                          fetchOptions={fetchItemOptions}
-                          placeholder="Pilih item..."
-                          error={!!errors.items?.[index]?.itemId}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <Input type="number" step="any" placeholder="Qty" {...register(`items.${index}.qty`)} />
-                  </div>
-                  <div className="col-span-1">
-                    {fields.length > 1 && (
-                      <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
+                <ItemRow
+                  key={field.id}
+                  control={control}
+                  index={index}
+                  onRemove={fields.length > 1 ? () => remove(index) : undefined}
+                  error={errors.items?.[index]?.itemId?.message}
+                />
               ))}
             </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Batal
+              {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Menyimpan..." : "Simpan"}
+              {createMutation.isPending ? t("common.saving") : t("common.save")}
             </Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ItemRow({
+  control,
+  index,
+  onRemove,
+  error,
+}: {
+  control: ReturnType<typeof useForm<StockOutFormValues>>["control"];
+  index: number;
+  onRemove?: () => void;
+  error?: string;
+}) {
+  const { t } = useTranslation();
+  const itemId = useWatch({ control, name: `items.${index}.itemId` });
+
+  return (
+    <div className="rounded-md border p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-xs font-medium text-muted-foreground">
+          {t("stockIn.items")} #{index + 1}
+        </span>
+        {onRemove && (
+          <Button type="button" variant="ghost" size="icon" onClick={onRemove}>
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
+        )}
+      </div>
+
+      <div className="mb-3">
+        <Label>{t("stockIn.items")}</Label>
+        <Controller
+          control={control}
+          name={`items.${index}.itemId`}
+          render={({ field }) => (
+            <SearchableSelect
+              value={field.value}
+              onChange={field.onChange}
+              fetchOptions={fetchItemOptions}
+              placeholder={t("common.selectItem")}
+              error={!!error}
+            />
+          )}
+        />
+        {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
+      </div>
+
+      <AllocationRows control={control} itemIndex={index} itemId={itemId} />
+    </div>
   );
 }
