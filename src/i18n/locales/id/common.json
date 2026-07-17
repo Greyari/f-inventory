@@ -36,7 +36,9 @@
     "selectItem": "Pilih item...",
     "detail": "Detail",
     "close": "Tutup",
-    "notFound": "Data tidak ditemukan"
+    "notFound": "Data tidak ditemukan",
+    "activate": "Aktifkan",
+    "deactivate": "Nonaktifkan"
   },
   "auth": {
     "login": "Masuk",
@@ -156,7 +158,9 @@
     "category": "Kategori",
     "status": "Status",
     "searchPlaceholder": "Cari kode atau deskripsi...",
-    "confirmDelete": "Hapus job code \"{{code}}\"? Tindakan ini tidak bisa dibatalkan."
+    "confirmDelete": "Hapus job code \"{{code}}\"? Tindakan ini tidak bisa dibatalkan.",
+    "confirmActivate": "Aktifkan job code {{code}}?",
+    "confirmDeactivate": "Nonaktifkan job code {{code}}? Job code ini tidak akan muncul lagi di form baru."
   },
   "item": {
     "addButton": "Tambah Item",

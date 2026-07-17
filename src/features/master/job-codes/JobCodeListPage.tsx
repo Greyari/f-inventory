@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Power, PowerOff } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-import { useJobCodes, useDeleteJobCode } from "./job-code.hooks";
+import { useJobCodes, useDeleteJobCode, useUpdateJobCode } from "./job-code.hooks";
 import { JobCodeFormDialog } from "./JobCodeFormDialog";
 import { useHasPermission } from "@/store/authStore";
 import { useConfirm } from "@/store/confirmStore";
 import type { JobCode } from "@/types/inventory.types";
+import { toast } from "sonner";
 
 export default function JobCodeListPage() {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ export default function JobCodeListPage() {
 
   const { data, isLoading } = useJobCodes({ search: debouncedSearch, page, limit: 10 });
   const deleteMutation = useDeleteJobCode();
+  const updateMutation = useUpdateJobCode();
 
   useEffect(() => {
     setPage(1);
@@ -43,7 +45,29 @@ export default function JobCodeListPage() {
       variant: "destructive",
       confirmText: t("common.confirmDelete"),
     });
-    if (ok) deleteMutation.mutate(row.id);
+    if (ok) {
+      deleteMutation.mutate(row.id, {
+        onError: (err: any) => {
+          const msg = err?.response?.data?.message;
+          if (msg) toast.error(msg);
+        },
+      });
+    }
+  };
+
+  // === FUNGSI TOGGLE STATUS (BARU) ===
+  const handleToggleStatus = async (row: JobCode) => {
+    const willActivate = !row.isActive;
+    const ok = await confirm({
+      description: willActivate
+        ? t("jobCode.confirmActivate", { code: row.code })
+        : t("jobCode.confirmDeactivate", { code: row.code }),
+      variant: willActivate ? "default" : "destructive",
+      confirmText: willActivate ? t("common.activate") : t("common.deactivate"),
+    });
+    if (ok) {
+      updateMutation.mutate({ id: row.id, payload: { isActive: willActivate } });
+    }
   };
 
   const columns: Column<JobCode>[] = [
@@ -96,6 +120,21 @@ export default function JobCodeListPage() {
                   <Button variant="ghost" size="icon" onClick={() => openEdit(row)}>
                     <Pencil className="h-4 w-4" />
                   </Button>
+
+                  {/* TOMBOL TOGGLE STATUS */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    title={row.isActive ? t("common.deactivate") : t("common.activate")}
+                    onClick={() => handleToggleStatus(row)}
+                  >
+                    {row.isActive ? (
+                      <PowerOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Power className="h-4 w-4 text-green-600" />
+                    )}
+                  </Button>
+
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(row)}>
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>

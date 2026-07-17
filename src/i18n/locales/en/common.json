@@ -36,7 +36,9 @@
     "selectItem": "Select item...",
     "detail": "Detail",
     "close": "Close",
-    "notFound": "Data not found"
+    "notFound": "Data not found",
+    "activate": "Activate",
+    "deactivate": "Deactivate"
   },
   "auth": {
     "login": "Sign In",
@@ -156,7 +158,9 @@
     "category": "Category",
     "status": "Status",
     "searchPlaceholder": "Search code or description...",
-    "confirmDelete": "Delete job code \"{{code}}\"? This action cannot be undone."
+    "confirmDelete": "Delete job code \"{{code}}\"? This action cannot be undone.",
+    "confirmActivate": "Activate job code {{code}}?",
+    "confirmDeactivate": "Deactivate job code {{code}}? It will no longer appear in new forms."
   },
   "item": {
     "addButton": "Add Item",
