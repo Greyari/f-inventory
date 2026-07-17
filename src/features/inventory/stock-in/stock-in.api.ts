@@ -18,6 +18,10 @@ export const stockInApi = {
     const { data } = await apiClient.get<ApiSuccess<StockIn[]>>("/stock-in", { params });
     return data;
   },
+  detail: async (id: string) => {
+    const { data } = await apiClient.get<ApiSuccess<StockIn>>(`/stock-in/${id}`);
+    return data.data;
+  },
   create: async (payload: StockInPayload) => {
     const { data } = await apiClient.post<ApiSuccess<StockIn>>("/stock-in", payload);
     return data.data;

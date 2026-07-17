@@ -33,7 +33,10 @@
     "welcomeBack": "Selamat datang kembali, {{name}}",
     "welcome": "Selamat datang, {{name}}",
     "selectCode": "Pilih kode...",
-    "selectItem": "Pilih item..."
+    "selectItem": "Pilih item...",
+    "detail": "Detail",
+    "close": "Tutup",
+    "notFound": "Data tidak ditemukan"
   },
   "auth": {
     "login": "Masuk",
@@ -84,7 +87,9 @@
     "colDateReceived": "Tanggal Diterima",
     "colApprovedBy": "Di-ACC oleh",
     "colProject": "Project / Ref / Cost Centre / Cost Code",
-    "colItems": "Item"
+    "colItems": "Item",
+    "detailTitle": "Detail Barang Masuk",
+    "detailReference": "Nomor Referensi"
   },
   "stockOut": {
     "title": "Barang Keluar",
@@ -114,7 +119,10 @@
     "colApprovedBy": "Di-ACC oleh",
     "colIssuedTo": "Diserahkan Ke",
     "colProject": "Untuk Project",
-    "colItems": "Item & Sumber Stok"
+    "colItems": "Item & Sumber Stok",
+    "detailTitle": "Detail Barang Keluar",
+    "detailReference": "Nomor Referensi",
+    "sourceBreakdown": "Rincian Sumber Stok"
   },
   "stockBalance": {
     "title": "Stok Tersisa",
@@ -126,7 +134,12 @@
     "colProjectRef": "Project Ref / Cost Centre / Cost Code",
     "colBalanceHere": "Sisa di Lot Ini",
     "colUnit": "Satuan",
-    "colTotalItem": "Total Item (semua lot)"
+    "colTotalItem": "Total Item (semua lot)",
+    "detailTitle": "Detail Stok — {{name}}",
+    "detailSubtitle": "Rincian saldo per Project Ref / Cost Centre / Cost Code",
+    "totalBalance": "Total Semua Lot",
+    "detailButton": "Detail",
+    "colLots": "Jumlah Lot"
   },
   "master": {
     "title": "Data Master",

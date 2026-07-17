@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Eye } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockOuts, useDeleteStockOut } from "./stock-out.hooks";
 import { StockOutFormDialog } from "./StockOutFormDialog";
+import { StockOutDetailDialog } from "./StockOutDetailDialog";
 import { useHasPermission } from "@/store/authStore";
 import { useConfirm } from "@/store/confirmStore";
 import type { StockOut } from "@/types/inventory.types";
@@ -19,6 +20,7 @@ export default function StockOutPage() {
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   const { data, isLoading } = useStockOuts({ search: debouncedSearch, page, limit: 10 });
   const deleteMutation = useDeleteStockOut();
@@ -97,18 +99,22 @@ export default function StockOutPage() {
             </Button>
           )
         }
-        rowActions={
-          canDelete
-            ? (row) => (
-                <Button variant="ghost" size="icon" onClick={() => handleDelete(row)}>
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              )
-            : undefined
-        }
+        rowActions={(row) => (
+          <>
+            <Button variant="ghost" size="icon" title={t("common.detail")} onClick={() => setDetailId(row.id)}>
+              <Eye className="h-4 w-4" />
+            </Button>
+            {canDelete && (
+              <Button variant="ghost" size="icon" onClick={() => handleDelete(row)}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            )}
+          </>
+        )}
       />
 
       <StockOutFormDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <StockOutDetailDialog id={detailId} onOpenChange={(open) => !open && setDetailId(null)} />
     </div>
   );
 }

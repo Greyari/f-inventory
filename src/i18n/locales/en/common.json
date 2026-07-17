@@ -33,7 +33,10 @@
     "welcomeBack": "Welcome back, {{name}}",
     "welcome": "Welcome, {{name}}",
     "selectCode": "Select code...",
-    "selectItem": "Select item..."
+    "selectItem": "Select item...",
+    "detail": "Detail",
+    "close": "Close",
+    "notFound": "Data not found"
   },
   "auth": {
     "login": "Sign In",
@@ -84,7 +87,9 @@
     "colDateReceived": "Date Received",
     "colApprovedBy": "Approved By",
     "colProject": "Project / Ref / Cost Centre / Cost Code",
-    "colItems": "Items"
+    "colItems": "Items",
+    "detailTitle": "Stock In Detail",
+    "detailReference": "Reference Number"
   },
   "stockOut": {
     "title": "Stock Out",
@@ -114,7 +119,10 @@
     "colApprovedBy": "Approved By",
     "colIssuedTo": "Issued To",
     "colProject": "For Project",
-    "colItems": "Items & Stock Source"
+    "colItems": "Items & Stock Source",
+    "detailTitle": "Stock Out Detail",
+    "detailReference": "Reference Number",
+    "sourceBreakdown": "Stock Source Breakdown"
   },
   "stockBalance": {
     "title": "Stock Balance",
@@ -126,7 +134,12 @@
     "colProjectRef": "Project Ref / Cost Centre / Cost Code",
     "colBalanceHere": "Balance in This Lot",
     "colUnit": "Unit",
-    "colTotalItem": "Total Item (all lots)"
+    "colTotalItem": "Total Item (all lots)",
+    "detailTitle": "Stock Detail — {{name}}",
+    "detailSubtitle": "Balance breakdown per Project Ref / Cost Centre / Cost Code",
+    "totalBalance": "Total All Lots",
+    "detailButton": "Detail",
+    "colLots": "Lot Count"
   },
   "master": {
     "title": "Master Data",

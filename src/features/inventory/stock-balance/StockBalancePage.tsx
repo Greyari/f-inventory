@@ -1,59 +1,73 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Eye } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
+import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockLots } from "./stock-balance.hooks";
+import { StockLotDetailDialog } from "./StockLotDetailDialog";
 import type { StockLot } from "@/types/inventory.types";
+
+interface ItemSummary {
+  itemId: string;
+  itemCode?: string;
+  itemName?: string;
+  unit?: string;
+  minStockLevel?: number;
+  totalBalance: number;
+  lotCount: number;
+  lots: StockLot[];
+}
 
 export default function StockBalancePage() {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const { data, isLoading } = useStockLots(debouncedSearch);
+  const [detailItemId, setDetailItemId] = useState<string | null>(null);
 
-  const itemTotals = useMemo(() => {
-    if (!data) return new Map<string, number>();
-    const map = new Map<string, number>();
+  // Gabungkan semua lot jadi 1 baris per item
+  const itemSummaries = useMemo<ItemSummary[]>(() => {
+    if (!data) return [];
+    const map = new Map<string, ItemSummary>();
+
     data.forEach((lot) => {
-      map.set(lot.itemId, (map.get(lot.itemId) ?? 0) + lot.balance);
+      const existing = map.get(lot.itemId);
+      if (existing) {
+        existing.totalBalance += lot.balance;
+        existing.lotCount += 1;
+        existing.lots.push(lot);
+      } else {
+        map.set(lot.itemId, {
+          itemId: lot.itemId,
+          itemCode: lot.item?.itemCode,
+          itemName: lot.item?.itemName,
+          unit: lot.item?.unit,
+          minStockLevel: lot.item?.minStockLevel,
+          totalBalance: lot.balance,
+          lotCount: 1,
+          lots: [lot],
+        });
+      }
     });
-    return map;
+
+    return Array.from(map.values()).sort((a, b) => (a.itemName ?? "").localeCompare(b.itemName ?? ""));
   }, [data]);
 
-  const lowStockItems = useMemo(() => {
-    if (!data) return [];
-    const seen = new Set<string>();
-    return data.filter((lot) => {
-      if (seen.has(lot.itemId)) return false;
-      seen.add(lot.itemId);
-      const total = itemTotals.get(lot.itemId) ?? 0;
-      return lot.item && total <= lot.item.minStockLevel;
-    });
-  }, [data, itemTotals]);
+  const lowStockItems = itemSummaries.filter(
+    (item) => item.minStockLevel !== undefined && item.totalBalance <= item.minStockLevel
+  );
 
-  const columns: Column<StockLot>[] = [
-    { header: t("stockBalance.colItemCode"), accessor: (r) => <span className="font-medium">{r.item?.itemCode}</span> },
-    { header: t("stockBalance.colItemName"), accessor: (r) => r.item?.itemName },
+  const detailItem = itemSummaries.find((item) => item.itemId === detailItemId);
+
+  const columns: Column<ItemSummary>[] = [
+    { header: t("stockBalance.colItemCode"), accessor: (r) => <span className="font-medium">{r.itemCode}</span> },
+    { header: t("stockBalance.colItemName"), accessor: (r) => r.itemName },
+    { header: t("stockBalance.colUnit"), accessor: (r) => r.unit, hideOnMobile: true },
+    { header: t("stockBalance.colLots"), accessor: (r) => r.lotCount, hideOnMobile: true },
     {
-      header: t("stockBalance.colProjectRef"),
-      accessor: (r) => (
-        <span className="text-xs text-muted-foreground">
-          {r.projectRef?.code} / {r.costCentre?.code} / {r.costCode?.code}
-        </span>
-      ),
-      hideOnMobile: true,
-    },
-    { header: t("stockBalance.colBalanceHere"), accessor: (r) => <span className="font-semibold">{r.balance}</span> },
-    { header: t("stockBalance.colUnit"), accessor: (r) => r.item?.unit, hideOnMobile: true },
-    {
-      header: t("stockBalance.colTotalItem"),
-      accessor: (r) => (
-        <span className="text-xs text-muted-foreground">
-          {itemTotals.get(r.itemId)} {r.item?.unit}
-        </span>
-      ),
-      hideOnMobile: true,
+      header: t("stockBalance.totalBalance"),
+      accessor: (r) => <span className="font-semibold">{r.totalBalance}</span>,
     },
   ];
 
@@ -74,12 +88,23 @@ export default function StockBalancePage() {
 
       <DataTable
         columns={columns}
-        data={data ?? []}
+        data={itemSummaries}
         isLoading={isLoading}
         searchValue={search}
         onSearchChange={setSearch}
         searchPlaceholder={t("stockBalance.searchPlaceholder")}
-        keyExtractor={(r) => r.id}
+        keyExtractor={(r) => r.itemId}
+        rowActions={(row) => (
+          <Button variant="ghost" size="icon" title={t("stockBalance.detailButton")} onClick={() => setDetailItemId(row.itemId)}>
+            <Eye className="h-4 w-4" />
+          </Button>
+        )}
+      />
+
+      <StockLotDetailDialog
+        itemName={detailItem ? (detailItem.itemName ?? null) : null}
+        lots={detailItem?.lots ?? []}
+        onOpenChange={(open) => !open && setDetailItemId(null)}
       />
     </div>
   );

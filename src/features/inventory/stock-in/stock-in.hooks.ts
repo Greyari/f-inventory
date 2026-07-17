@@ -12,6 +12,14 @@ export function useStockIns(params: ListParams) {
   });
 }
 
+export function useStockInDetail(id?: string) {
+  return useQuery({
+    queryKey: [KEY, id],
+    queryFn: () => stockInApi.detail(id as string),
+    enabled: !!id,
+  });
+}
+
 export function useCreateStockIn() {
   const qc = useQueryClient();
   return useMutation({

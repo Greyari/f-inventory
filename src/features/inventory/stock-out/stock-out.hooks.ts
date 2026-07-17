@@ -13,6 +13,14 @@ export function useStockOuts(params: ListParams) {
   });
 }
 
+export function useStockOutDetail(id?: string) {
+  return useQuery({
+    queryKey: [KEY, id],
+    queryFn: () => stockOutApi.detail(id as string),
+    enabled: !!id,
+  });
+}
+
 export function useCreateStockOut() {
   const qc = useQueryClient();
   return useMutation({

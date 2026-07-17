@@ -32,6 +32,10 @@ export const stockOutApi = {
     const { data } = await apiClient.get<ApiSuccess<StockOut[]>>("/stock-out", { params });
     return data;
   },
+  detail: async (id: string) => {
+    const { data } = await apiClient.get<ApiSuccess<StockOut>>(`/stock-out/${id}`);
+    return data.data;
+  },
   create: async (payload: StockOutPayload) => {
     const { data } = await apiClient.post<ApiSuccess<StockOut>>("/stock-out", payload);
     return data.data;
