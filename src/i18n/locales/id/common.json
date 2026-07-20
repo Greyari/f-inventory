@@ -38,7 +38,8 @@
     "close": "Tutup",
     "notFound": "Data tidak ditemukan",
     "activate": "Aktifkan",
-    "deactivate": "Nonaktifkan"
+    "deactivate": "Nonaktifkan",
+    "backToList": "Kembali ke daftar"
   },
   "auth": {
     "login": "Masuk",
@@ -124,7 +125,11 @@
     "colItems": "Item & Sumber Stok",
     "detailTitle": "Detail Barang Keluar",
     "detailReference": "Nomor Referensi",
-    "sourceBreakdown": "Rincian Sumber Stok"
+    "sourceBreakdown": "Rincian Sumber Stok",
+    "selectLot": "Pilih lot stok...",
+    "selectItemFirst": "Pilih item dulu untuk melihat lot yang tersedia.",
+    "lotEmptyHint": "stockOut.lotEmptyHintLabel",
+    "lotEmptyHintLabel": "Saldo habis"
   },
   "stockBalance": {
     "title": "Stok Tersisa",
@@ -141,7 +146,16 @@
     "detailSubtitle": "Rincian saldo per Project Ref / Cost Centre / Cost Code",
     "totalBalance": "Total Semua Lot",
     "detailButton": "Detail",
-    "colLots": "Jumlah Lot"
+    "colLots": "Jumlah Lot",
+    "backToList": "Kembali ke daftar",
+    "totalIn": "Total Masuk",
+    "totalOut": "Total Keluar",
+    "currentBalance": "Total Saat Ini",
+    "lotBreakdown": "Rincian per Lot",
+    "stockInHistory": "Riwayat Barang Masuk",
+    "noStockInHistory": "Belum ada riwayat barang masuk.",
+    "stockOutHistory": "Riwayat Barang Keluar",
+    "noStockOutHistory": "Belum ada riwayat barang keluar."
   },
   "master": {
     "title": "Data Master",

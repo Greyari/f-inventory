@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios";
 import type { ApiSuccess, ListParams } from "@/types/api.types";
-import type { StockOut } from "@/types/inventory.types";
+import type { StockOut, StockLot } from "@/types/inventory.types";
 
 export interface StockOutAllocationPayload {
   projectRefId: string;
@@ -40,21 +40,22 @@ export const stockOutApi = {
     const { data } = await apiClient.post<ApiSuccess<StockOut>>("/stock-out", payload);
     return data.data;
   },
+  update: async (id: string, payload: StockOutPayload) => {
+    const { data } = await apiClient.patch<ApiSuccess<StockOut>>(`/stock-out/${id}`, payload);
+    return data.data;
+  },
   remove: async (id: string) => {
     await apiClient.delete(`/stock-out/${id}`);
   },
 };
 
-export const stockLotBalanceApi = {
-  get: async (params: {
-    itemId: string;
-    projectRefId: string;
-    costCentreId: string;
-    costCodeId: string;
-  }) => {
-    const { data } = await apiClient.get<ApiSuccess<{ balance: number }>>("/stock-lots/balance", {
-      params,
+// Daftar semua lot (kombinasi Project Ref/Cost Centre/Cost Code yang punya saldo) untuk 1 item.
+// Dipakai buat dropdown pilih sumber stok di form Barang Keluar.
+export const stockLotsApi = {
+  listByItem: async (itemId: string) => {
+    const { data } = await apiClient.get<ApiSuccess<StockLot[]>>("/stock-lots", {
+      params: { itemId },
     });
-    return data.data.balance;
+    return data.data;
   },
 };

@@ -11,6 +11,9 @@ export async function fetchJobCodeOptions(search: string): Promise<SearchableOpt
     value: jc.id,
     label: jc.code,
     sublabel: jc.description,
+    disabled: !jc.isActive,
+    disabledHint: "jobCode.inactiveHint",
+    raw: jc,
   }));
 }
 
@@ -22,5 +25,6 @@ export async function fetchItemOptions(search: string): Promise<SearchableOption
     value: item.id,
     label: item.itemCode,
     sublabel: item.itemName,
+    raw: item,
   }));
 }

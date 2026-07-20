@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle, Eye } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockLots } from "./stock-balance.hooks";
-import { StockLotDetailDialog } from "./StockLotDetailDialog";
 import type { StockLot } from "@/types/inventory.types";
 
 interface ItemSummary {
@@ -21,10 +21,10 @@ interface ItemSummary {
 
 export default function StockBalancePage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const { data, isLoading } = useStockLots(debouncedSearch);
-  const [detailItemId, setDetailItemId] = useState<string | null>(null);
 
   // Gabungkan semua lot jadi 1 baris per item
   const itemSummaries = useMemo<ItemSummary[]>(() => {
@@ -57,8 +57,6 @@ export default function StockBalancePage() {
   const lowStockItems = itemSummaries.filter(
     (item) => item.minStockLevel !== undefined && item.totalBalance <= item.minStockLevel
   );
-
-  const detailItem = itemSummaries.find((item) => item.itemId === detailItemId);
 
   const columns: Column<ItemSummary>[] = [
     { header: t("stockBalance.colItemCode"), accessor: (r) => <span className="font-medium">{r.itemCode}</span> },
@@ -95,16 +93,15 @@ export default function StockBalancePage() {
         searchPlaceholder={t("stockBalance.searchPlaceholder")}
         keyExtractor={(r) => r.itemId}
         rowActions={(row) => (
-          <Button variant="ghost" size="icon" title={t("stockBalance.detailButton")} onClick={() => setDetailItemId(row.itemId)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            title={t("stockBalance.detailButton")}
+            onClick={() => navigate(`/inventory/stock-balance/${row.itemId}`)}
+          >
             <Eye className="h-4 w-4" />
           </Button>
         )}
-      />
-
-      <StockLotDetailDialog
-        itemName={detailItem ? (detailItem.itemName ?? null) : null}
-        lots={detailItem?.lots ?? []}
-        onOpenChange={(open) => !open && setDetailItemId(null)}
       />
     </div>
   );

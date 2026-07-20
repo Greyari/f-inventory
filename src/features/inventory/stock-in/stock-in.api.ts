@@ -26,6 +26,10 @@ export const stockInApi = {
     const { data } = await apiClient.post<ApiSuccess<StockIn>>("/stock-in", payload);
     return data.data;
   },
+  update: async (id: string, payload: StockInPayload) => {
+    const { data } = await apiClient.patch<ApiSuccess<StockIn>>(`/stock-in/${id}`, payload);
+    return data.data;
+  },
   remove: async (id: string) => {
     await apiClient.delete(`/stock-in/${id}`);
   },

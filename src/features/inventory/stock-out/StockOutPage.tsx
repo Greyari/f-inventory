@@ -1,31 +1,34 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2, Eye } from "lucide-react";
+import { Plus, Trash2, Eye, Pencil } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockOuts, useDeleteStockOut } from "./stock-out.hooks";
-import { StockOutFormDialog } from "./StockOutFormDialog";
-import { StockOutDetailDialog } from "./StockOutDetailDialog";
 import { useHasPermission } from "@/store/authStore";
 import { useConfirm } from "@/store/confirmStore";
 import type { StockOut } from "@/types/inventory.types";
 
 export default function StockOutPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const canDelete = useHasPermission("stock-out.delete");
   const canCreate = useHasPermission("stock-out.create");
+  const canEdit = useHasPermission("stock-out.edit");
   const confirm = useConfirm();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [detailId, setDetailId] = useState<string | null>(null);
 
   const { data, isLoading } = useStockOuts({ search: debouncedSearch, page, limit: 10 });
   const deleteMutation = useDeleteStockOut();
 
   useEffect(() => setPage(1), [debouncedSearch]);
+
+  const openCreate = () => navigate("/inventory/stock-out/new");
+  const openEdit = (row: StockOut) => navigate(`/inventory/stock-out/${row.id}/edit`);
+  const openDetail = (row: StockOut) => navigate(`/inventory/stock-out/${row.id}`);
 
   const handleDelete = async (row: StockOut) => {
     const ok = await confirm({
@@ -94,16 +97,21 @@ export default function StockOutPage() {
         onPageChange={setPage}
         actions={
           canCreate && (
-            <Button size="sm" onClick={() => setDialogOpen(true)}>
+            <Button size="sm" onClick={openCreate}>
               <Plus className="h-4 w-4" /> {t("stockOut.addButton")}
             </Button>
           )
         }
         rowActions={(row) => (
           <>
-            <Button variant="ghost" size="icon" title={t("common.detail")} onClick={() => setDetailId(row.id)}>
+            <Button variant="ghost" size="icon" title={t("common.detail")} onClick={() => openDetail(row)}>
               <Eye className="h-4 w-4" />
             </Button>
+            {canEdit && (
+              <Button variant="ghost" size="icon" title={t("common.edit")} onClick={() => openEdit(row)}>
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
             {canDelete && (
               <Button variant="ghost" size="icon" onClick={() => handleDelete(row)}>
                 <Trash2 className="h-4 w-4 text-destructive" />
@@ -112,9 +120,6 @@ export default function StockOutPage() {
           </>
         )}
       />
-
-      <StockOutFormDialog open={dialogOpen} onOpenChange={setDialogOpen} />
-      <StockOutDetailDialog id={detailId} onOpenChange={(open) => !open && setDetailId(null)} />
     </div>
   );
 }

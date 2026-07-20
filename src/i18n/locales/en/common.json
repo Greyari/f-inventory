@@ -38,7 +38,8 @@
     "close": "Close",
     "notFound": "Data not found",
     "activate": "Activate",
-    "deactivate": "Deactivate"
+    "deactivate": "Deactivate",
+    "backToList": "Back to list"
   },
   "auth": {
     "login": "Sign In",
@@ -90,8 +91,7 @@
     "colApprovedBy": "Approved By",
     "colProject": "Project / Ref / Cost Centre / Cost Code",
     "colItems": "Items",
-    "detailTitle": "Stock In Detail",
-    "detailReference": "Reference Number"
+    "detailTitle": "Stock In Detail"
   },
   "stockOut": {
     "title": "Stock Out",
@@ -124,7 +124,11 @@
     "colItems": "Items & Stock Source",
     "detailTitle": "Stock Out Detail",
     "detailReference": "Reference Number",
-    "sourceBreakdown": "Stock Source Breakdown"
+    "sourceBreakdown": "Stock Source Breakdown",
+    "selectLot": "Select stock lot...",
+    "selectItemFirst": "Select an item first to see available lots.",
+    "lotEmptyHint": "stockOut.lotEmptyHintLabel",
+    "lotEmptyHintLabel": "Out of stock"
   },
   "stockBalance": {
     "title": "Stock Balance",
@@ -141,7 +145,17 @@
     "detailSubtitle": "Balance breakdown per Project Ref / Cost Centre / Cost Code",
     "totalBalance": "Total All Lots",
     "detailButton": "Detail",
-    "colLots": "Lot Count"
+    "colLots": "Lot Count",
+    "detailReference": "Reference Number",
+    "backToList": "Back to list",
+    "totalIn": "Total In",
+    "totalOut": "Total Out",
+    "currentBalance": "Total Balance",
+    "lotBreakdown": "Lot Breakdown",
+    "stockInHistory": "Stock In History",
+    "noStockInHistory": "No stock-in history yet.",
+    "stockOutHistory": "Stock Out History",
+    "noStockOutHistory": "No stock-out history yet."
   },
   "master": {
     "title": "Master Data",

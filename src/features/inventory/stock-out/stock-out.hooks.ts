@@ -1,10 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
-import { stockOutApi } from "./stock-out.api";
+import { stockOutApi, type StockOutPayload } from "./stock-out.api";
 import type { ListParams } from "@/types/api.types";
 
 const KEY = "stock-out";
+
+function extractErrorMessage(error: unknown, fallback: string) {
+  return isAxiosError(error) ? (error.response?.data?.message ?? fallback) : fallback;
+}
 
 export function useStockOuts(params: ListParams) {
   return useQuery({
@@ -29,13 +33,25 @@ export function useCreateStockOut() {
       toast.success("Barang keluar berhasil dicatat");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
-      qc.invalidateQueries({ queryKey: ["stock-lot-balance"] });
+      qc.invalidateQueries({ queryKey: ["stock-lots-by-item"] });
     },
-    onError: (error) => {
-      // Backend balikin pesan spesifik kalau stok gak cukup (422)
-      const message = isAxiosError(error) ? error.response?.data?.message : null;
-      toast.error(message || "Gagal mencatat barang keluar");
+    onError: (error) => toast.error(extractErrorMessage(error, "Gagal mencatat barang keluar")),
+  });
+}
+
+export function useUpdateStockOut() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: StockOutPayload }) =>
+      stockOutApi.update(id, payload),
+    onSuccess: (_data, variables) => {
+      toast.success("Barang keluar berhasil diperbarui");
+      qc.invalidateQueries({ queryKey: [KEY] });
+      qc.invalidateQueries({ queryKey: [KEY, variables.id] });
+      qc.invalidateQueries({ queryKey: ["stock-lots"] });
+      qc.invalidateQueries({ queryKey: ["stock-lots-by-item"] });
     },
+    onError: (error) => toast.error(extractErrorMessage(error, "Gagal memperbarui data")),
   });
 }
 
@@ -47,8 +63,8 @@ export function useDeleteStockOut() {
       toast.success("Data barang keluar berhasil dihapus");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
-      qc.invalidateQueries({ queryKey: ["stock-lot-balance"] });
+      qc.invalidateQueries({ queryKey: ["stock-lots-by-item"] });
     },
-    onError: () => toast.error("Gagal menghapus data"),
+    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menghapus data")),
   });
 }

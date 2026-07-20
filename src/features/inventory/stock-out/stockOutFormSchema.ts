@@ -42,3 +42,26 @@ export const emptyStockOutValues = (): StockOutFormValues => ({
     },
   ],
 });
+
+// Import di sini (bukan di atas) buat hindari circular import dgn types/inventory.types
+import type { StockOut } from "@/types/inventory.types";
+
+export const valuesFromStockOut = (data: StockOut): StockOutFormValues => ({
+  referenceNo: data.referenceNo,
+  dateIssued: data.dateIssued,
+  approvedBy: data.approvedBy,
+  issuedTo: data.issuedTo ?? "",
+  projectName: data.projectName,
+  projectRefId: data.projectRefId,
+  costCentreId: data.costCentreId,
+  costCodeId: data.costCodeId,
+  items: data.items.map((it) => ({
+    itemId: it.itemId,
+    allocations: it.allocations.map((a) => ({
+      projectRefId: a.projectRefId,
+      costCentreId: a.costCentreId,
+      costCodeId: a.costCodeId,
+      qty: a.qty,
+    })),
+  })),
+});

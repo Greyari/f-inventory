@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Check, ChevronDown, Loader2, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -7,14 +8,20 @@ export interface SearchableOption {
   value: string;
   label: string;
   sublabel?: string;
+  disabled?: boolean;
+  disabledHint?: string;
+  // Data asli dari API (Item, JobCode, dll) — biar parent bisa pakai field lain
+  // (unit, category, description, ...) tanpa fetch ulang setelah dipilih.
+  raw?: unknown;
 }
 
 interface SearchableSelectProps {
   value?: string;
-  onChange: (value: string) => void;
+  onChange: (value: string, option?: SearchableOption) => void;
   placeholder?: string;
   fetchOptions: (search: string) => Promise<SearchableOption[]>;
-  selectedLabel?: string; // label yang sudah diketahui (mis. saat edit), biar gak nunggu fetch dulu
+  selectedLabel?: string; // dipakai saat edit, sebelum dropdown pernah dibuka
+  selectedSublabel?: string; // idem, buat deskripsinya
   disabled?: boolean;
   error?: boolean;
 }
@@ -22,17 +29,20 @@ interface SearchableSelectProps {
 export function SearchableSelect({
   value,
   onChange,
-  placeholder = "Pilih...",
+  placeholder,
   fetchOptions,
   selectedLabel,
+  selectedSublabel,
   disabled,
   error,
 }: SearchableSelectProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search, 300);
   const [options, setOptions] = useState<SearchableOption[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<SearchableOption | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,7 +69,24 @@ export function SearchableSelect({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const currentLabel = options.find((o) => o.value === value)?.label ?? selectedLabel;
+  // Kalau value berubah dari luar (mis. reset form) dan gak cocok lagi sama selectedOption, bersihkan.
+  useEffect(() => {
+    if (selectedOption && selectedOption.value !== value) {
+      setSelectedOption(undefined);
+    }
+  }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const matchedFromOptions = options.find((o) => o.value === value);
+  const currentLabel = selectedOption?.label ?? matchedFromOptions?.label ?? selectedLabel;
+  const currentSublabel = selectedOption?.sublabel ?? matchedFromOptions?.sublabel ?? selectedSublabel;
+
+  const handleSelect = (opt: SearchableOption) => {
+    if (opt.disabled) return;
+    setSelectedOption(opt);
+    onChange(opt.value, opt);
+    setOpen(false);
+    setSearch("");
+  };
 
   return (
     <div ref={containerRef} className="relative">
@@ -72,8 +99,15 @@ export function SearchableSelect({
           error ? "border-destructive" : "border-border"
         )}
       >
-        <span className={cn("truncate text-left", !currentLabel && "text-muted-foreground")}>
-          {currentLabel || placeholder}
+        <span className="truncate text-left">
+          {currentLabel ? (
+            <>
+              <span className="font-medium">{currentLabel}</span>
+              {currentSublabel && <span className="ml-1.5 text-xs text-muted-foreground">{currentSublabel}</span>}
+            </>
+          ) : (
+            <span className="text-muted-foreground">{placeholder || t("common.selectCode")}</span>
+          )}
         </span>
         <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
       </button>
@@ -86,33 +120,37 @@ export function SearchableSelect({
               autoFocus
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari..."
+              placeholder={`${t("common.search")}...`}
               className="h-8 w-full rounded-md bg-muted/50 pl-7 pr-2 text-sm outline-none"
             />
           </div>
           <div className="max-h-56 overflow-y-auto p-1">
             {loading ? (
               <div className="flex items-center justify-center gap-2 py-4 text-xs text-muted-foreground">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Memuat...
+                <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("common.loading")}
               </div>
             ) : options.length === 0 ? (
-              <div className="py-4 text-center text-xs text-muted-foreground">Tidak ada hasil</div>
+              <div className="py-4 text-center text-xs text-muted-foreground">{t("common.noData")}</div>
             ) : (
               options.map((opt) => (
                 <button
                   type="button"
                   key={opt.value}
-                  onClick={() => {
-                    onChange(opt.value);
-                    setOpen(false);
-                    setSearch("");
-                  }}
-                  className="flex w-full items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-muted"
+                  disabled={opt.disabled}
+                  onClick={() => handleSelect(opt)}
+                  title={opt.disabled && opt.disabledHint ? t(opt.disabledHint) : undefined}
+                  className={cn(
+                    "flex w-full items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-left text-sm",
+                    opt.disabled ? "cursor-not-allowed text-muted-foreground/60" : "hover:bg-muted"
+                  )}
                 >
                   <span className="truncate">
-                    <span className="font-medium">{opt.label}</span>
-                    {opt.sublabel && (
-                      <span className="ml-1.5 text-xs text-muted-foreground">{opt.sublabel}</span>
+                    <span className={cn("font-medium", opt.disabled && "line-through")}>{opt.label}</span>
+                    {opt.sublabel && <span className="ml-1.5 text-xs text-muted-foreground">{opt.sublabel}</span>}
+                    {opt.disabled && opt.disabledHint && (
+                      <span className="ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-[10px] uppercase text-muted-foreground">
+                        {t(opt.disabledHint)}
+                      </span>
                     )}
                   </span>
                   {opt.value === value && <Check className="h-4 w-4 shrink-0 text-primary" />}
