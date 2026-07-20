@@ -8,9 +8,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchableSelect } from "@/components/common/SearchableSelect";
-import { fetchItemOptions, fetchJobCodeOptions } from "@/lib/selectOptions";
+import { fetchItemOptions } from "@/lib/selectOptions";
 import { useCreateStockIn, useUpdateStockIn, useStockInDetail } from "./stock-in.hooks";
 import type { StockIn, Item } from "@/types/inventory.types";
+import { JobCodePickerField } from "@/components/common/JobCodePickerField";
 
 const schema = z.object({
   referenceNo: z.string().min(1, "Nomor referensi wajib diisi"),
@@ -172,10 +173,9 @@ export default function StockInFormPage() {
               control={control}
               name="projectRefId"
               render={({ field }) => (
-                <SearchableSelect
+                <JobCodePickerField
                   value={field.value}
                   onChange={field.onChange}
-                  fetchOptions={fetchJobCodeOptions}
                   selectedLabel={editingData?.projectRef?.code}
                   selectedSublabel={editingData?.projectRef?.description}
                   error={!!errors.projectRefId}
@@ -191,10 +191,9 @@ export default function StockInFormPage() {
               control={control}
               name="costCentreId"
               render={({ field }) => (
-                <SearchableSelect
+                <JobCodePickerField
                   value={field.value}
                   onChange={field.onChange}
-                  fetchOptions={fetchJobCodeOptions}
                   selectedLabel={editingData?.costCentre?.code}
                   selectedSublabel={editingData?.costCentre?.description}
                   error={!!errors.costCentreId}
@@ -210,10 +209,9 @@ export default function StockInFormPage() {
               control={control}
               name="costCodeId"
               render={({ field }) => (
-                <SearchableSelect
+                <JobCodePickerField
                   value={field.value}
                   onChange={field.onChange}
-                  fetchOptions={fetchJobCodeOptions}
                   selectedLabel={editingData?.costCode?.code}
                   selectedSublabel={editingData?.costCode?.description}
                   error={!!errors.costCodeId}

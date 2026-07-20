@@ -182,7 +182,8 @@
     "searchPlaceholder": "Cari kode atau deskripsi...",
     "confirmDelete": "Hapus job code \"{{code}}\"? Tindakan ini tidak bisa dibatalkan.",
     "confirmActivate": "Aktifkan job code {{code}}?",
-    "confirmDeactivate": "Nonaktifkan job code {{code}}? Job code ini tidak akan muncul lagi di form baru."
+    "confirmDeactivate": "Nonaktifkan job code {{code}}? Job code ini tidak akan muncul lagi di form baru.",
+    "inactiveHint": "Kode tidak aktif"
   },
   "item": {
     "addButton": "Tambah Item",

@@ -7,11 +7,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchableSelect } from "@/components/common/SearchableSelect";
-import { fetchItemOptions, fetchJobCodeOptions } from "@/lib/selectOptions";
+import { fetchItemOptions } from "@/lib/selectOptions";
 import { useCreateStockOut, useUpdateStockOut, useStockOutDetail } from "./stock-out.hooks";
 import { AllocationRows } from "./AllocationRows";
 import { stockOutSchema, emptyStockOutValues, valuesFromStockOut, type StockOutFormValues } from "./stockOutFormSchema";
 import type { StockOut } from "@/types/inventory.types";
+import { JobCodePickerField } from "@/components/common/JobCodePickerField";
 
 export default function StockOutFormPage() {
   const { t } = useTranslation();
@@ -120,10 +121,9 @@ export default function StockOutFormPage() {
               control={control}
               name="projectRefId"
               render={({ field }) => (
-                <SearchableSelect
+                <JobCodePickerField
                   value={field.value}
                   onChange={field.onChange}
-                  fetchOptions={fetchJobCodeOptions}
                   selectedLabel={editingData?.projectRef?.code}
                   selectedSublabel={editingData?.projectRef?.description}
                   error={!!errors.projectRefId}
@@ -139,10 +139,9 @@ export default function StockOutFormPage() {
               control={control}
               name="costCentreId"
               render={({ field }) => (
-                <SearchableSelect
+                <JobCodePickerField
                   value={field.value}
                   onChange={field.onChange}
-                  fetchOptions={fetchJobCodeOptions}
                   selectedLabel={editingData?.costCentre?.code}
                   selectedSublabel={editingData?.costCentre?.description}
                   error={!!errors.costCentreId}
@@ -158,10 +157,9 @@ export default function StockOutFormPage() {
               control={control}
               name="costCodeId"
               render={({ field }) => (
-                <SearchableSelect
+                <JobCodePickerField
                   value={field.value}
                   onChange={field.onChange}
-                  fetchOptions={fetchJobCodeOptions}
                   selectedLabel={editingData?.costCode?.code}
                   selectedSublabel={editingData?.costCode?.description}
                   error={!!errors.costCodeId}

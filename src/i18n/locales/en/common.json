@@ -182,7 +182,8 @@
     "searchPlaceholder": "Search code or description...",
     "confirmDelete": "Delete job code \"{{code}}\"? This action cannot be undone.",
     "confirmActivate": "Activate job code {{code}}?",
-    "confirmDeactivate": "Deactivate job code {{code}}? It will no longer appear in new forms."
+    "confirmDeactivate": "Deactivate job code {{code}}? It will no longer appear in new forms.",
+    "inactiveHint": "Code is inactive"
   },
   "item": {
     "addButton": "Add Item",
