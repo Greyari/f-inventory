@@ -62,9 +62,18 @@
     "totalItems": "Total Item Terdaftar",
     "lowStock": "Item Stok Rendah",
     "totalLots": "Total Lot Stok Aktif",
-    "stockHealth": "Kesehatan Stok Barang",
-    "stockSafe": "Stok Aman",
-    "stockLow": "Stok Rendah"
+    "stockInThisMonth": "Barang Masuk Bulan Ini",
+    "stockOutThisMonth": "Barang Keluar Bulan Ini",
+    "monthlyTrend": "Tren Bulanan",
+    "activityIn": "Masuk",
+    "activityOut": "Keluar",
+    "lowStockList": "Daftar Stok Rendah",
+    "viewAll": "Lihat semua",
+    "lowStockEmpty": "Tidak ada item dengan stok rendah saat ini.",
+    "minLevel": "Min: {{value}}",
+    "recentActivity": "Aktivitas Terbaru",
+    "recentActivityEmpty": "Belum ada aktivitas.",
+    "itemsCount": "{{count}} item"
   },
   "stockIn": {
     "title": "Barang Masuk",

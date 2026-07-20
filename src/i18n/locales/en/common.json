@@ -62,9 +62,18 @@
     "totalItems": "Total Registered Items",
     "lowStock": "Low Stock Items",
     "totalLots": "Total Active Stock Lots",
-    "stockHealth": "Stock Health",
-    "stockSafe": "Stock Safe",
-    "stockLow": "Low Stock"
+    "stockInThisMonth": "Stock In This Month",
+    "stockOutThisMonth": "Stock Out This Month",
+    "monthlyTrend": "Monthly Trend",
+    "activityIn": "In",
+    "activityOut": "Out",
+    "lowStockList": "Low Stock List",
+    "viewAll": "View all",
+    "lowStockEmpty": "No low stock items right now.",
+    "minLevel": "Min: {{value}}",
+    "recentActivity": "Recent Activity",
+    "recentActivityEmpty": "No activity yet.",
+    "itemsCount": "{{count}} items"
   },
   "stockIn": {
     "title": "Stock In",

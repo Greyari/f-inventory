@@ -128,7 +128,11 @@ export default function DashboardPage() {
               <button
                 key={`${activity.type}-${activity.id}`}
                 onClick={() =>
-                  navigate(activity.type === "in" ? "/inventory/stock-in" : "/inventory/stock-out")
+                  navigate(
+                    activity.type === "in"
+                      ? `/inventory/stock-in/${activity.id}`
+                      : `/inventory/stock-out/${activity.id}`
+                  )
                 }
                 className="flex w-full items-center gap-3 py-3 text-left first:pt-0 last:pb-0 hover:bg-muted/30"
               >
