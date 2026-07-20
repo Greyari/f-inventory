@@ -142,8 +142,7 @@
   },
   "stockBalance": {
     "title": "Stok Tersisa",
-    "subtitle": "Per lot — jelas kelihatan sisa stok tiap item itu asalnya dari Project Ref/Cost Centre/Cost Code mana.",
-    "lowStockBadge": "{{count}} item stok rendah (total semua lot)",
+    "subtitle": "Per lot — Lihat sisa stok tiap item itu asalnya dari Project Ref/Cost Centre/Cost Code mana.",
     "searchPlaceholder": "Cari kode atau nama barang...",
     "colItemCode": "Kode Item",
     "colItemName": "Nama Barang",

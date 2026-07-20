@@ -141,8 +141,7 @@
   },
   "stockBalance": {
     "title": "Stock Balance",
-    "subtitle": "Per lot — clearly shows which Project Ref/Cost Centre/Cost Code each item's remaining stock came from.",
-    "lowStockBadge": "{{count}} low stock items (total across all lots)",
+    "subtitle": "Per lot — shows which Project Ref/Cost Centre/Cost Code each item's remaining stock came from.",
     "searchPlaceholder": "Search item code or name...",
     "colItemCode": "Item Code",
     "colItemName": "Item Name",

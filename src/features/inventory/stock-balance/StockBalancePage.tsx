@@ -76,12 +76,6 @@ export default function StockBalancePage() {
           <h2 className="text-2xl font-semibold">{t("stockBalance.title")}</h2>
           <p className="text-sm text-muted-foreground">{t("stockBalance.subtitle")}</p>
         </div>
-        {lowStockItems.length > 0 && (
-          <span className="flex w-fit items-center gap-1.5 rounded-full bg-red-100 px-3 py-1.5 text-xs font-medium text-red-700">
-            <AlertTriangle className="h-3.5 w-3.5" />
-            {t("stockBalance.lowStockBadge", { count: lowStockItems.length })}
-          </span>
-        )}
       </div>
 
       <DataTable
