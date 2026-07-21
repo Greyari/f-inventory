@@ -137,7 +137,8 @@
     "selectLot": "Select stock lot...",
     "selectItemFirst": "Select an item first to see available lots.",
     "lotEmptyHint": "stockOut.lotEmptyHintLabel",
-    "lotEmptyHintLabel": "Out of stock"
+    "lotEmptyHintLabel": "Out of stock",
+    "lotAlreadyUsedLabel": "Already used in another row"
   },
   "stockBalance": {
     "title": "Stock Balance",

@@ -7,8 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SearchableSelect } from "@/components/common/SearchableSelect";
-import { fetchItemOptions } from "@/lib/selectOptions";
+import { ItemPickerField } from "@/components/common/ItemPickerField";
 import { useCreateStockIn, useUpdateStockIn, useStockInDetail } from "./stock-in.hooks";
 import type { StockIn, Item } from "@/types/inventory.types";
 import { JobCodePickerField } from "@/components/common/JobCodePickerField";
@@ -239,14 +238,12 @@ export default function StockInFormPage() {
                     control={control}
                     name={`items.${index}.itemId`}
                     render={({ field: f }) => (
-                      <SearchableSelect
+                      <ItemPickerField
                         value={f.value}
-                        onChange={(val, option) => {
+                        onChange={(val, item) => {
                           f.onChange(val);
-                          const rawItem = option?.raw as Item | undefined;
-                          setRowUnits((prev) => ({ ...prev, [index]: rawItem?.unit ?? "" }));
+                          setRowUnits((prev) => ({ ...prev, [index]: item?.unit ?? "" }));
                         }}
-                        fetchOptions={fetchItemOptions}
                         selectedLabel={editingData?.items[index]?.item?.itemCode}
                         selectedSublabel={editingData?.items[index]?.item?.itemName}
                         placeholder={t("common.selectItem")}

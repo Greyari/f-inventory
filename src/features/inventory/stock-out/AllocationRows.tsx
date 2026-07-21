@@ -4,7 +4,7 @@ import { Controller, useFieldArray, useWatch, type Control } from "react-hook-fo
 import { Plus, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SearchableSelect, type SearchableOption } from "@/components/common/SearchableSelect";
+import { LotPickerModal } from "./LotPickerModal";
 import { useItemLots } from "./useItemLots";
 import type { StockOutFormValues } from "./stockOutFormSchema";
 import type { StockOutAllocation, StockLot } from "@/types/inventory.types";
@@ -32,12 +32,15 @@ export function AllocationRows({ control, itemIndex, itemId, initialAllocations 
 
   const { data: lots, isLoading: isLoadingLots } = useItemLots(itemId);
 
-  const totalQty = (
-    useWatch({ control, name: `items.${itemIndex}.allocations` }) ?? []
-  ).reduce((sum, a) => sum + (Number(a?.qty) || 0), 0);
+  const allocations = useWatch({ control, name: `items.${itemIndex}.allocations` }) ?? [];
+  const totalQty = allocations.reduce((sum, a) => sum + (Number(a?.qty) || 0), 0);
 
-  // Kalau item diganti (bukan pas mount pertama), lot lama sudah gak relevan —
-  // reset alokasi biar user gak ketinggalan projectRef/costCentre/costCode dari item sebelumnya.
+  // Semua lotKey yang sudah dipilih di baris manapun dalam item ini —
+  // dipakai buat nge-disable pilihan yang sama di baris lain.
+  const allUsedKeys = allocations
+    .map((a) => lotKey(a?.projectRefId, a?.costCentreId, a?.costCodeId))
+    .filter((k): k is string => !!k);
+
   const prevItemId = useRef(itemId);
   useEffect(() => {
     if (prevItemId.current !== undefined && prevItemId.current !== itemId) {
@@ -74,6 +77,7 @@ export function AllocationRows({ control, itemIndex, itemId, initialAllocations 
               lots={lots ?? []}
               isLoadingLots={isLoadingLots}
               initialLabels={initialAllocations?.[allocIndex]}
+              usedKeys={allUsedKeys}
               onRemove={fields.length > 1 ? () => remove(allocIndex) : undefined}
             />
           ))}
@@ -90,6 +94,7 @@ function AllocationRow({
   lots,
   isLoadingLots,
   initialLabels,
+  usedKeys,
   onRemove,
 }: {
   control: Control<StockOutFormValues>;
@@ -98,6 +103,7 @@ function AllocationRow({
   lots: StockLot[];
   isLoadingLots: boolean;
   initialLabels?: StockOutAllocation;
+  usedKeys: string[];
   onRemove?: () => void;
 }) {
   const { t } = useTranslation();
@@ -105,39 +111,16 @@ function AllocationRow({
   const costCentreId = useWatch({ control, name: `items.${itemIndex}.allocations.${allocIndex}.costCentreId` });
   const costCodeId = useWatch({ control, name: `items.${itemIndex}.allocations.${allocIndex}.costCodeId` });
 
-  // Saldo ditampilkan dari data lot yang sudah di-fetch (bukan query terpisah lagi).
   const [selectedBalance, setSelectedBalance] = useState<number | undefined>(undefined);
 
   const currentKey = lotKey(projectRefId, costCentreId, costCodeId);
 
-  // Kalau row ini datang dari mode edit, cocokkan ke lot yang match biar saldo kelihatan dari awal.
   useEffect(() => {
     if (currentKey && lots.length > 0) {
       const match = lots.find((l) => lotKey(l.projectRefId, l.costCentreId, l.costCodeId) === currentKey);
       if (match) setSelectedBalance(match.balance);
     }
   }, [currentKey, lots]);
-
-  const fetchLotOptions = async (search: string): Promise<SearchableOption[]> => {
-    const q = search.trim().toLowerCase();
-    return lots
-      .filter((lot) => {
-        if (!q) return true;
-        return (
-          lot.projectRef?.code?.toLowerCase().includes(q) ||
-          lot.costCentre?.code?.toLowerCase().includes(q) ||
-          lot.costCode?.code?.toLowerCase().includes(q)
-        );
-      })
-      .map((lot) => ({
-        value: lotKey(lot.projectRefId, lot.costCentreId, lot.costCodeId) as string,
-        label: `${lot.projectRef?.code ?? "-"} / ${lot.costCentre?.code ?? "-"} / ${lot.costCode?.code ?? "-"}`,
-        sublabel: t("stockOut.remainingBalance", { balance: lot.balance }),
-        disabled: lot.balance <= 0,
-        disabledHint: "stockOut.lotEmptyHint",
-        raw: lot,
-      }));
-  };
 
   const initialLabel =
     initialLabels?.projectRef?.code && initialLabels?.costCentre?.code && initialLabels?.costCode?.code
@@ -160,19 +143,18 @@ function AllocationRow({
                     control={control}
                     name={`items.${itemIndex}.allocations.${allocIndex}.costCodeId`}
                     render={({ field: codeField }) => (
-                      <SearchableSelect
+                      <LotPickerModal
+                        lots={lots}
+                        isLoading={isLoadingLots}
                         value={currentKey}
-                        onChange={(_val, option) => {
-                          const lot = option?.raw as StockLot | undefined;
-                          if (!lot) return;
+                        selectedLabel={initialLabel}
+                        usedKeys={usedKeys}
+                        onChange={(lot) => {
                           refField.onChange(lot.projectRefId);
                           centreField.onChange(lot.costCentreId);
                           codeField.onChange(lot.costCodeId);
                           setSelectedBalance(lot.balance);
                         }}
-                        fetchOptions={fetchLotOptions}
-                        selectedLabel={initialLabel}
-                        placeholder={isLoadingLots ? t("common.loading") : t("stockOut.selectLot")}
                       />
                     )}
                   />

@@ -138,7 +138,8 @@
     "selectLot": "Pilih lot stok...",
     "selectItemFirst": "Pilih item dulu untuk melihat lot yang tersedia.",
     "lotEmptyHint": "stockOut.lotEmptyHintLabel",
-    "lotEmptyHintLabel": "Saldo habis"
+    "lotEmptyHintLabel": "Saldo habis",
+    "lotAlreadyUsedLabel": "Sudah dipakai baris lain"
   },
   "stockBalance": {
     "title": "Stok Tersisa",

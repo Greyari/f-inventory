@@ -6,8 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SearchableSelect } from "@/components/common/SearchableSelect";
-import { fetchItemOptions } from "@/lib/selectOptions";
+import { ItemPickerField } from "@/components/common/ItemPickerField";
 import { useCreateStockOut, useUpdateStockOut, useStockOutDetail } from "./stock-out.hooks";
 import { AllocationRows } from "./AllocationRows";
 import { stockOutSchema, emptyStockOutValues, valuesFromStockOut, type StockOutFormValues } from "./stockOutFormSchema";
@@ -251,10 +250,9 @@ function ItemRow({
           control={control}
           name={`items.${index}.itemId`}
           render={({ field }) => (
-            <SearchableSelect
+            <ItemPickerField
               value={field.value}
               onChange={field.onChange}
-              fetchOptions={fetchItemOptions}
               selectedLabel={editingItem?.item?.itemCode}
               selectedSublabel={editingItem?.item?.itemName}
               placeholder={t("common.selectItem")}
