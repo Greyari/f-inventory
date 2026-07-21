@@ -198,7 +198,9 @@
     "description": "Deskripsi (opsional)",
     "searchPlaceholder": "Cari kode atau nama barang...",
     "confirmDelete": "Hapus item \"{{name}}\"? Tindakan ini tidak bisa dibatalkan.",
-    "descriptionPlaceholder": "Catatan tambahan"
+    "descriptionPlaceholder": "Catatan tambahan",
+    "quickAddPrompt": "Add \"{{search}}\" as new item",
+    "quickAddLinkShort": "+ Can't find the item?"
   },
   "users": {
     "title": "Manajemen User",

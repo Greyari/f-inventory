@@ -198,7 +198,9 @@
     "description": "Description (optional)",
     "searchPlaceholder": "Search item code or name...",
     "confirmDelete": "Delete item \"{{name}}\"? This action cannot be undone.",
-    "descriptionPlaceholder": "Additional notes"
+    "descriptionPlaceholder": "Additional notes",
+    "quickAddPrompt": "Add \"{{search}}\" as new item",
+    "quickAddLinkShort": "+ Can't find the item?"
   },
   "users": {
     "title": "User Management",
