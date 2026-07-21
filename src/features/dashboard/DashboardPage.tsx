@@ -56,7 +56,7 @@ export default function DashboardPage() {
         {/* Monthly trend chart */}
         <div className="rounded-lg border bg-background p-5 lg:col-span-2">
           <h3 className="mb-4 text-sm font-semibold text-muted-foreground">{t("dashboard.monthlyTrend")}</h3>
-          <div className="h-72">
+          <div className="h-full pb-5">
             {!isLoading && data && (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data.monthlyTrend}>

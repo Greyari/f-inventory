@@ -13,7 +13,7 @@ import type { User } from "@/types/auth.types";
 const createSchema = z.object({
   name: z.string().min(1, "Nama wajib diisi"),
   email: z.string().email("Email tidak valid"),
-  password: z.string().min(6, "Password minimal 6 karakter"),
+  password: z.string().min(3, "Password minimal 3 karakter"),
   roleId: z.string().min(1, "Role wajib dipilih"),
 });
 
@@ -23,7 +23,7 @@ const editSchema = z.object({
   roleId: z.string().min(1, "Role wajib dipilih"),
   isActive: z.boolean(),
   password: z
-    .union([z.string().length(0), z.string().min(6, "Password minimal 6 karakter")])
+    .union([z.string().length(0), z.string().min(3, "Password minimal 3 karakter")])
     .optional(),
 });
 

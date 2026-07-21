@@ -12,7 +12,7 @@ import type { LoginResponse } from "@/types/auth.types";
 
 const loginSchema = z.object({
   email: z.string().email("Email tidak valid"),
-  password: z.string().min(6, "Password minimal 6 karakter"),
+  password: z.string().min(3, "Password minimal 3 karakter"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
