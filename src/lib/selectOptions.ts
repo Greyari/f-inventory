@@ -23,7 +23,6 @@ export async function fetchItemOptions(search: string): Promise<SearchableOption
   });
   return data.data.map((item) => ({
     value: item.id,
-    label: item.itemCode,
     sublabel: item.itemName,
     raw: item,
   }));

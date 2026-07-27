@@ -10,7 +10,6 @@ import { useCreateItem, useUpdateItem } from "./item.hooks";
 import type { Item } from "@/types/inventory.types";
 
 const schema = z.object({
-  itemCode: z.string().min(1, "Kode barang wajib diisi"),
   itemName: z.string().min(1, "Nama barang wajib diisi"),
   category: z.string().min(1, "Kategori wajib diisi"),
   unit: z.string().min(1, "Satuan wajib diisi"),
@@ -46,14 +45,13 @@ export function ItemFormDialog({ open, onOpenChange, editingData }: ItemFormDial
       reset(
         editingData
           ? {
-              itemCode: editingData.itemCode,
               itemName: editingData.itemName,
               category: editingData.category,
               unit: editingData.unit,
               minStockLevel: editingData.minStockLevel,
               description: editingData.description ?? "",
             }
-          : { itemCode: "", itemName: "", category: "", unit: "", minStockLevel: 0, description: "" }
+          : { itemName: "", category: "", unit: "", minStockLevel: 0, description: "" }
       );
     }
   }, [open, editingData, reset]);
@@ -74,13 +72,6 @@ export function ItemFormDialog({ open, onOpenChange, editingData }: ItemFormDial
       <DialogContent title={isEdit ? t("item.formTitleEdit") : t("item.formTitleAdd")}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <Label>{t("item.itemCode")}</Label>
-              <Input {...register("itemCode")} placeholder="e.g. ITM-001" />
-              {errors.itemCode && (
-                <p className="mt-1 text-xs text-destructive">{errors.itemCode.message}</p>
-              )}
-            </div>
             <div>
               <Label>{t("item.unit")}</Label>
               <Input {...register("unit")} list="unit-suggestions" placeholder="e.g. m, pcs, box" />

@@ -10,7 +10,7 @@ export interface StockInPayload {
   projectRefId: string;
   costCentreId: string;
   costCodeId: string;
-  items: { itemId: string; qty: number; location?: string }[];
+  items: { itemId: string; qty: number; }[];
 }
 
 export const stockInApi = {

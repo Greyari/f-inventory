@@ -47,21 +47,17 @@ export default function StockInDetailPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
-                  <th className="px-3 py-2">{t("item.itemCode")}</th>
                   <th className="px-3 py-2">{t("item.itemName")}</th>
                   <th className="px-3 py-2">{t("stockIn.qty")}</th>
-                  <th className="px-3 py-2">{t("stockIn.location")}</th>
                 </tr>
               </thead>
               <tbody>
                 {data.items.map((it, i) => (
                   <tr key={i} className="border-b last:border-0">
-                    <td className="px-3 py-2 font-medium">{it.item?.itemCode ?? "-"}</td>
                     <td className="px-3 py-2">{it.item?.itemName ?? it.itemId}</td>
                     <td className="px-3 py-2">
                       {it.qty} {it.item?.unit}
                     </td>
-                    <td className="px-3 py-2 text-muted-foreground">{it.location ?? "-"}</td>
                   </tr>
                 ))}
               </tbody>

@@ -20,7 +20,6 @@ interface ItemPickerFieldProps {
 }
 
 const emptyNewItem = () => ({
-  itemCode: "",
   itemName: "",
   category: "",
   unit: "",
@@ -48,8 +47,6 @@ export function ItemPickerField({
 
   const { data, isLoading } = useItems({ search: debouncedSearch, page, limit: 10 });
   const createMutation = useCreateItem();
-
-  const currentLabel = selected?.itemCode ?? selectedLabel;
   const currentSublabel = selected?.itemName ?? selectedSublabel;
 
   const handlePick = (item: Item) => {
@@ -72,7 +69,7 @@ export function ItemPickerField({
   };
 
   const handleCreateItem = async () => {
-    if (!newItem.itemCode || !newItem.itemName || !newItem.unit) return;
+    if (!newItem.itemName || !newItem.unit) return;
     const created = await createMutation.mutateAsync(newItem);
     if (created) handlePick(created);
   };
@@ -118,14 +115,6 @@ export function ItemPickerField({
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <Label>{t("item.itemCode")}</Label>
-                  <Input
-                    value={newItem.itemCode}
-                    onChange={(e) => setNewItem((p) => ({ ...p, itemCode: e.target.value }))}
-                    placeholder="e.g. ITM-0031"
-                  />
-                </div>
-                <div>
                   <Label>{t("item.unit")}</Label>
                   <Input
                     value={newItem.unit}
@@ -167,7 +156,7 @@ export function ItemPickerField({
                   type="button"
                   onClick={handleCreateItem}
                   disabled={
-                    createMutation.isPending || !newItem.itemCode || !newItem.itemName || !newItem.unit
+                    createMutation.isPending || !newItem.itemName || !newItem.unit
                   }
                 >
                   {createMutation.isPending ? t("common.saving") : t("common.save")}
@@ -208,7 +197,6 @@ export function ItemPickerField({
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="sticky top-0 border-b bg-muted text-left text-xs uppercase text-muted-foreground">
-                        <th className="px-3 py-2">{t("item.itemCode")}</th>
                         <th className="px-3 py-2">{t("item.itemName")}</th>
                         <th className="px-3 py-2">{t("item.category")}</th>
                         <th className="px-3 py-2">{t("item.unit")}</th>
@@ -221,12 +209,6 @@ export function ItemPickerField({
                           onClick={() => handlePick(item)}
                           className="cursor-pointer border-b last:border-0 hover:bg-muted"
                         >
-                          <td className="px-3 py-2 font-medium">
-                            <span className="flex items-center gap-1.5">
-                              {item.itemCode}
-                              {item.id === value && <Check className="h-3.5 w-3.5 text-primary" />}
-                            </span>
-                          </td>
                           <td className="px-3 py-2">{item.itemName}</td>
                           <td className="px-3 py-2 text-xs text-muted-foreground">{item.category}</td>
                           <td className="px-3 py-2 text-xs text-muted-foreground">{item.unit}</td>

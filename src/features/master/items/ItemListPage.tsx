@@ -47,7 +47,6 @@ export default function ItemListPage() {
   };
 
   const columns: Column<Item>[] = [
-    { header: t("item.itemCode"), accessor: (r) => <span className="font-medium">{r.itemCode}</span> },
     { header: t("item.itemName"), accessor: (r) => r.itemName },
     { header: t("item.category"), accessor: (r) => r.category, hideOnMobile: true },
     { header: t("item.unit"), accessor: (r) => r.unit },

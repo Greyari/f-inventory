@@ -31,7 +31,7 @@ export default function StockItemDetailPage() {
 
       <div className="mb-6">
         <h2 className="text-2xl font-semibold">
-          {item.itemCode} — {item.itemName}
+          {item.itemName}
         </h2>
         <p className="text-sm text-muted-foreground">
           {item.category} · {t("item.unit")}: {item.unit}

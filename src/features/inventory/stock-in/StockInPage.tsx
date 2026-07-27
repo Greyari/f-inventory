@@ -58,7 +58,6 @@ export default function StockInPage() {
           {r.items.map((it, i) => (
             <div key={i} className="text-xs">
               {it.item?.itemName ?? it.itemId} — {it.qty} {it.item?.unit}
-              {it.location && <span className="text-muted-foreground"> ({it.location})</span>}
             </div>
           ))}
         </div>

@@ -10,7 +10,6 @@ import type { StockLot } from "@/types/inventory.types";
 
 interface ItemSummary {
   itemId: string;
-  itemCode?: string;
   itemName?: string;
   unit?: string;
   minStockLevel?: number;
@@ -40,7 +39,6 @@ export default function StockBalancePage() {
       } else {
         map.set(lot.itemId, {
           itemId: lot.itemId,
-          itemCode: lot.item?.itemCode,
           itemName: lot.item?.itemName,
           unit: lot.item?.unit,
           minStockLevel: lot.item?.minStockLevel,
@@ -59,7 +57,6 @@ export default function StockBalancePage() {
   );
 
   const columns: Column<ItemSummary>[] = [
-    { header: t("stockBalance.colItemCode"), accessor: (r) => <span className="font-medium">{r.itemCode}</span> },
     { header: t("stockBalance.colItemName"), accessor: (r) => r.itemName },
     { header: t("stockBalance.colUnit"), accessor: (r) => r.unit, hideOnMobile: true },
     { header: t("stockBalance.colLots"), accessor: (r) => r.lotCount, hideOnMobile: true },

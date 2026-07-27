@@ -253,7 +253,6 @@ function ItemRow({
             <ItemPickerField
               value={field.value}
               onChange={field.onChange}
-              selectedLabel={editingItem?.item?.itemCode}
               selectedSublabel={editingItem?.item?.itemName}
               placeholder={t("common.selectItem")}
               error={!!error}

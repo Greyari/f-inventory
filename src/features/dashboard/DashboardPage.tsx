@@ -99,7 +99,6 @@ export default function DashboardPage() {
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{item.itemName}</p>
-                    <p className="text-xs text-muted-foreground">{item.itemCode}</p>
                   </div>
                   <div className="shrink-0 text-right">
                     <p className="text-sm font-semibold text-red-700">

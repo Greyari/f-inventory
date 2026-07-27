@@ -1,8 +1,6 @@
 // ---- Master data ----
 export interface Item {
-  id: string;
-  itemCode: string;
-  itemName: string;
+  id: string;  itemName: string;
   category: string;
   unit: string;
   minStockLevel: number;
@@ -41,7 +39,6 @@ export interface StockInItem {
   itemId: string;
   item?: Item;
   qty: number;
-  location?: string;
 }
 
 export interface StockIn {

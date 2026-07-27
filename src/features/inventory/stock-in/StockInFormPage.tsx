@@ -25,7 +25,6 @@ const schema = z.object({
       z.object({
         itemId: z.string().min(1, "Item wajib dipilih"),
         qty: z.coerce.number().min(0.01, "Qty harus > 0"),
-        location: z.string().optional(),
       })
     )
     .min(1, "Minimal 1 item"),
@@ -41,7 +40,7 @@ const emptyValues = (): FormValues => ({
   projectRefId: "",
   costCentreId: "",
   costCodeId: "",
-  items: [{ itemId: "", qty: 1, location: "" }],
+  items: [{ itemId: "", qty: 1 }],
 });
 
 const valuesFromStockIn = (data: StockIn): FormValues => ({
@@ -52,7 +51,7 @@ const valuesFromStockIn = (data: StockIn): FormValues => ({
   projectRefId: data.projectRefId,
   costCentreId: data.costCentreId,
   costCodeId: data.costCodeId,
-  items: data.items.map((it) => ({ itemId: it.itemId, qty: it.qty, location: it.location ?? "" })),
+  items: data.items.map((it) => ({ itemId: it.itemId, qty: it.qty })),
 });
 
 export default function StockInFormPage() {
@@ -102,7 +101,7 @@ export default function StockInFormPage() {
   };
 
   const handleAddItem = () => {
-    append({ itemId: "", qty: 1, location: "" });
+    append({ itemId: "", qty: 1 });
   };
 
   const handleRemoveItem = (index: number) => {
@@ -244,7 +243,6 @@ export default function StockInFormPage() {
                           f.onChange(val);
                           setRowUnits((prev) => ({ ...prev, [index]: item?.unit ?? "" }));
                         }}
-                        selectedLabel={editingData?.items[index]?.item?.itemCode}
                         selectedSublabel={editingData?.items[index]?.item?.itemName}
                         placeholder={t("common.selectItem")}
                         error={!!errors.items?.[index]?.itemId}
@@ -257,9 +255,6 @@ export default function StockInFormPage() {
                   {rowUnits[index] && (
                     <p className="mt-1 text-xs text-muted-foreground">{rowUnits[index]}</p>
                   )}
-                </div>
-                <div className="sm:col-span-4">
-                  <Input placeholder={t("stockIn.locationPlaceholder")} {...register(`items.${index}.location`)} />
                 </div>
                 <div className="sm:col-span-1">
                   {fields.length > 1 && (

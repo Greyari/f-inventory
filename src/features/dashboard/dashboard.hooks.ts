@@ -4,7 +4,6 @@ import type { ApiSuccess } from "@/types/api.types";
 
 export interface LowStockItem {
   itemId: string;
-  itemCode: string;
   itemName: string;
   unit: string;
   balance: number;
