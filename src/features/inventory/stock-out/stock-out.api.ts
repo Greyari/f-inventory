@@ -18,7 +18,6 @@ export interface StockOutItemPayload {
 export interface StockOutPayload {
   bNo: string;
   dateIssued: string;
-  approvedBy: string;
   issuedTo?: string;
   projectName: string;
   projectRefId: string;

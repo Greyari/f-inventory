@@ -154,7 +154,6 @@ export default function DashboardPage() {
                   </div>
                   <p className="truncate text-xs text-muted-foreground">
                     {activity.projectName} · {t("dashboard.itemsCount", { count: activity.itemCount })} ·{" "}
-                    {activity.approvedBy}
                   </p>
                 </div>
                 <span

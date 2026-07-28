@@ -45,7 +45,6 @@ export interface StockIn {
   id: string;
   prNo: string;
   dateReceived: string;
-  approvedBy: string;
   projectName: string;
   projectRefId: string;
   projectRef?: JobCode;
@@ -79,7 +78,6 @@ export interface StockOut {
   id: string;
   bNo: string;
   dateIssued: string;
-  approvedBy: string;
   issuedTo?: string;
   // Project/cost TUJUAN pemakaian barang ini (beda dengan asal/sumber di allocations)
   projectName: string;

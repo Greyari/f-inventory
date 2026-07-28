@@ -15,7 +15,6 @@ import { JobCodePickerField } from "@/components/common/JobCodePickerField";
 const schema = z.object({
   prNo: z.string().min(1, "Nomor referensi wajib diisi"),
   dateReceived: z.string().min(1, "Tanggal wajib diisi"),
-  approvedBy: z.string().min(1, "Nama yang meng-acc wajib diisi"),
   projectName: z.string().min(1, "Nama project wajib diisi"),
   projectRefId: z.string().min(1, "Project Ref wajib dipilih"),
   costCentreId: z.string().min(1, "Cost Centre wajib dipilih"),
@@ -35,7 +34,6 @@ type FormValues = z.infer<typeof schema>;
 const emptyValues = (): FormValues => ({
   prNo: "",
   dateReceived: new Date().toISOString().slice(0, 10),
-  approvedBy: "",
   projectName: "",
   projectRefId: "",
   costCentreId: "",
@@ -46,7 +44,6 @@ const emptyValues = (): FormValues => ({
 const valuesFromStockIn = (data: StockIn): FormValues => ({
   prNo: data.prNo,
   dateReceived: data.dateReceived,
-  approvedBy: data.approvedBy,
   projectName: data.projectName,
   projectRefId: data.projectRefId,
   costCentreId: data.costCentreId,
@@ -151,12 +148,6 @@ export default function StockInFormPage() {
           <div>
             <Label>{t("stockIn.dateReceived")}</Label>
             <Input type="date" {...register("dateReceived")} />
-          </div>
-
-          <div className="col-span-2">
-            <Label>{t("stockIn.approvedBy")}</Label>
-            <Input {...register("approvedBy")} placeholder={t("stockIn.approvedByPlaceholder")} />
-            {errors.approvedBy && <p className="mt-1 text-xs text-destructive">{errors.approvedBy.message}</p>}
           </div>
 
           <div className="col-span-2">

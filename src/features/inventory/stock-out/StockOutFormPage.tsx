@@ -94,11 +94,7 @@ export default function StockOutFormPage() {
             <Input type="date" {...register("dateIssued")} />
           </div>
 
-          <div>
-            <Label>{t("stockOut.approvedBy")}</Label>
-            <Input {...register("approvedBy")} placeholder={t("stockOut.approvedByPlaceholder")} />
-            {errors.approvedBy && <p className="mt-1 text-xs text-destructive">{errors.approvedBy.message}</p>}
-          </div>
+
           <div>
             <Label>{t("stockOut.issuedTo")}</Label>
             <Input {...register("issuedTo")} placeholder="e.g. Tim Fabrikasi" />

@@ -111,7 +111,6 @@ export default function StockItemDetailPage() {
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
                   <th className="px-4 py-2">{t("stockIn.colReference")}</th>
                   <th className="px-4 py-2">{t("stockIn.colDateReceived")}</th>
-                  <th className="px-4 py-2">{t("stockIn.colApprovedBy")}</th>
                   <th className="px-4 py-2">{t("stockIn.colProject")}</th>
                   <th className="px-4 py-2">{t("stockIn.qty")}</th>
                 </tr>
@@ -121,7 +120,6 @@ export default function StockItemDetailPage() {
                   <tr key={si.id} className="border-b last:border-0">
                     <td className="px-4 py-2 font-medium">{si.prNo}</td>
                     <td className="px-4 py-2">{si.dateReceived}</td>
-                    <td className="px-4 py-2">{si.approvedBy}</td>
                     <td className="px-4 py-2 text-xs text-muted-foreground">
                       {si.projectRef?.code} / {si.costCentre?.code} / {si.costCode?.code}
                     </td>
@@ -152,7 +150,6 @@ export default function StockItemDetailPage() {
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
                   <th className="px-4 py-2">{t("stockOut.colReference")}</th>
                   <th className="px-4 py-2">{t("stockOut.colDateIssued")}</th>
-                  <th className="px-4 py-2">{t("stockOut.colApprovedBy")}</th>
                   <th className="px-4 py-2">{t("stockOut.colProject")}</th>
                   <th className="px-4 py-2">{t("stockOut.sourceBreakdown")}</th>
                   <th className="px-4 py-2">{t("stockIn.qty")}</th>
@@ -163,7 +160,6 @@ export default function StockItemDetailPage() {
                   <tr key={so.id} className="border-b last:border-0">
                     <td className="px-4 py-2 font-medium">{so.bNo}</td>
                     <td className="px-4 py-2">{so.dateIssued}</td>
-                    <td className="px-4 py-2">{so.approvedBy}</td>
                     <td className="px-4 py-2 text-xs text-muted-foreground">
                       {so.projectRef?.code} / {so.costCentre?.code} / {so.costCode?.code}
                     </td>

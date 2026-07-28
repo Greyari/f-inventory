@@ -5,7 +5,6 @@ import type { StockIn } from "@/types/inventory.types";
 export interface StockInPayload {
   prNo: string;
   dateReceived: string;
-  approvedBy: string;
   projectName: string;
   projectRefId: string;
   costCentreId: string;

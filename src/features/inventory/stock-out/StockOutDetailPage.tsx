@@ -34,7 +34,6 @@ export default function StockOutDetailPage() {
         <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
           <Field label={t("stockOut.detailReference")} value={data.bNo} />
           <Field label={t("stockOut.dateIssued")} value={data.dateIssued} />
-          <Field label={t("stockOut.approvedBy")} value={data.approvedBy} />
           <Field label={t("stockOut.issuedTo")} value={data.issuedTo} />
           <Field label={t("stockOut.project")} value={data.projectName} />
           <Field label={t("stockOut.projectRef")} value={data.projectRef?.code} />

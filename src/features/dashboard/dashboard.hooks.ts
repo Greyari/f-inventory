@@ -15,7 +15,6 @@ export interface RecentActivity {
   id: string;
   prNo: string;
   date: string;
-  approvedBy: string;
   projectName: string;
   itemCount: number;
 }

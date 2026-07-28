@@ -42,7 +42,6 @@ export default function StockOutPage() {
   const columns: Column<StockOut>[] = [
     { header: t("stockOut.colReference"), accessor: (r) => <span className="font-medium">{r.bNo}</span> },
     { header: t("stockOut.colDateIssued"), accessor: (r) => r.dateIssued },
-    { header: t("stockOut.colApprovedBy"), accessor: (r) => r.approvedBy, hideOnMobile: true },
     { header: t("stockOut.colIssuedTo"), accessor: (r) => r.issuedTo ?? "-", hideOnMobile: true },
     {
       header: t("stockOut.colProject"),

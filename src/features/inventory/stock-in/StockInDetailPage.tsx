@@ -34,7 +34,6 @@ export default function StockInDetailPage() {
         <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
           <Field label={t("stockIn.detailReference")} value={data.prNo} />
           <Field label={t("stockIn.dateReceived")} value={data.dateReceived} />
-          <Field label={t("stockIn.approvedBy")} value={data.approvedBy} />
           <Field label={t("stockIn.project")} value={data.projectName} />
           <Field label={t("stockIn.projectRef")} value={data.projectRef?.code} />
           <Field label={t("stockIn.costCentre")} value={data.costCentre?.code} />
