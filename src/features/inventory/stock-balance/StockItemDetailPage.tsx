@@ -119,7 +119,7 @@ export default function StockItemDetailPage() {
               <tbody>
                 {stockIns.map((si) => (
                   <tr key={si.id} className="border-b last:border-0">
-                    <td className="px-4 py-2 font-medium">{si.referenceNo}</td>
+                    <td className="px-4 py-2 font-medium">{si.prNo}</td>
                     <td className="px-4 py-2">{si.dateReceived}</td>
                     <td className="px-4 py-2">{si.approvedBy}</td>
                     <td className="px-4 py-2 text-xs text-muted-foreground">
@@ -161,7 +161,7 @@ export default function StockItemDetailPage() {
               <tbody>
                 {stockOuts.map((so) => (
                   <tr key={so.id} className="border-b last:border-0">
-                    <td className="px-4 py-2 font-medium">{so.referenceNo}</td>
+                    <td className="px-4 py-2 font-medium">{so.bNo}</td>
                     <td className="px-4 py-2">{so.dateIssued}</td>
                     <td className="px-4 py-2">{so.approvedBy}</td>
                     <td className="px-4 py-2 text-xs text-muted-foreground">

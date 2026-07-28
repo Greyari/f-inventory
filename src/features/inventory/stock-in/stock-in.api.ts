@@ -3,7 +3,7 @@ import type { ApiSuccess, ListParams } from "@/types/api.types";
 import type { StockIn } from "@/types/inventory.types";
 
 export interface StockInPayload {
-  referenceNo: string;
+  prNo: string;
   dateReceived: string;
   approvedBy: string;
   projectName: string;

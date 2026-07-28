@@ -13,7 +13,7 @@ export interface LowStockItem {
 export interface RecentActivity {
   type: "in" | "out";
   id: string;
-  referenceNo: string;
+  prNo: string;
   date: string;
   approvedBy: string;
   projectName: string;

@@ -32,7 +32,7 @@ export default function StockOutPage() {
 
   const handleDelete = async (row: StockOut) => {
     const ok = await confirm({
-      description: t("stockOut.confirmDelete", { ref: row.referenceNo }),
+      description: t("stockOut.confirmDelete", { ref: row.bNo }),
       variant: "destructive",
       confirmText: t("common.confirmDelete"),
     });
@@ -40,7 +40,7 @@ export default function StockOutPage() {
   };
 
   const columns: Column<StockOut>[] = [
-    { header: t("stockOut.colReference"), accessor: (r) => <span className="font-medium">{r.referenceNo}</span> },
+    { header: t("stockOut.colReference"), accessor: (r) => <span className="font-medium">{r.bNo}</span> },
     { header: t("stockOut.colDateIssued"), accessor: (r) => r.dateIssued },
     { header: t("stockOut.colApprovedBy"), accessor: (r) => r.approvedBy, hideOnMobile: true },
     { header: t("stockOut.colIssuedTo"), accessor: (r) => r.issuedTo ?? "-", hideOnMobile: true },

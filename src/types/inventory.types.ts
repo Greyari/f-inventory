@@ -43,7 +43,7 @@ export interface StockInItem {
 
 export interface StockIn {
   id: string;
-  referenceNo: string;
+  prNo: string;
   dateReceived: string;
   approvedBy: string;
   projectName: string;
@@ -77,7 +77,7 @@ export interface StockOutItem {
 
 export interface StockOut {
   id: string;
-  referenceNo: string;
+  bNo: string;
   dateIssued: string;
   approvedBy: string;
   issuedTo?: string;

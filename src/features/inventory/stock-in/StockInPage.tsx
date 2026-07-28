@@ -29,7 +29,7 @@ export default function StockInPage() {
 
   const handleDelete = async (row: StockIn) => {
     const ok = await confirm({
-      description: t("stockIn.confirmDelete", { ref: row.referenceNo }),
+      description: t("stockIn.confirmDelete", { ref: row.prNo }),
       variant: "destructive",
       confirmText: t("common.confirmDelete"),
     });
@@ -37,7 +37,7 @@ export default function StockInPage() {
   };
 
   const columns: Column<StockIn>[] = [
-    { header: t("stockIn.colReference"), accessor: (r) => <span className="font-medium">{r.referenceNo}</span> },
+    { header: t("stockIn.colReference"), accessor: (r) => <span className="font-medium">{r.prNo}</span> },
     { header: t("stockIn.colDateReceived"), accessor: (r) => r.dateReceived },
     { header: t("stockIn.colApprovedBy"), accessor: (r) => r.approvedBy, hideOnMobile: true },
     {

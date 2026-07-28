@@ -32,7 +32,7 @@ export default function StockInDetailPage() {
 
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
-          <Field label={t("stockIn.detailReference")} value={data.referenceNo} />
+          <Field label={t("stockIn.detailReference")} value={data.prNo} />
           <Field label={t("stockIn.dateReceived")} value={data.dateReceived} />
           <Field label={t("stockIn.approvedBy")} value={data.approvedBy} />
           <Field label={t("stockIn.project")} value={data.projectName} />

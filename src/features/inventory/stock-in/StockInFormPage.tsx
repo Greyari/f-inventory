@@ -13,7 +13,7 @@ import type { StockIn, Item } from "@/types/inventory.types";
 import { JobCodePickerField } from "@/components/common/JobCodePickerField";
 
 const schema = z.object({
-  referenceNo: z.string().min(1, "Nomor referensi wajib diisi"),
+  prNo: z.string().min(1, "Nomor referensi wajib diisi"),
   dateReceived: z.string().min(1, "Tanggal wajib diisi"),
   approvedBy: z.string().min(1, "Nama yang meng-acc wajib diisi"),
   projectName: z.string().min(1, "Nama project wajib diisi"),
@@ -33,7 +33,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const emptyValues = (): FormValues => ({
-  referenceNo: "",
+  prNo: "",
   dateReceived: new Date().toISOString().slice(0, 10),
   approvedBy: "",
   projectName: "",
@@ -44,7 +44,7 @@ const emptyValues = (): FormValues => ({
 });
 
 const valuesFromStockIn = (data: StockIn): FormValues => ({
-  referenceNo: data.referenceNo,
+  prNo: data.prNo,
   dateReceived: data.dateReceived,
   approvedBy: data.approvedBy,
   projectName: data.projectName,
@@ -144,9 +144,9 @@ export default function StockInFormPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-lg border bg-background p-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <Label>{t("stockIn.referenceNo")}</Label>
-            <Input {...register("referenceNo")} placeholder="e.g. GRN-2026-0031" />
-            {errors.referenceNo && <p className="mt-1 text-xs text-destructive">{errors.referenceNo.message}</p>}
+            <Label>{t("stockIn.prNo")}</Label>
+            <Input {...register("prNo")} placeholder="e.g. GRN-2026-0031" />
+            {errors.prNo && <p className="mt-1 text-xs text-destructive">{errors.prNo.message}</p>}
           </div>
           <div>
             <Label>{t("stockIn.dateReceived")}</Label>

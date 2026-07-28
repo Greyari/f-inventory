@@ -13,7 +13,7 @@ export const stockOutItemSchema = z.object({
 });
 
 export const stockOutSchema = z.object({
-  referenceNo: z.string().min(1, "Nomor referensi wajib diisi"),
+  bNo: z.string().min(1, "Nomor referensi wajib diisi"),
   dateIssued: z.string().min(1, "Tanggal wajib diisi"),
   approvedBy: z.string().min(1, "Nama yang meng-acc wajib diisi"),
   issuedTo: z.string().optional(),
@@ -27,7 +27,7 @@ export const stockOutSchema = z.object({
 export type StockOutFormValues = z.infer<typeof stockOutSchema>;
 
 export const emptyStockOutValues = (): StockOutFormValues => ({
-  referenceNo: "",
+  bNo: "",
   dateIssued: new Date().toISOString().slice(0, 10),
   approvedBy: "",
   issuedTo: "",
@@ -47,7 +47,7 @@ export const emptyStockOutValues = (): StockOutFormValues => ({
 import type { StockOut } from "@/types/inventory.types";
 
 export const valuesFromStockOut = (data: StockOut): StockOutFormValues => ({
-  referenceNo: data.referenceNo,
+  bNo: data.bNo,
   dateIssued: data.dateIssued,
   approvedBy: data.approvedBy,
   issuedTo: data.issuedTo ?? "",

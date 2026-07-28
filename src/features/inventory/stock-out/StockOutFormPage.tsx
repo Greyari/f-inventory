@@ -85,9 +85,9 @@ export default function StockOutFormPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-lg border bg-background p-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <Label>{t("stockOut.referenceNo")}</Label>
-            <Input {...register("referenceNo")} placeholder="e.g. SO-2026-0031" />
-            {errors.referenceNo && <p className="mt-1 text-xs text-destructive">{errors.referenceNo.message}</p>}
+            <Label>{t("stockOut.bNo")}</Label>
+            <Input {...register("bNo")} placeholder="e.g. SO-2026-0031" />
+            {errors.bNo && <p className="mt-1 text-xs text-destructive">{errors.bNo.message}</p>}
           </div>
           <div>
             <Label>{t("stockOut.dateIssued")}</Label>
