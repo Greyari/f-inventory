@@ -15,12 +15,19 @@ import {
 import { useAuthStore, useCurrentUser } from "@/store/authStore";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import { cn } from "@/lib/utils";
+import { Boxes as AssetIcon } from "lucide-react";
 
 const NAV_ITEMS = [
   { to: "/dashboard", labelKey: "nav.dashboard", icon: LayoutDashboard, requiredPermission: null },
   { to: "/inventory/stock-in", labelKey: "nav.stockIn", icon: PackagePlus, requiredPermission: null },
   { to: "/inventory/stock-out", labelKey: "nav.stockOut", icon: PackageMinus, requiredPermission: null },
   { to: "/inventory/stock-balance", labelKey: "nav.stockBalance", icon: Boxes, requiredPermission: null },
+  {
+    to: "/assets",
+    labelKey: "asset.navLabel",
+    icon: AssetIcon,
+    requiredPermission: ["assets.manage"],
+  },
   {
     to: "/users",
     labelKey: "nav.users",

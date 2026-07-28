@@ -259,5 +259,27 @@
     "colPermissions": "Permission",
     "permissionsSelected": "{{count}} permission dipilih",
     "confirmDelete": "Hapus role \"{{name}}\"? Tindakan ini tidak bisa dibatalkan."
+  },
+  "asset": {
+    "navLabel": "Manajemen Aset",
+    "title": "Manajemen Aset",
+    "subtitle": "Kelola aset perusahaan — siapa yang pegang atau di ruangan mana aset itu berada.",
+    "addButton": "Tambah Aset",
+    "formTitleAdd": "Tambah Aset",
+    "formTitleEdit": "Edit Aset",
+    "assetCode": "Kode Aset",
+    "assetName": "Nama Aset",
+    "category": "Kategori",
+    "recipient": "Penerima / Lokasi",
+    "recipientPlaceholder": "Nama orang atau nama ruangan",
+    "recipientHint": "Isi nama orang (mis. \"Budi Santoso\") untuk aset seperti laptop, atau nama ruangan (mis. \"Ruang Meeting Lt. 2\") untuk aset seperti meja/lemari.",
+    "qty": "Qty",
+    "condition": "Kondisi",
+    "acquiredDate": "Tanggal Perolehan",
+    "notes": "Catatan",
+    "searchPlaceholder": "Cari kode, nama aset, atau penerima...",
+    "confirmDelete": "Hapus aset \"{{name}}\"? Tindakan ini tidak bisa dibatalkan.",
+    "totalAssets": "Total Aset",
+    "categoriesBreakdown": "Rincian per Kategori"
   }
 }

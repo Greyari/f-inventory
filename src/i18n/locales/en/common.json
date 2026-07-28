@@ -258,5 +258,27 @@
     "colPermissions": "Permissions",
     "permissionsSelected": "{{count}} permissions selected",
     "confirmDelete": "Delete role \"{{name}}\"? This action cannot be undone."
+  },
+  "asset": {
+    "navLabel": "Asset Management",
+    "title": "Asset Management",
+    "subtitle": "Manage company assets — who's holding it or which room it's located in.",
+    "addButton": "Add Asset",
+    "formTitleAdd": "Add Asset",
+    "formTitleEdit": "Edit Asset",
+    "assetCode": "Asset Code",
+    "assetName": "Asset Name",
+    "category": "Category",
+    "recipient": "Recipient / Location",
+    "recipientPlaceholder": "Person's name or room name",
+    "recipientHint": "Enter a person's name (e.g. \"Budi Santoso\") for assets like laptops, or a room name (e.g. \"Meeting Room 2F\") for assets like desks/cabinets.",
+    "qty": "Qty",
+    "condition": "Condition",
+    "acquiredDate": "Acquired Date",
+    "notes": "Notes",
+    "searchPlaceholder": "Search code, asset name, or recipient...",
+    "confirmDelete": "Delete asset \"{{name}}\"? This action cannot be undone.",
+    "totalAssets": "Total Assets",
+    "categoriesBreakdown": "Breakdown by Category"
   }
 }
