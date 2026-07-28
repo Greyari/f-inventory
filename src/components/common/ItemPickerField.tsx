@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, Check, Loader2, ChevronDown, ChevronLeft, ChevronRight, Plus, ArrowLeft } from "lucide-react";
+import { Search, Loader2, ChevronDown, ChevronLeft, ChevronRight, Plus, ArrowLeft } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,8 @@ export function ItemPickerField({
 
   const { data, isLoading } = useItems({ search: debouncedSearch, page, limit: 10 });
   const createMutation = useCreateItem();
-  const currentSublabel = selected?.itemName ?? selectedSublabel;
+  const currentLabel = selected?.itemName ?? selectedLabel;
+  const currentSublabel = selected ? `${selected.category} · ${selected.unit}` : selectedSublabel;
 
   const handlePick = (item: Item) => {
     setSelected(item);
@@ -89,7 +90,9 @@ export function ItemPickerField({
           {currentLabel ? (
             <>
               <span className="font-medium">{currentLabel}</span>
-              {currentSublabel && <span className="ml-1.5 text-xs text-muted-foreground">{currentSublabel}</span>}
+              {currentSublabel && (
+                <span className="ml-1.5 text-xs text-muted-foreground">{currentSublabel}</span>
+              )}
             </>
           ) : (
             <span className="text-muted-foreground">{placeholder || t("common.selectItem")}</span>
@@ -143,7 +146,9 @@ export function ItemPickerField({
                   <Input
                     type="number"
                     value={newItem.minStockLevel}
-                    onChange={(e) => setNewItem((p) => ({ ...p, minStockLevel: Number(e.target.value) }))}
+                    onChange={(e) =>
+                      setNewItem((p) => ({ ...p, minStockLevel: Number(e.target.value) }))
+                    }
                   />
                 </div>
               </div>
@@ -244,7 +249,9 @@ export function ItemPickerField({
                       <button
                         type="button"
                         disabled={
-                          data.meta.to !== undefined && data.meta.total !== undefined && data.meta.to >= data.meta.total
+                          data.meta.to !== undefined &&
+                          data.meta.total !== undefined &&
+                          data.meta.to >= data.meta.total
                         }
                         onClick={() => setPage((p) => p + 1)}
                         className="rounded-md border p-1.5 disabled:opacity-40"

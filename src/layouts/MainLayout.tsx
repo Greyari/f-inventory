@@ -11,11 +11,11 @@ import {
   LogOut,
   Menu,
   X,
+  Boxes as AssetIcon,
 } from "lucide-react";
 import { useAuthStore, useCurrentUser } from "@/store/authStore";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import { cn } from "@/lib/utils";
-import { Boxes as AssetIcon } from "lucide-react";
 
 const NAV_ITEMS = [
   { to: "/dashboard", labelKey: "nav.dashboard", icon: LayoutDashboard, requiredPermission: null },
