@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft, Loader2, FileCheck2, PackageCheck } from "lucide-react";
 import { useStockInDetail } from "./stock-in.hooks";
 import { StockInStatusBadge } from "./StockInStatusBadge";
+import { StockInActivityTimeline } from "./StockInActivityTimeline";
 import { Button } from "@/components/ui/button";
 import { useHasPermission } from "@/store/authStore";
 
@@ -14,7 +15,7 @@ export default function StockInDetailPage() {
   const canMarkPo = useHasPermission("stock-in.mark-po");
   const canMarkDo = useHasPermission("stock-in.mark-do");
 
-  if (isLoading || !data) {
+  if (isLoading || !data || !id) {
     return (
       <div className="flex items-center justify-center py-20 text-muted-foreground">
         <Loader2 className="h-6 w-6 animate-spin" />
@@ -23,7 +24,7 @@ export default function StockInDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-6xl">
       <button
         onClick={() => navigate("/inventory/stock-in")}
         className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -50,60 +51,68 @@ export default function StockInDetailPage() {
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
-          <Field label={t("stockIn.detailReference")} value={data.prNo} />
-          <Field label={t("stockIn.dateReceived")} value={data.dateReceived} />
-          <Field label={t("stockIn.project")} value={data.projectName} />
-          <Field label={t("stockIn.projectRef")} value={data.projectRef?.code} />
-          <Field label={t("stockIn.costCentre")} value={data.costCentre?.code} />
-          <Field label={t("stockIn.costCode")} value={data.costCode?.code} />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="space-y-4 lg:col-span-2">
+          <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
+            <Field label={t("stockIn.detailReference")} value={data.prNo} />
+            <Field label={t("stockIn.dateReceived")} value={data.dateReceived} />
+            <Field label={t("stockIn.project")} value={data.projectName} />
+            <Field label={t("stockIn.projectRef")} value={data.projectRef?.code} />
+            <Field label={t("stockIn.costCentre")} value={data.costCentre?.code} />
+            <Field label={t("stockIn.costCode")} value={data.costCode?.code} />
+          </div>
+
+          {(data.poPhotoUrl || data.doPhotoUrl) && (
+            <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
+              {data.poPhotoUrl && (
+                <div>
+                  <p className="mb-1 text-xs text-muted-foreground">{t("stockIn.poPhoto")}</p>
+                  <a href={data.poPhotoUrl} target="_blank" rel="noreferrer">
+                    <img src={data.poPhotoUrl} alt="Foto PO" className="h-32 w-32 rounded border object-cover" />
+                  </a>
+                </div>
+              )}
+              {data.doPhotoUrl && (
+                <div>
+                  <p className="mb-1 text-xs text-muted-foreground">{t("stockIn.doPhoto")}</p>
+                  <a href={data.doPhotoUrl} target="_blank" rel="noreferrer">
+                    <img src={data.doPhotoUrl} alt="Foto DO" className="h-32 w-32 rounded border object-cover" />
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div>
+            <p className="mb-2 text-xs font-semibold text-muted-foreground">{t("stockIn.items")}</p>
+            <div className="space-y-2">
+              {data.items.map((it, i) => (
+                <div key={i} className="rounded-lg border bg-background p-4 text-sm">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-medium">{it.item?.itemName ?? it.itemId}</span>
+                    <span className="text-muted-foreground">
+                      {it.qty} {it.item?.unit}
+                    </span>
+                  </div>
+
+                  {data.status !== "npr" && (
+                    <div className="mt-2 grid grid-cols-1 gap-2 border-t pt-2 text-xs sm:grid-cols-2">
+                      <Field label={t("stockIn.vendorName")} value={it.vendorName} />
+                      <Field
+                        label={t("stockIn.price")}
+                        value={it.price != null ? it.price.toLocaleString("id-ID") : "-"}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {(data.poPhotoUrl || data.doPhotoUrl) && (
-          <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
-            {data.poPhotoUrl && (
-              <div>
-                <p className="mb-1 text-xs text-muted-foreground">{t("stockIn.poPhoto")}</p>
-                <a href={data.poPhotoUrl} target="_blank" rel="noreferrer">
-                  <img src={data.poPhotoUrl} alt="Foto PO" className="h-32 w-32 rounded border object-cover" />
-                </a>
-              </div>
-            )}
-            {data.doPhotoUrl && (
-              <div>
-                <p className="mb-1 text-xs text-muted-foreground">{t("stockIn.doPhoto")}</p>
-                <a href={data.doPhotoUrl} target="_blank" rel="noreferrer">
-                  <img src={data.doPhotoUrl} alt="Foto DO" className="h-32 w-32 rounded border object-cover" />
-                </a>
-              </div>
-            )}
-          </div>
-        )}
-
-        <div>
-          <p className="mb-2 text-xs font-semibold text-muted-foreground">{t("stockIn.items")}</p>
-          <div className="space-y-2">
-            {data.items.map((it, i) => (
-              <div key={i} className="rounded-lg border bg-background p-4 text-sm">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-medium">{it.item?.itemName ?? it.itemId}</span>
-                  <span className="text-muted-foreground">
-                    {it.qty} {it.item?.unit}
-                  </span>
-                </div>
-
-                {data.status !== "npr" && (
-                  <div className="mt-2 grid grid-cols-1 gap-2 border-t pt-2 text-xs sm:grid-cols-2">
-                    <Field label={t("stockIn.vendorName")} value={it.vendorName} />
-                    <Field
-                      label={t("stockIn.price")}
-                      value={it.price != null ? it.price.toLocaleString("id-ID") : "-"}
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
+        <div className="lg:col-span-1">
+          <div className="lg:sticky lg:top-4">
+            <StockInActivityTimeline stockInId={id} />
           </div>
         </div>
       </div>

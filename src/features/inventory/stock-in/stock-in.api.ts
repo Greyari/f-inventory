@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios";
 import type { ApiSuccess, ListParams } from "@/types/api.types";
-import type { StockIn } from "@/types/inventory.types";
+import type { StockIn, StockInActivityLog } from "@/types/inventory.types";
 
 export interface StockInPayload {
   prNo: string;
@@ -33,6 +33,10 @@ export const stockInApi = {
   },
   detail: async (id: string) => {
     const { data } = await apiClient.get<ApiSuccess<StockIn>>(`/stock-in/${id}`);
+    return data.data;
+  },
+  activityLogs: async (id: string) => {
+    const { data } = await apiClient.get<ApiSuccess<StockInActivityLog[]>>(`/stock-in/${id}/activity-logs`);
     return data.data;
   },
   create: async (payload: StockInPayload) => {

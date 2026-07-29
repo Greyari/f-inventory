@@ -44,6 +44,7 @@ export interface StockInItem {
   itemId: string;
   item?: Item;
   qty: number;
+  // Terisi begitu status naik jadi "po"
   vendorName?: string | null;
   price?: number | null;
 }
@@ -64,6 +65,22 @@ export interface StockIn {
   costCodeId: string;
   costCode?: JobCode;
   items: StockInItem[];
+  createdAt: string;
+}
+
+// ---- Riwayat perubahan (activity log) ----
+export type StockInActivityAction = "created" | "updated" | "status_changed";
+
+export interface StockInActivityLog {
+  id: string;
+  action: StockInActivityAction;
+  fromStatus?: StockInStatus | null;
+  toStatus?: StockInStatus | null;
+  // Bentuknya beda-beda tergantung action:
+  // - updated: { [field]: { old: string; new: string } | true }
+  // - status_changed (khusus npr->po): { items: { vendorName; price }[] }
+  changes?: Record<string, unknown> | null;
+  user?: { id: string; name: string } | null;
   createdAt: string;
 }
 

@@ -5,6 +5,7 @@ import { stockInApi, type MarkStockInPoItemPayload, type StockInPayload } from "
 import type { ListParams } from "@/types/api.types";
 
 const KEY = "stock-in";
+const ACTIVITY_KEY = "stock-in-activity-logs";
 
 function extractErrorMessage(error: unknown, fallback: string) {
   return isAxiosError(error) ? (error.response?.data?.message ?? fallback) : fallback;
@@ -21,6 +22,14 @@ export function useStockInDetail(id?: string) {
   return useQuery({
     queryKey: [KEY, id],
     queryFn: () => stockInApi.detail(id as string),
+    enabled: !!id,
+  });
+}
+
+export function useStockInActivityLogs(id?: string) {
+  return useQuery({
+    queryKey: [ACTIVITY_KEY, id],
+    queryFn: () => stockInApi.activityLogs(id as string),
     enabled: !!id,
   });
 }
@@ -45,6 +54,7 @@ export function useUpdateStockIn() {
       toast.success("Data berhasil diperbarui");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
+      qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal memperbarui data")),
   });
@@ -59,6 +69,7 @@ export function useMarkStockInPo() {
       toast.success("Status berhasil diubah menjadi PO");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
+      qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal mengubah status ke PO")),
   });
@@ -72,6 +83,7 @@ export function useMarkStockInDo() {
       toast.success("Status berhasil diubah menjadi DO, stok sudah ditambahkan");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
+      qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal mengubah status ke DO")),

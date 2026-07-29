@@ -119,7 +119,10 @@
     "confirmMarkAsPo": "Confirm PO",
     "confirmMarkAsDo": "Confirm & Add Stock",
     "notNprNotice": "This record is no longer NPR status.",
-    "notPoNotice": "This record must be PO status first before it can be marked as DO."
+    "notPoNotice": "This record must be PO status first before it can be marked as DO.",
+    "activityLog": "Activity Log",
+    "activityLogEmpty": "No activity yet.",
+    "activityLogSystem": "System"
   },
   "stockOut": {
     "title": "Stock Out",

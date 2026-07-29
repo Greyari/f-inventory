@@ -119,7 +119,10 @@
     "confirmMarkAsPo": "Konfirmasi PO",
     "confirmMarkAsDo": "Konfirmasi & Tambah Stok",
     "notNprNotice": "Data ini statusnya bukan NPR lagi.",
-    "notPoNotice": "Data ini harus berstatus PO dulu sebelum bisa diubah ke DO."
+    "notPoNotice": "Data ini harus berstatus PO dulu sebelum bisa diubah ke DO.",
+    "activityLog": "Riwayat Perubahan",
+    "activityLogEmpty": "Belum ada aktivitas.",
+    "activityLogSystem": "Sistem"
   },
   "stockOut": {
     "title": "Barang Keluar",
