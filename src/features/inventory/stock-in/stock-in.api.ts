@@ -9,11 +9,31 @@ export interface StockInPayload {
   projectRefId: string;
   costCentreId: string;
   costCodeId: string;
-  items: { itemId: string; qty: number; }[];
+  items: { itemId: string; qty: number }[];
+}
+
+export interface MarkStockInDoItemPayload {
+  stockInItemId: string;
+  vendorName: string;
+  price: number;
+  photos?: File[];
+}
+
+function buildMarkAsDoFormData(items: MarkStockInDoItemPayload[]) {
+  const formData = new FormData();
+  items.forEach((item, index) => {
+    formData.append(`items[${index}][stockInItemId]`, item.stockInItemId);
+    formData.append(`items[${index}][vendorName]`, item.vendorName);
+    formData.append(`items[${index}][price]`, String(item.price));
+    (item.photos ?? []).forEach((file) => {
+      formData.append(`items[${index}][photos][]`, file);
+    });
+  });
+  return formData;
 }
 
 export const stockInApi = {
-  list: async (params: ListParams) => {
+  list: async (params: ListParams & { status?: string }) => {
     const { data } = await apiClient.get<ApiSuccess<StockIn[]>>("/stock-in", { params });
     return data;
   },
@@ -27,6 +47,16 @@ export const stockInApi = {
   },
   update: async (id: string, payload: StockInPayload) => {
     const { data } = await apiClient.patch<ApiSuccess<StockIn>>(`/stock-in/${id}`, payload);
+    return data.data;
+  },
+  markAsDo: async (id: string, items: MarkStockInDoItemPayload[]) => {
+    const formData = buildMarkAsDoFormData(items);
+    // PHP tidak parse body multipart untuk method PATCH, jadi kita kirim
+    // sebagai POST + method spoofing (Laravel otomatis translate ini jadi PATCH).
+    formData.append("_method", "PATCH");
+    const { data } = await apiClient.post<ApiSuccess<StockIn>>(`/stock-in/${id}/status`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return data.data;
   },
   remove: async (id: string) => {

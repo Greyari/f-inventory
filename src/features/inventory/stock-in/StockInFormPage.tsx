@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Trash2, ArrowLeft, Loader2 } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Loader2, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ItemPickerField } from "@/components/common/ItemPickerField";
 import { useCreateStockIn, useUpdateStockIn, useStockInDetail } from "./stock-in.hooks";
-import type { StockIn, Item } from "@/types/inventory.types";
+import type { StockIn } from "@/types/inventory.types";
 import { JobCodePickerField } from "@/components/common/JobCodePickerField";
+import { StockInStatusBadge } from "./StockInStatusBadge";
 
 const schema = z.object({
   prNo: z.string().min(1, "Nomor referensi wajib diisi"),
@@ -62,8 +63,10 @@ export default function StockInFormPage() {
   const updateMutation = useUpdateStockIn();
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
-  // Unit per baris item, biar kelihatan begitu item dipilih dari dropdown
-  // (index-nya harus tetap sinkron sama urutan fields, lihat handler onChange & remove di bawah)
+  // Kalau sudah DO, daftar item terkunci karena sudah punya efek saldo stok.
+  // Cuma field header (tanggal, project, dst) yang masih bisa diubah.
+  const itemsLocked = isEdit && editingData?.status === "do";
+
   const [rowUnits, setRowUnits] = useState<Record<number, string>>({});
 
   const {
@@ -89,21 +92,22 @@ export default function StockInFormPage() {
   }, [isEdit, editingData, reset]);
 
   const onSubmit = async (values: FormValues) => {
+    // Kalau item terkunci, jangan kirim ulang daftar item ke backend
+    // (backend juga menolak, tapi lebih aman dijaga dari sini juga).
+    const payload = itemsLocked ? { ...values, items: undefined as never } : values;
+
     if (isEdit && id) {
-      await updateMutation.mutateAsync({ id, payload: values });
+      await updateMutation.mutateAsync({ id, payload });
     } else {
       await createMutation.mutateAsync(values);
     }
     navigate("/inventory/stock-in");
   };
 
-  const handleAddItem = () => {
-    append({ itemId: "", qty: 1 });
-  };
+  const handleAddItem = () => append({ itemId: "", qty: 1 });
 
   const handleRemoveItem = (index: number) => {
     remove(index);
-    // Geser rowUnits biar index-nya tetap sinkron sama fields setelah row dihapus
     setRowUnits((prev) => {
       const next: Record<number, string> = {};
       Object.entries(prev).forEach(([key, val]) => {
@@ -132,10 +136,11 @@ export default function StockInFormPage() {
         <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
       </button>
 
-      <div className="mb-6">
+      <div className="mb-6 flex items-center gap-2">
         <h2 className="text-2xl font-semibold">
           {isEdit ? `${t("common.edit")} — ${t("stockIn.formTitle")}` : t("stockIn.formTitle")}
         </h2>
+        {isEdit && editingData && <StockInStatusBadge status={editingData.status} />}
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-lg border bg-background p-6">
@@ -214,10 +219,19 @@ export default function StockInFormPage() {
 
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <Label className="mb-0">{t("stockIn.items")}</Label>
-            <Button type="button" size="sm" variant="outline" onClick={handleAddItem}>
-              <Plus className="h-4 w-4" /> {t("stockIn.addItem")}
-            </Button>
+            <Label className="mb-0 flex items-center gap-1.5">
+              {t("stockIn.items")}
+              {itemsLocked && (
+                <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
+                  <Lock className="h-3 w-3" /> {t("stockIn.itemsLockedHint")}
+                </span>
+              )}
+            </Label>
+            {!itemsLocked && (
+              <Button type="button" size="sm" variant="outline" onClick={handleAddItem}>
+                <Plus className="h-4 w-4" /> {t("stockIn.addItem")}
+              </Button>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -237,18 +251,23 @@ export default function StockInFormPage() {
                         selectedSublabel={editingData?.items[index]?.item?.itemName}
                         placeholder={t("common.selectItem")}
                         error={!!errors.items?.[index]?.itemId}
+                        disabled={itemsLocked}
                       />
                     )}
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <Input type="number" step="any" placeholder={t("stockIn.qty")} {...register(`items.${index}.qty`)} />
-                  {rowUnits[index] && (
-                    <p className="mt-1 text-xs text-muted-foreground">{rowUnits[index]}</p>
-                  )}
+                  <Input
+                    type="number"
+                    step="any"
+                    placeholder={t("stockIn.qty")}
+                    disabled={itemsLocked}
+                    {...register(`items.${index}.qty`)}
+                  />
+                  {rowUnits[index] && <p className="mt-1 text-xs text-muted-foreground">{rowUnits[index]}</p>}
                 </div>
                 <div className="sm:col-span-1">
-                  {fields.length > 1 && (
+                  {!itemsLocked && fields.length > 1 && (
                     <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveItem(index)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

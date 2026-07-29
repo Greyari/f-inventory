@@ -95,7 +95,21 @@
     "colDateReceived": "Date Received",
     "colProject": "Project / Ref / Cost Centre / Cost Code",
     "colItems": "Items",
-    "detailTitle": "Stock In Detail"
+    "detailTitle": "Stock In Detail",
+    "detailReference": "PR Number",
+    "filterAll": "All",
+    "filterNpr": "NPR",
+    "filterDo": "DO",
+    "markAsDo": "Mark as DO",
+    "markAsDoSubtitle": "Fill in the vendor, price, and proof photo for each item in \"{{ref}}\" before stock is added.",
+    "itemsLockedHint": "Locked (already DO)",
+    "vendorName": "Vendor Name",
+    "vendorNamePlaceholder": "e.g. PT Sumber Jaya",
+    "price": "Price",
+    "photos": "Proof Photos",
+    "addPhoto": "Add photo",
+    "confirmMarkAsDo": "Confirm & Add Stock",
+    "alreadyDoNotice": "This record has already been marked as DO."
   },
   "stockOut": {
     "title": "Stock Out",

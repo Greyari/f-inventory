@@ -96,7 +96,20 @@
     "colProject": "Project / Ref / Cost Centre / Cost Code",
     "colItems": "Item",
     "detailTitle": "Detail Barang Masuk",
-    "detailReference": "Nomor PR"
+    "detailReference": "Nomor PR",
+    "filterAll": "Semua",
+    "filterNpr": "NPR",
+    "filterDo": "DO",
+    "markAsDo": "Ubah ke DO",
+    "markAsDoSubtitle": "Lengkapi vendor, harga, dan foto bukti untuk tiap item di \"{{ref}}\" sebelum stok ditambahkan.",
+    "itemsLockedHint": "Terkunci (sudah DO)",
+    "vendorName": "Nama Vendor",
+    "vendorNamePlaceholder": "mis. PT Sumber Jaya",
+    "price": "Harga",
+    "photos": "Foto Bukti",
+    "addPhoto": "Tambah foto",
+    "confirmMarkAsDo": "Konfirmasi & Tambah Stok",
+    "alreadyDoNotice": "Data ini sudah berstatus DO."
   },
   "stockOut": {
     "title": "Barang Keluar",

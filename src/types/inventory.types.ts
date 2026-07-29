@@ -1,6 +1,7 @@
 // ---- Master data ----
 export interface Item {
-  id: string;  itemName: string;
+  id: string;
+  itemName: string;
   category: string;
   unit: string;
   minStockLevel: number;
@@ -35,15 +36,28 @@ export interface StockLot {
 }
 
 // ---- Barang Masuk ----
+export type StockInStatus = "npr" | "do";
+
+export interface StockInItemPhoto {
+  id: string;
+  url: string;
+}
+
 export interface StockInItem {
+  id: string;
   itemId: string;
   item?: Item;
   qty: number;
+  // Hanya terisi setelah status naik jadi "do"
+  vendorName?: string | null;
+  price?: number | null;
+  photos?: StockInItemPhoto[];
 }
 
 export interface StockIn {
   id: string;
   prNo: string;
+  status: StockInStatus;
   dateReceived: string;
   projectName: string;
   projectRefId: string;
