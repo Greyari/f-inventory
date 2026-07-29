@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2, Eye, Pencil, PackageCheck } from "lucide-react";
+import { Plus, Trash2, Eye, Pencil, FileCheck2, PackageCheck } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 const STATUS_TABS: { value: StockInStatus | "all"; labelKey: string }[] = [
   { value: "all", labelKey: "stockIn.filterAll" },
   { value: "npr", labelKey: "stockIn.filterNpr" },
+  { value: "po", labelKey: "stockIn.filterPo" },
   { value: "do", labelKey: "stockIn.filterDo" },
 ];
 
@@ -24,6 +25,7 @@ export default function StockInPage() {
   const canDelete = useHasPermission("stock-in.delete");
   const canCreate = useHasPermission("stock-in.create");
   const canEdit = useHasPermission("stock-in.edit");
+  const canMarkPo = useHasPermission("stock-in.mark-po");
   const canMarkDo = useHasPermission("stock-in.mark-do");
   const confirm = useConfirm();
   const [search, setSearch] = useState("");
@@ -41,6 +43,7 @@ export default function StockInPage() {
   useEffect(() => setPage(1), [debouncedSearch, status]);
   const openCreate = () => navigate("/inventory/stock-in/new");
   const openEdit = (row: StockIn) => navigate(`/inventory/stock-in/${row.id}/edit`);
+  const openMarkPo = (row: StockIn) => navigate(`/inventory/stock-in/${row.id}/mark-po`);
   const openMarkDo = (row: StockIn) => navigate(`/inventory/stock-in/${row.id}/mark-do`);
 
   const handleDelete = async (row: StockIn) => {
@@ -132,13 +135,13 @@ export default function StockInPage() {
         }
         rowActions={(row) => (
           <>
-            {canMarkDo && row.status === "npr" && (
-              <Button
-                variant="ghost"
-                size="icon"
-                title={t("stockIn.markAsDo")}
-                onClick={() => openMarkDo(row)}
-              >
+            {canMarkPo && row.status === "npr" && (
+              <Button variant="ghost" size="icon" title={t("stockIn.markAsPo")} onClick={() => openMarkPo(row)}>
+                <FileCheck2 className="h-4 w-4 text-sky-600" />
+              </Button>
+            )}
+            {canMarkDo && row.status === "po" && (
+              <Button variant="ghost" size="icon" title={t("stockIn.markAsDo")} onClick={() => openMarkDo(row)}>
                 <PackageCheck className="h-4 w-4 text-emerald-600" />
               </Button>
             )}

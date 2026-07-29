@@ -36,28 +36,25 @@ export interface StockLot {
 }
 
 // ---- Barang Masuk ----
-export type StockInStatus = "npr" | "do";
-
-export interface StockInItemPhoto {
-  id: string;
-  url: string;
-}
+// npr -> po -> do. Stok baru bertambah begitu status jadi "do".
+export type StockInStatus = "npr" | "po" | "do";
 
 export interface StockInItem {
   id: string;
   itemId: string;
   item?: Item;
   qty: number;
-  // Hanya terisi setelah status naik jadi "do"
   vendorName?: string | null;
   price?: number | null;
-  photos?: StockInItemPhoto[];
 }
 
 export interface StockIn {
   id: string;
   prNo: string;
   status: StockInStatus;
+  // 1 foto per tahap untuk keseluruhan record (bukan per item)
+  poPhotoUrl?: string | null;
+  doPhotoUrl?: string | null;
   dateReceived: string;
   projectName: string;
   projectRefId: string;

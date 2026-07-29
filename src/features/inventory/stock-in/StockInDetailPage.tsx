@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Loader2, PackageCheck } from "lucide-react";
+import { ArrowLeft, Loader2, FileCheck2, PackageCheck } from "lucide-react";
 import { useStockInDetail } from "./stock-in.hooks";
 import { StockInStatusBadge } from "./StockInStatusBadge";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ export default function StockInDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useStockInDetail(id);
+  const canMarkPo = useHasPermission("stock-in.mark-po");
   const canMarkDo = useHasPermission("stock-in.mark-do");
 
   if (isLoading || !data) {
@@ -35,11 +36,18 @@ export default function StockInDetailPage() {
           <h2 className="text-2xl font-semibold">{t("stockIn.detailTitle")}</h2>
           <StockInStatusBadge status={data.status} />
         </div>
-        {canMarkDo && data.status === "npr" && (
-          <Button size="sm" onClick={() => navigate(`/inventory/stock-in/${data.id}/mark-do`)}>
-            <PackageCheck className="h-4 w-4" /> {t("stockIn.markAsDo")}
-          </Button>
-        )}
+        <div className="flex gap-2">
+          {canMarkPo && data.status === "npr" && (
+            <Button size="sm" onClick={() => navigate(`/inventory/stock-in/${data.id}/mark-po`)}>
+              <FileCheck2 className="h-4 w-4" /> {t("stockIn.markAsPo")}
+            </Button>
+          )}
+          {canMarkDo && data.status === "po" && (
+            <Button size="sm" onClick={() => navigate(`/inventory/stock-in/${data.id}/mark-do`)}>
+              <PackageCheck className="h-4 w-4" /> {t("stockIn.markAsDo")}
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -51,6 +59,27 @@ export default function StockInDetailPage() {
           <Field label={t("stockIn.costCentre")} value={data.costCentre?.code} />
           <Field label={t("stockIn.costCode")} value={data.costCode?.code} />
         </div>
+
+        {(data.poPhotoUrl || data.doPhotoUrl) && (
+          <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
+            {data.poPhotoUrl && (
+              <div>
+                <p className="mb-1 text-xs text-muted-foreground">{t("stockIn.poPhoto")}</p>
+                <a href={data.poPhotoUrl} target="_blank" rel="noreferrer">
+                  <img src={data.poPhotoUrl} alt="Foto PO" className="h-32 w-32 rounded border object-cover" />
+                </a>
+              </div>
+            )}
+            {data.doPhotoUrl && (
+              <div>
+                <p className="mb-1 text-xs text-muted-foreground">{t("stockIn.doPhoto")}</p>
+                <a href={data.doPhotoUrl} target="_blank" rel="noreferrer">
+                  <img src={data.doPhotoUrl} alt="Foto DO" className="h-32 w-32 rounded border object-cover" />
+                </a>
+              </div>
+            )}
+          </div>
+        )}
 
         <div>
           <p className="mb-2 text-xs font-semibold text-muted-foreground">{t("stockIn.items")}</p>
@@ -64,31 +93,13 @@ export default function StockInDetailPage() {
                   </span>
                 </div>
 
-                {data.status === "do" && (
-                  <div className="mt-2 grid grid-cols-1 gap-2 border-t pt-2 text-xs sm:grid-cols-3">
+                {data.status !== "npr" && (
+                  <div className="mt-2 grid grid-cols-1 gap-2 border-t pt-2 text-xs sm:grid-cols-2">
                     <Field label={t("stockIn.vendorName")} value={it.vendorName} />
                     <Field
                       label={t("stockIn.price")}
                       value={it.price != null ? it.price.toLocaleString("id-ID") : "-"}
                     />
-                    <div>
-                      <p className="text-xs text-muted-foreground">{t("stockIn.photos")}</p>
-                      {it.photos && it.photos.length > 0 ? (
-                        <div className="mt-1 flex flex-wrap gap-1.5">
-                          {it.photos.map((photo) => (
-                            <a key={photo.id} href={photo.url} target="_blank" rel="noreferrer">
-                              <img
-                                src={photo.url}
-                                alt=""
-                                className="h-12 w-12 rounded border object-cover"
-                              />
-                            </a>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="font-medium">-</p>
-                      )}
-                    </div>
                   </div>
                 )}
               </div>

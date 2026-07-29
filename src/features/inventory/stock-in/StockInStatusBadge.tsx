@@ -3,11 +3,13 @@ import { cn } from "@/lib/utils";
 
 const STYLES: Record<StockInStatus, string> = {
   npr: "bg-amber-100 text-amber-800 border-amber-200",
+  po: "bg-sky-100 text-sky-800 border-sky-200",
   do: "bg-emerald-100 text-emerald-800 border-emerald-200",
 };
 
 const LABELS: Record<StockInStatus, string> = {
   npr: "NPR",
+  po: "PO",
   do: "DO",
 };
 

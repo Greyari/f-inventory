@@ -63,9 +63,10 @@ export default function StockInFormPage() {
   const updateMutation = useUpdateStockIn();
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
-  // Kalau sudah DO, daftar item terkunci karena sudah punya efek saldo stok.
+  // Kalau sudah PO atau DO, daftar item terkunci karena vendor/harga
+  // (dan akhirnya saldo stok, kalau sudah DO) sudah nempel ke situ.
   // Cuma field header (tanggal, project, dst) yang masih bisa diubah.
-  const itemsLocked = isEdit && editingData?.status === "do";
+  const itemsLocked = isEdit && editingData?.status !== "npr";
 
   const [rowUnits, setRowUnits] = useState<Record<number, string>>({});
 

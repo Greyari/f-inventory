@@ -7,6 +7,7 @@ const LoginPage = lazy(() => import("@/features/auth/LoginPage"));
 const DashboardPage = lazy(() => import("@/features/dashboard/DashboardPage"));
 const StockInPage = lazy(() => import("@/features/inventory/stock-in/StockInPage"));
 const StockInFormPage = lazy(() => import("@/features/inventory/stock-in/StockInFormPage"));
+const StockInMarkPoPage = lazy(() => import("@/features/inventory/stock-in/StockInMarkPoPage"));
 const StockInMarkDoPage = lazy(() => import("@/features/inventory/stock-in/StockInMarkDoPage"));
 const StockOutPage = lazy(() => import("@/features/inventory/stock-out/StockOutPage"));
 const StockBalancePage = lazy(() => import("@/features/inventory/stock-balance/StockBalancePage"));
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
           { path: "/inventory/stock-in", element: withSuspense(<StockInPage />) },
           { path: "/inventory/stock-in/new", element: withSuspense(<StockInFormPage />) },
           { path: "/inventory/stock-in/:id/edit", element: withSuspense(<StockInFormPage />) },
+          { path: "/inventory/stock-in/:id/mark-po", element: withSuspense(<StockInMarkPoPage />) },
           { path: "/inventory/stock-in/:id/mark-do", element: withSuspense(<StockInMarkDoPage />) },
           { path: "/inventory/stock-in/:id", element: withSuspense(<StockInDetailPage />) },
           { path: "/inventory/stock-out", element: withSuspense(<StockOutPage />) },

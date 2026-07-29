@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
-import { stockInApi, type MarkStockInDoItemPayload, type StockInPayload } from "./stock-in.api";
+import { stockInApi, type MarkStockInPoItemPayload, type StockInPayload } from "./stock-in.api";
 import type { ListParams } from "@/types/api.types";
 
 const KEY = "stock-in";
@@ -50,10 +50,24 @@ export function useUpdateStockIn() {
   });
 }
 
+export function useMarkStockInPo() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, items, poPhoto }: { id: string; items: MarkStockInPoItemPayload[]; poPhoto: File }) =>
+      stockInApi.markAsPo(id, items, poPhoto),
+    onSuccess: (_data, variables) => {
+      toast.success("Status berhasil diubah menjadi PO");
+      qc.invalidateQueries({ queryKey: [KEY] });
+      qc.invalidateQueries({ queryKey: [KEY, variables.id] });
+    },
+    onError: (error) => toast.error(extractErrorMessage(error, "Gagal mengubah status ke PO")),
+  });
+}
+
 export function useMarkStockInDo() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, items }: { id: string; items: MarkStockInDoItemPayload[] }) => stockInApi.markAsDo(id, items),
+    mutationFn: ({ id, doPhoto }: { id: string; doPhoto: File }) => stockInApi.markAsDo(id, doPhoto),
     onSuccess: (_data, variables) => {
       toast.success("Status berhasil diubah menjadi DO, stok sudah ditambahkan");
       qc.invalidateQueries({ queryKey: [KEY] });
