@@ -17,7 +17,7 @@ const ForbiddenPage = lazy(() => import("@/features/auth/ForbiddenPage"));
 const NotFoundPage = lazy(() => import("@/features/auth/NotFoundPage"));
 const StockOutFormPage = lazy(() => import("@/features/inventory/stock-out/StockOutFormPage"));
 const StockOutDetailPage = lazy(() => import("@/features/inventory/stock-out/StockOutDetailPage"));
-const AssetListPage = lazy(() => import("@/features/assets/AssetListPage"));
+const AssetPage = lazy(() => import("@/features/assets/AssetPage"));
 
 function Loading() {
   return (
@@ -56,8 +56,8 @@ const router = createBrowserRouter([
           { path: "/inventory/stock-balance", element: withSuspense(<StockBalancePage />) },
           { path: "/inventory/stock-balance/:itemId", element: withSuspense(<StockItemDetailPage />) },
           {
-            element: <ProtectedRoute requiredPermission="assets.manage" />,
-            children: [{ path: "/assets", element: withSuspense(<AssetListPage />) }],
+            element: <ProtectedRoute requiredPermission={["assets.manage", "asset-usages.checkout", "asset-usages.return"]} />,
+            children: [{ path: "/assets", element: withSuspense(<AssetPage />) }],
           },
           {
             element: <ProtectedRoute requiredPermission={["users.manage", "roles.manage"]} />,

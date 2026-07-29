@@ -287,6 +287,43 @@
     "searchPlaceholder": "Search code, asset name, or recipient...",
     "confirmDelete": "Delete asset \"{{name}}\"? This action cannot be undone.",
     "totalAssets": "Total Assets",
-    "categoriesBreakdown": "Breakdown by Category"
+    "categoriesBreakdown": "Breakdown by Category",
+    "tabList": "Asset List",
+    "tabUsage": "Usage & Return",
+    "noneAvailableHint": "All currently in use"
+  },
+  "assetUsage": {
+    "title": "Asset Usage & Return",
+    "subtitle": "Record who's using which asset, and process returns here.",
+    "checkoutButton": "Record Usage",
+    "formTitle": "Record Asset Usage",
+    "returnButton": "Return",
+    "returnFormTitle": "Process Asset Return",
+    "confirmReturnButton": "Confirm Return",
+    "asset": "Asset",
+    "usedBy": "Used By",
+    "usedByPlaceholder": "Name of person or team using it",
+    "purpose": "Purpose",
+    "purposePlaceholder": "What it's being used for",
+    "checkoutDate": "Checkout Date",
+    "expectedReturnDate": "Expected Return (optional)",
+    "returnDate": "Return Date",
+    "returnCondition": "Condition on Return",
+    "returnNotes": "Return Notes",
+    "returnNotesPlaceholder": "Additional notes about the item's condition",
+    "returnPhoto": "Condition Photo",
+    "uploadPhotoHint": "Click to upload a photo (optional)",
+    "status": "Status",
+    "allStatus": "All Status",
+    "statusInUse": "In Use",
+    "statusReturned": "Returned",
+    "searchPlaceholder": "Search by user, purpose, or asset...",
+    "confirmDelete": "Delete usage record for \"{{asset}}\"? This action cannot be undone.",
+    "condition": {
+      "Baik": "Good",
+      "Rusak Ringan": "Minor Damage",
+      "Rusak Berat": "Major Damage",
+      "Hilang": "Lost"
+    }
   }
 }

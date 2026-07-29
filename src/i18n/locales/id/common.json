@@ -287,6 +287,43 @@
     "searchPlaceholder": "Cari kode, nama aset, atau penerima...",
     "confirmDelete": "Hapus aset \"{{name}}\"? Tindakan ini tidak bisa dibatalkan.",
     "totalAssets": "Total Aset",
-    "categoriesBreakdown": "Rincian per Kategori"
+    "categoriesBreakdown": "Rincian per Kategori",
+    "tabList": "Daftar Aset",
+    "tabUsage": "Pemakaian & Pengembalian",
+    "noneAvailableHint": "Semua sedang dipakai"
+  },
+  "assetUsage": {
+    "title": "Pemakaian & Pengembalian Aset",
+    "subtitle": "Catat siapa yang pakai aset apa, dan proses pengembaliannya di sini.",
+    "checkoutButton": "Catat Pemakaian",
+    "formTitle": "Catat Pemakaian Aset",
+    "returnButton": "Kembalikan",
+    "returnFormTitle": "Proses Pengembalian Aset",
+    "confirmReturnButton": "Konfirmasi Pengembalian",
+    "asset": "Aset",
+    "usedBy": "Dipakai Oleh",
+    "usedByPlaceholder": "Nama orang atau tim yang pakai",
+    "purpose": "Keperluan",
+    "purposePlaceholder": "Dipakai untuk keperluan apa",
+    "checkoutDate": "Tanggal Pakai",
+    "expectedReturnDate": "Rencana Kembali (opsional)",
+    "returnDate": "Tanggal Kembali",
+    "returnCondition": "Kondisi Saat Kembali",
+    "returnNotes": "Catatan Pengembalian",
+    "returnNotesPlaceholder": "Catatan tambahan soal kondisi barang",
+    "returnPhoto": "Foto Kondisi Barang",
+    "uploadPhotoHint": "Klik buat upload foto (opsional)",
+    "status": "Status",
+    "allStatus": "Semua Status",
+    "statusInUse": "Sedang Dipakai",
+    "statusReturned": "Sudah Kembali",
+    "searchPlaceholder": "Cari nama pemakai, keperluan, atau aset...",
+    "confirmDelete": "Hapus data pemakaian \"{{asset}}\"? Tindakan ini tidak bisa dibatalkan.",
+    "condition": {
+      "Baik": "Baik",
+      "Rusak Ringan": "Rusak Ringan",
+      "Rusak Berat": "Rusak Berat",
+      "Hilang": "Hilang"
+    }
   }
 }
