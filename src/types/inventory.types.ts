@@ -120,3 +120,18 @@ export interface StockOut {
   items: StockOutItem[];
   createdAt: string;
 }
+
+// ---- Riwayat perubahan (activity log) Barang Keluar ----
+// Cuma ada 'created' & 'updated'
+export type StockOutActivityAction = "created" | "updated";
+
+export interface StockOutActivityLog {
+  id: string;
+  action: StockOutActivityAction;
+  // { [field]: { old: string; new: string } | true }
+  changes?: Record<string, unknown> | null;
+  // Wajib terisi untuk action = "updated" (edit cuma bisa oleh Super Admin)
+  reason?: string | null;
+  user?: { id: string; name: string } | null;
+  createdAt: string;
+}

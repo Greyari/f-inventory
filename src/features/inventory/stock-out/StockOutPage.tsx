@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2, Eye, Pencil } from "lucide-react";
+import { Plus, Trash2, Eye, ShieldAlert } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ export default function StockOutPage() {
   const navigate = useNavigate();
   const canDelete = useHasPermission("stock-out.delete");
   const canCreate = useHasPermission("stock-out.create");
-  const canEdit = useHasPermission("stock-out.edit");
+  const canOverride = useHasPermission("stock-out.override");
   const confirm = useConfirm();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
@@ -106,9 +106,9 @@ export default function StockOutPage() {
             <Button variant="ghost" size="icon" title={t("common.detail")} onClick={() => openDetail(row)}>
               <Eye className="h-4 w-4" />
             </Button>
-            {canEdit && (
-              <Button variant="ghost" size="icon" title={t("common.edit")} onClick={() => openEdit(row)}>
-                <Pencil className="h-4 w-4" />
+            {canOverride && (
+              <Button variant="ghost" size="icon" title={t("stockOut.editSuperAdmin")} onClick={() => openEdit(row)}>
+                <ShieldAlert className="h-4 w-4 text-destructive" />
               </Button>
             )}
             {canDelete && (

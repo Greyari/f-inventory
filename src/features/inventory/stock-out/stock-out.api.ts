@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios";
 import type { ApiSuccess, ListParams } from "@/types/api.types";
-import type { StockOut, StockLot } from "@/types/inventory.types";
+import type { StockOut, StockOutActivityLog, StockLot } from "@/types/inventory.types";
 
 export interface StockOutAllocationPayload {
   projectRefId: string;
@@ -26,6 +26,9 @@ export interface StockOutPayload {
   items: StockOutItemPayload[];
 }
 
+// Cuma dipakai pas edit — hanya bisa dilakukan Super Admin, reason wajib.
+export type UpdateStockOutPayload = StockOutPayload & { reason: string };
+
 export const stockOutApi = {
   list: async (params: ListParams) => {
     const { data } = await apiClient.get<ApiSuccess<StockOut[]>>("/stock-out", { params });
@@ -35,11 +38,15 @@ export const stockOutApi = {
     const { data } = await apiClient.get<ApiSuccess<StockOut>>(`/stock-out/${id}`);
     return data.data;
   },
+  activityLogs: async (id: string) => {
+    const { data } = await apiClient.get<ApiSuccess<StockOutActivityLog[]>>(`/stock-out/${id}/activity-logs`);
+    return data.data;
+  },
   create: async (payload: StockOutPayload) => {
     const { data } = await apiClient.post<ApiSuccess<StockOut>>("/stock-out", payload);
     return data.data;
   },
-  update: async (id: string, payload: StockOutPayload) => {
+  update: async (id: string, payload: UpdateStockOutPayload) => {
     const { data } = await apiClient.patch<ApiSuccess<StockOut>>(`/stock-out/${id}`, payload);
     return data.data;
   },

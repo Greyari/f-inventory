@@ -165,7 +165,17 @@
     "selectItemFirst": "Select an item first to see available lots.",
     "lotEmptyHint": "stockOut.lotEmptyHintLabel",
     "lotEmptyHintLabel": "Out of stock",
-    "lotAlreadyUsedLabel": "Already used in another row"
+    "lotAlreadyUsedLabel": "Already used in another row",
+    "createdAt": "Recorded On",
+    "activityLog": "Activity Log",
+    "activityLogEmpty": "No activity yet.",
+    "editSuperAdmin": "Super Admin Edit",
+    "overrideEditWarning": "Editing a stock-out record is restricted to Super Admins, since it affects stock balances that may already be relied on elsewhere. Always fill in the reason below.",
+    "formLockedTitle": "Only a Super Admin can edit this record",
+    "formLockedHint": "If something needs correcting, please contact a Super Admin.",
+    "reason": "Reason for Change",
+    "reasonPlaceholder": "Explain why this record is being changed...",
+    "confirmOverrideEdit": "Save Changes"
   },
   "stockBalance": {
     "title": "Stock Balance",

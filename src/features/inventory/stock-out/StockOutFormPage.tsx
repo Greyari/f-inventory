@@ -1,23 +1,35 @@
 import { useEffect } from "react";
 import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, ArrowLeft, Loader2 } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Loader2, Lock, ShieldAlert } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ItemPickerField } from "@/components/common/ItemPickerField";
 import { useCreateStockOut, useUpdateStockOut, useStockOutDetail } from "./stock-out.hooks";
+import { useHasPermission } from "@/store/authStore";
 import { AllocationRows } from "./AllocationRows";
-import { stockOutSchema, emptyStockOutValues, valuesFromStockOut, type StockOutFormValues } from "./stockOutFormSchema";
+import {
+  stockOutSchema,
+  stockOutEditSchema,
+  emptyStockOutValues,
+  valuesFromStockOut,
+  type StockOutFormValues,
+  type StockOutEditFormValues,
+} from "./stockOutFormSchema";
 import type { StockOut } from "@/types/inventory.types";
 import { JobCodePickerField } from "@/components/common/JobCodePickerField";
+
+type FormValues = StockOutFormValues | StockOutEditFormValues;
 
 export default function StockOutFormPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const isEdit = !!id;
+  const canOverride = useHasPermission("stock-out.override");
 
   const { data: editingData, isLoading: isLoadingDetail } = useStockOutDetail(id);
   const createMutation = useCreateStockOut();
@@ -30,8 +42,8 @@ export default function StockOutFormPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<StockOutFormValues>({
-    resolver: zodResolver(stockOutSchema),
+  } = useForm<FormValues>({
+    resolver: zodResolver(isEdit ? stockOutEditSchema : stockOutSchema),
     defaultValues: emptyStockOutValues(),
   });
 
@@ -41,22 +53,21 @@ export default function StockOutFormPage() {
     if (isEdit && editingData) reset(valuesFromStockOut(editingData));
   }, [isEdit, editingData, reset]);
 
-  const onSubmit = async (values: StockOutFormValues) => {
+  const onSubmit = async (values: FormValues) => {
     // qty per item = jumlah semua alokasinya, biar selalu konsisten (sesuai validasi backend)
-    const payload = {
-      ...values,
-      items: values.items.map((item) => ({
-        itemId: item.itemId,
-        qty: item.allocations.reduce((sum, a) => sum + Number(a.qty), 0),
-        allocations: item.allocations,
-      })),
-    };
+    const items = values.items.map((item) => ({
+      itemId: item.itemId,
+      qty: item.allocations.reduce((sum, a) => sum + Number(a.qty), 0),
+      allocations: item.allocations,
+    }));
+
     if (isEdit && id) {
-      await updateMutation.mutateAsync({ id, payload });
+      const { reason, ...header } = values as StockOutEditFormValues;
+      await updateMutation.mutateAsync({ id, payload: { ...header, items, reason } });
     } else {
-      await createMutation.mutateAsync(payload);
+      await createMutation.mutateAsync({ ...(values as StockOutFormValues), items });
     }
-    navigate("/inventory/stock-out");
+    navigate(isEdit ? `/inventory/stock-out/${id}` : "/inventory/stock-out");
   };
 
   if (isEdit && isLoadingDetail) {
@@ -67,20 +78,53 @@ export default function StockOutFormPage() {
     );
   }
 
+  // Edit cuma boleh Super Admin. Kalau gak punya permission, form gak
+  // ditampilkan sama sekali — cuma pesan "hubungi Super Admin".
+  if (isEdit && !canOverride) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <button
+          onClick={() => navigate(`/inventory/stock-out/${id}`)}
+          className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
+        </button>
+
+        <div className="flex flex-col items-center gap-3 rounded-lg border bg-background p-10 text-center">
+          <Lock className="h-8 w-8 text-muted-foreground" />
+          <div>
+            <p className="font-medium">{t("stockOut.formLockedTitle")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{t("stockOut.formLockedHint")}</p>
+          </div>
+          <Button variant="outline" className="mt-2" onClick={() => navigate(`/inventory/stock-out/${id}`)}>
+            {t("common.backToList")}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-4xl">
       <button
-        onClick={() => navigate("/inventory/stock-out")}
+        onClick={() => navigate(isEdit ? `/inventory/stock-out/${id}` : "/inventory/stock-out")}
         className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
       </button>
 
-      <div className="mb-6">
+      <div className="mb-6 flex items-center gap-2">
+        {isEdit && <ShieldAlert className="h-5 w-5 text-destructive" />}
         <h2 className="text-2xl font-semibold">
-          {isEdit ? `${t("common.edit")} — ${t("stockOut.formTitle")}` : t("stockOut.formTitle")}
+          {isEdit ? `${t("stockOut.editSuperAdmin")} — ${t("stockOut.formTitle")}` : t("stockOut.formTitle")}
         </h2>
       </div>
+
+      {isEdit && (
+        <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+          {t("stockOut.overrideEditWarning")}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-lg border bg-background p-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -93,7 +137,6 @@ export default function StockOutFormPage() {
             <Label>{t("stockOut.dateIssued")}</Label>
             <Input type="date" {...register("dateIssued")} />
           </div>
-
 
           <div>
             <Label>{t("stockOut.issuedTo")}</Label>
@@ -198,12 +241,26 @@ export default function StockOutFormPage() {
           </div>
         </div>
 
+        {isEdit && (
+          <div className="border-t pt-4">
+            <Label>{t("stockOut.reason")}</Label>
+            <Textarea rows={3} placeholder={t("stockOut.reasonPlaceholder")} {...register("reason" as never)} />
+            {"reason" in errors && errors.reason && (
+              <p className="mt-1 text-xs text-destructive">{(errors as any).reason?.message}</p>
+            )}
+          </div>
+        )}
+
         <div className="flex justify-end gap-2 border-t pt-4">
-          <Button type="button" variant="outline" onClick={() => navigate("/inventory/stock-out")}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate(isEdit ? `/inventory/stock-out/${id}` : "/inventory/stock-out")}
+          >
             {t("common.cancel")}
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? t("common.saving") : t("common.save")}
+          <Button type="submit" variant={isEdit ? "destructive" : "default"} disabled={isSubmitting}>
+            {isSubmitting ? t("common.saving") : isEdit ? t("stockOut.confirmOverrideEdit") : t("common.save")}
           </Button>
         </div>
       </form>
@@ -218,7 +275,7 @@ function ItemRow({
   onRemove,
   error,
 }: {
-  control: ReturnType<typeof useForm<StockOutFormValues>>["control"];
+  control: ReturnType<typeof useForm<FormValues>>["control"];
   index: number;
   editingItem?: StockOut["items"][number];
   onRemove?: () => void;
@@ -258,7 +315,7 @@ function ItemRow({
         {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
       </div>
 
-      <AllocationRows control={control} itemIndex={index} itemId={itemId} initialAllocations={editingItem?.allocations} />
+      <AllocationRows control={control as any} itemIndex={index} itemId={itemId} initialAllocations={editingItem?.allocations} />
     </div>
   );
 }

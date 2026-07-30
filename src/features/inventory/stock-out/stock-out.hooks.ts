@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
-import { stockOutApi, type StockOutPayload } from "./stock-out.api";
+import { stockOutApi, type StockOutPayload, type UpdateStockOutPayload } from "./stock-out.api";
 import type { ListParams } from "@/types/api.types";
 
 const KEY = "stock-out";
+const ACTIVITY_KEY = "stock-out-activity-logs";
 
 function extractErrorMessage(error: unknown, fallback: string) {
   return isAxiosError(error) ? (error.response?.data?.message ?? fallback) : fallback;
@@ -25,10 +26,18 @@ export function useStockOutDetail(id?: string) {
   });
 }
 
+export function useStockOutActivityLogs(id?: string) {
+  return useQuery({
+    queryKey: [ACTIVITY_KEY, id],
+    queryFn: () => stockOutApi.activityLogs(id as string),
+    enabled: !!id,
+  });
+}
+
 export function useCreateStockOut() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: stockOutApi.create,
+    mutationFn: (payload: StockOutPayload) => stockOutApi.create(payload),
     onSuccess: () => {
       toast.success("Barang keluar berhasil dicatat");
       qc.invalidateQueries({ queryKey: [KEY] });
@@ -42,12 +51,13 @@ export function useCreateStockOut() {
 export function useUpdateStockOut() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: StockOutPayload }) =>
+    mutationFn: ({ id, payload }: { id: string; payload: UpdateStockOutPayload }) =>
       stockOutApi.update(id, payload),
     onSuccess: (_data, variables) => {
       toast.success("Barang keluar berhasil diperbarui");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
+      qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
       qc.invalidateQueries({ queryKey: ["stock-lots-by-item"] });
     },

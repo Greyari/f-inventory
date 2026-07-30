@@ -12,7 +12,7 @@ export const stockOutItemSchema = z.object({
   allocations: z.array(allocationSchema).min(1, "Minimal 1 sumber stok"),
 });
 
-export const stockOutSchema = z.object({
+const baseFields = {
   bNo: z.string().min(1, "Nomor referensi wajib diisi"),
   dateIssued: z.string().min(1, "Tanggal wajib diisi"),
   issuedTo: z.string().optional(),
@@ -21,9 +21,19 @@ export const stockOutSchema = z.object({
   costCentreId: z.string().min(1, "Cost Centre wajib dipilih"),
   costCodeId: z.string().min(1, "Cost Code wajib dipilih"),
   items: z.array(stockOutItemSchema).min(1, "Minimal 1 item"),
+};
+
+// Dipakai pas CREATE — gak butuh reason.
+export const stockOutSchema = z.object(baseFields);
+
+// Dipakai pas EDIT (cuma Super Admin) — reason WAJIB diisi.
+export const stockOutEditSchema = z.object({
+  ...baseFields,
+  reason: z.string().min(5, "Alasan wajib diisi, jelaskan sedikit lebih detail"),
 });
 
 export type StockOutFormValues = z.infer<typeof stockOutSchema>;
+export type StockOutEditFormValues = z.infer<typeof stockOutEditSchema>;
 
 export const emptyStockOutValues = (): StockOutFormValues => ({
   bNo: "",
@@ -44,7 +54,7 @@ export const emptyStockOutValues = (): StockOutFormValues => ({
 // Import di sini (bukan di atas) buat hindari circular import dgn types/inventory.types
 import type { StockOut } from "@/types/inventory.types";
 
-export const valuesFromStockOut = (data: StockOut): StockOutFormValues => ({
+export const valuesFromStockOut = (data: StockOut): StockOutEditFormValues => ({
   bNo: data.bNo,
   dateIssued: data.dateIssued,
   issuedTo: data.issuedTo ?? "",
@@ -61,4 +71,5 @@ export const valuesFromStockOut = (data: StockOut): StockOutFormValues => ({
       qty: a.qty,
     })),
   })),
+  reason: "",
 });
