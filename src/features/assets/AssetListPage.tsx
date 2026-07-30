@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2, Boxes, Layers } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Boxes, Layers } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -13,6 +14,7 @@ import type { Asset } from "@/types/asset.types";
 
 export default function AssetListPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const canManage = useHasPermission("assets.manage");
   const confirm = useConfirm();
   const [search, setSearch] = useState("");
@@ -51,7 +53,15 @@ export default function AssetListPage() {
     { header: t("asset.assetName"), accessor: (r) => r.assetName },
     { header: t("asset.category"), accessor: (r) => r.category, hideOnMobile: true },
     { header: t("asset.recipient"), accessor: (r) => r.recipient },
-    { header: t("asset.qty"), accessor: (r) => r.qty },
+    {
+      header: t("asset.qty"),
+      accessor: (r) => (
+        <div className="text-xs">
+          <div className="font-medium text-foreground">{r.qty}</div>
+          {r.inUseQty > 0 && <div className="text-muted-foreground">{t("asset.inUseQty")}: {r.inUseQty}</div>}
+        </div>
+      ),
+    },
     {
       header: t("asset.condition"),
       accessor: (r) =>
@@ -59,9 +69,7 @@ export default function AssetListPage() {
           <span
             className={cn(
               "rounded-full px-2 py-0.5 text-xs",
-              r.condition === "Baik"
-                ? "bg-green-100 text-green-700"
-                : "bg-amber-100 text-amber-700"
+              r.condition === "Baik" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
             )}
           >
             {r.condition}
@@ -127,20 +135,28 @@ export default function AssetListPage() {
             </Button>
           )
         }
-        rowActions={
-          canManage
-            ? (row) => (
-                <>
-                  <Button variant="ghost" size="icon" onClick={() => openEdit(row)}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(row)}>
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </>
-              )
-            : undefined
-        }
+        rowActions={(row) => (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              title={t("common.detail")}
+              onClick={() => navigate(`/assets/${row.id}`)}
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            {canManage && (
+              <>
+                <Button variant="ghost" size="icon" onClick={() => openEdit(row)}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => handleDelete(row)}>
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </>
+            )}
+          </>
+        )}
       />
 
       <AssetFormDialog open={dialogOpen} onOpenChange={setDialogOpen} editingData={editingData} />

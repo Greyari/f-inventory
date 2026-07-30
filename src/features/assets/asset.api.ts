@@ -18,6 +18,10 @@ export const assetApi = {
     const { data } = await apiClient.get<ApiSuccess<Asset[]>>("/assets", { params });
     return data;
   },
+  detail: async (id: string) => {
+    const { data } = await apiClient.get<ApiSuccess<Asset>>(`/assets/${id}`);
+    return data.data;
+  },
   create: async (payload: AssetPayload) => {
     const { data } = await apiClient.post<ApiSuccess<Asset>>("/assets", payload);
     return data.data;

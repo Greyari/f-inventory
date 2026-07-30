@@ -17,6 +17,14 @@ export function useAssets(params: ListParams) {
   });
 }
 
+export function useAsset(id?: string) {
+  return useQuery({
+    queryKey: [KEY, id],
+    queryFn: () => assetApi.detail(id as string),
+    enabled: !!id,
+  });
+}
+
 export function useAssetSummary() {
   return useQuery({
     queryKey: [KEY, "summary"],
@@ -41,9 +49,10 @@ export function useUpdateAsset() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: Partial<AssetPayload> }) =>
       assetApi.update(id, payload),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       toast.success("Aset berhasil diperbarui");
       qc.invalidateQueries({ queryKey: [KEY] });
+      qc.invalidateQueries({ queryKey: [KEY, variables.id] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal memperbarui aset")),
   });

@@ -303,7 +303,12 @@
     "categoriesBreakdown": "Breakdown by Category",
     "tabList": "Asset List",
     "tabUsage": "Usage & Return",
-    "noneAvailableHint": "All currently in use"
+    "noneAvailableHint": "All currently in use",
+    "backToList": "Back to Asset List",
+    "inUseQty": "In Use",
+    "availableQty": "Available",
+    "usageHistory": "Usage History",
+    "noUsageHistory": "No usage history for this asset yet."
   },
   "assetUsage": {
     "title": "Asset Usage & Return",

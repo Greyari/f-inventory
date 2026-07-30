@@ -303,7 +303,12 @@
     "categoriesBreakdown": "Rincian per Kategori",
     "tabList": "Daftar Aset",
     "tabUsage": "Pemakaian & Pengembalian",
-    "noneAvailableHint": "Semua sedang dipakai"
+    "noneAvailableHint": "Semua sedang dipakai",
+    "backToList": "Kembali ke Daftar Aset",
+    "inUseQty": "Sedang Dipakai",
+    "availableQty": "Tersedia",
+    "usageHistory": "Riwayat Pemakaian",
+    "noUsageHistory": "Belum ada riwayat pemakaian untuk aset ini."
   },
   "assetUsage": {
     "title": "Pemakaian & Pengembalian Aset",
