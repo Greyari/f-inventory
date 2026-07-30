@@ -122,7 +122,15 @@
     "notPoNotice": "Data ini harus berstatus PO dulu sebelum bisa diubah ke DO.",
     "activityLog": "Riwayat Perubahan",
     "activityLogEmpty": "Belum ada aktivitas.",
-    "activityLogSystem": "Sistem"
+    "activityLogSystem": "Sistem",
+    "overrideEdit": "Edit Super Admin",
+    "overrideEditWarning": "Ini mengedit data di luar alur normal NPR → PO → DO. Pakai cuma buat koreksi kesalahan, dan wajib isi alasan di bawah.",
+    "formLockedTitle": "Data ini gak bisa diedit lewat form biasa lagi",
+    "formLockedHint": "Statusnya sudah bukan NPR. Kalau ada yang perlu dikoreksi, silakan hubungi Super Admin.",
+    "reason": "Alasan Perubahan",
+    "reasonPlaceholder": "Jelaskan kenapa data ini diubah di luar alur normal...",
+    "replacePhotoHint": "Kosongkan kalau gak mau ganti foto yang sekarang.",
+    "confirmOverrideEdit": "Simpan Perubahan"
   },
   "stockOut": {
     "title": "Barang Keluar",

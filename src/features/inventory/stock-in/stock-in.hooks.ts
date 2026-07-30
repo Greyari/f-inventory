@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
-import { stockInApi, type MarkStockInPoItemPayload, type StockInPayload } from "./stock-in.api";
+import { stockInApi, type MarkStockInPoItemPayload, type OverrideUpdateStockInPayload, type StockInPayload } from "./stock-in.api";
 import type { ListParams } from "@/types/api.types";
 
 const KEY = "stock-in";
@@ -87,6 +87,22 @@ export function useMarkStockInDo() {
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal mengubah status ke DO")),
+  });
+}
+
+export function useOverrideUpdateStockIn() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: OverrideUpdateStockInPayload }) =>
+      stockInApi.overrideUpdate(id, payload),
+    onSuccess: (_data, variables) => {
+      toast.success("Data berhasil diperbarui (edit Super Admin)");
+      qc.invalidateQueries({ queryKey: [KEY] });
+      qc.invalidateQueries({ queryKey: [KEY, variables.id] });
+      qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
+      qc.invalidateQueries({ queryKey: ["stock-lots"] });
+    },
+    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menyimpan perubahan")),
   });
 }
 

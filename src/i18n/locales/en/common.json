@@ -122,7 +122,15 @@
     "notPoNotice": "This record must be PO status first before it can be marked as DO.",
     "activityLog": "Activity Log",
     "activityLogEmpty": "No activity yet.",
-    "activityLogSystem": "System"
+    "activityLogSystem": "System",
+    "overrideEdit": "Super Admin Edit",
+    "overrideEditWarning": "This edits data outside the normal NPR → PO → DO flow. Use only for correcting mistakes, and always fill in the reason below.",
+    "formLockedTitle": "This record can no longer be edited through the regular form",
+    "formLockedHint": "Its status is no longer NPR. If something needs correcting, please contact a Super Admin.",
+    "reason": "Reason for Change",
+    "reasonPlaceholder": "Explain why this is being changed outside the normal flow...",
+    "replacePhotoHint": "Leave empty to keep the current photo.",
+    "confirmOverrideEdit": "Save Changes"
   },
   "stockOut": {
     "title": "Stock Out",

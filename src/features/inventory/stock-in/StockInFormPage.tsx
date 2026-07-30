@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Trash2, ArrowLeft, Loader2, Lock } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Loader2, Lock, ShieldAlert } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { useCreateStockIn, useUpdateStockIn, useStockInDetail } from "./stock-in
 import type { StockIn } from "@/types/inventory.types";
 import { JobCodePickerField } from "@/components/common/JobCodePickerField";
 import { StockInStatusBadge } from "./StockInStatusBadge";
+import { useHasPermission } from "@/store/authStore";
 
 const schema = z.object({
   prNo: z.string().min(1, "Nomor referensi wajib diisi"),
@@ -67,6 +68,10 @@ export default function StockInFormPage() {
   // (dan akhirnya saldo stok, kalau sudah DO) sudah nempel ke situ.
   // Cuma field header (tanggal, project, dst) yang masih bisa diubah.
   const itemsLocked = isEdit && editingData?.status !== "npr";
+  const canOverride = useHasPermission("stock-in.override");
+  // Begitu bukan NPR lagi, form edit BIASA gak bisa dipakai sama sekali —
+  // cuma bisa lewat halaman Override (Super Admin).
+  const formLocked = isEdit && editingData && editingData.status !== "npr";
 
   const [rowUnits, setRowUnits] = useState<Record<number, string>>({});
 
@@ -124,6 +129,40 @@ export default function StockInFormPage() {
     return (
       <div className="flex items-center justify-center py-20 text-muted-foreground">
         <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
+
+  if (formLocked) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <button
+          onClick={() => navigate(`/inventory/stock-in/${id}`)}
+          className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
+        </button>
+
+        <div className="flex flex-col items-center gap-3 rounded-lg border bg-background p-10 text-center">
+          <Lock className="h-8 w-8 text-muted-foreground" />
+          <div>
+            <p className="font-medium">{t("stockIn.formLockedTitle")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{t("stockIn.formLockedHint")}</p>
+          </div>
+          {canOverride ? (
+            <Button
+              variant="outline"
+              className="mt-2 border-destructive/40 text-destructive hover:bg-destructive/5"
+              onClick={() => navigate(`/inventory/stock-in/${id}/override`)}
+            >
+              <ShieldAlert className="h-4 w-4" /> {t("stockIn.overrideEdit")}
+            </Button>
+          ) : (
+            <Button variant="outline" className="mt-2" onClick={() => navigate(`/inventory/stock-in/${id}`)}>
+              {t("common.backToList")}
+            </Button>
+          )}
+        </div>
       </div>
     );
   }

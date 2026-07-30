@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Loader2, FileCheck2, PackageCheck } from "lucide-react";
+import { ArrowLeft, Loader2, FileCheck2, PackageCheck, ShieldAlert } from "lucide-react";
 import { useStockInDetail } from "./stock-in.hooks";
 import { StockInStatusBadge } from "./StockInStatusBadge";
 import { StockInActivityTimeline } from "./StockInActivityTimeline";
@@ -14,6 +14,7 @@ export default function StockInDetailPage() {
   const { data, isLoading } = useStockInDetail(id);
   const canMarkPo = useHasPermission("stock-in.mark-po");
   const canMarkDo = useHasPermission("stock-in.mark-do");
+  const canOverride = useHasPermission("stock-in.override");
 
   if (isLoading || !data || !id) {
     return (
@@ -46,6 +47,16 @@ export default function StockInDetailPage() {
           {canMarkDo && data.status === "po" && (
             <Button size="sm" onClick={() => navigate(`/inventory/stock-in/${data.id}/mark-do`)}>
               <PackageCheck className="h-4 w-4" /> {t("stockIn.markAsDo")}
+            </Button>
+          )}
+          {canOverride && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-destructive/40 text-destructive hover:bg-destructive/5"
+              onClick={() => navigate(`/inventory/stock-in/${data.id}/override`)}
+            >
+              <ShieldAlert className="h-4 w-4" /> {t("stockIn.overrideEdit")}
             </Button>
           )}
         </div>

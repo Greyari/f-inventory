@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2, Eye, Pencil, FileCheck2, PackageCheck } from "lucide-react";
+import { Plus, Trash2, Eye, Pencil, FileCheck2, PackageCheck, ShieldAlert } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -27,6 +27,7 @@ export default function StockInPage() {
   const canEdit = useHasPermission("stock-in.edit");
   const canMarkPo = useHasPermission("stock-in.mark-po");
   const canMarkDo = useHasPermission("stock-in.mark-do");
+  const canOverride = useHasPermission("stock-in.override");
   const confirm = useConfirm();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
@@ -151,6 +152,16 @@ export default function StockInPage() {
             {canEdit && (
               <Button variant="ghost" size="icon" title={t("common.edit")} onClick={() => openEdit(row)}>
                 <Pencil className="h-4 w-4" />
+              </Button>
+            )}
+            {canOverride && row.status !== "npr" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                title={t("stockIn.overrideEdit")}
+                onClick={() => navigate(`/inventory/stock-in/${row.id}/override`)}
+              >
+                <ShieldAlert className="h-4 w-4 text-destructive" />
               </Button>
             )}
             {canDelete && (

@@ -18,6 +18,26 @@ export interface MarkStockInPoItemPayload {
   price: number;
 }
 
+export interface OverrideStockInItemPayload {
+  itemId: string;
+  qty: number;
+  vendorName?: string;
+  price?: number;
+}
+
+export interface OverrideUpdateStockInPayload {
+  prNo?: string;
+  dateReceived?: string;
+  projectName?: string;
+  projectRefId?: string;
+  costCentreId?: string;
+  costCodeId?: string;
+  items?: OverrideStockInItemPayload[];
+  poPhoto?: File;
+  doPhoto?: File;
+  reason: string;
+}
+
 // PHP tidak parse body multipart untuk method PATCH langsung, jadi semua
 // request yang bawa file dikirim sebagai POST + method spoofing (Laravel
 // otomatis translate ini jadi PATCH di sisi server).
@@ -78,5 +98,33 @@ export const stockInApi = {
   },
   remove: async (id: string) => {
     await apiClient.delete(`/stock-in/${id}`);
+  },
+  /** Edit bebas oleh Super Admin — bypass batasan alur normal. Reason wajib. */
+  overrideUpdate: async (id: string, payload: OverrideUpdateStockInPayload) => {
+    const formData = new FormData();
+    if (payload.prNo !== undefined) formData.append("prNo", payload.prNo);
+    if (payload.dateReceived !== undefined) formData.append("dateReceived", payload.dateReceived);
+    if (payload.projectName !== undefined) formData.append("projectName", payload.projectName);
+    if (payload.projectRefId !== undefined) formData.append("projectRefId", payload.projectRefId);
+    if (payload.costCentreId !== undefined) formData.append("costCentreId", payload.costCentreId);
+    if (payload.costCodeId !== undefined) formData.append("costCodeId", payload.costCodeId);
+    if (payload.items) {
+      payload.items.forEach((item, index) => {
+        formData.append(`items[${index}][itemId]`, item.itemId);
+        formData.append(`items[${index}][qty]`, String(item.qty));
+        if (item.vendorName !== undefined) formData.append(`items[${index}][vendorName]`, item.vendorName);
+        if (item.price !== undefined) formData.append(`items[${index}][price]`, String(item.price));
+      });
+    }
+    if (payload.poPhoto) formData.append("poPhoto", payload.poPhoto);
+    if (payload.doPhoto) formData.append("doPhoto", payload.doPhoto);
+    formData.append("reason", payload.reason);
+
+    const { data } = await apiClient.post<ApiSuccess<StockIn>>(
+      `/stock-in/${id}/override`,
+      withMethodSpoof(formData),
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return data.data;
   },
 };

@@ -69,7 +69,7 @@ export interface StockIn {
 }
 
 // ---- Riwayat perubahan (activity log) ----
-export type StockInActivityAction = "created" | "updated" | "status_changed";
+export type StockInActivityAction = "created" | "updated" | "status_changed" | "override_updated";
 
 export interface StockInActivityLog {
   id: string;
@@ -77,9 +77,11 @@ export interface StockInActivityLog {
   fromStatus?: StockInStatus | null;
   toStatus?: StockInStatus | null;
   // Bentuknya beda-beda tergantung action:
-  // - updated: { [field]: { old: string; new: string } | true }
+  // - updated / override_updated: { [field]: { old: string; new: string } | true }
   // - status_changed (khusus npr->po): { items: { vendorName; price }[] }
   changes?: Record<string, unknown> | null;
+  // Wajib terisi untuk action = "override_updated" (alasan edit di luar alur)
+  reason?: string | null;
   user?: { id: string; name: string } | null;
   createdAt: string;
 }
