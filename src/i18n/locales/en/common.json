@@ -200,7 +200,13 @@
     "stockInHistory": "Stock In History",
     "noStockInHistory": "No stock-in history yet.",
     "stockOutHistory": "Stock Out History",
-    "noStockOutHistory": "No stock-out history yet."
+    "noStockOutHistory": "No stock-out history yet.",
+    "addDirectButton": "Add Stock Directly",
+    "addDirectTitle": "Add Stock Directly",
+    "addDirectWarning": "This adds stock straight to the balance, completely bypassing the NPR → PO → DO flow. Use only for cases like entering existing physical stock that was never recorded through the normal process.",
+    "qtyToAdd": "Quantity to Add",
+    "addDirectReasonPlaceholder": "Explain why this stock is being added directly (e.g. initial data migration, found existing physical stock)...",
+    "confirmAddDirect": "Add Stock"
   },
   "master": {
     "title": "Master Data",

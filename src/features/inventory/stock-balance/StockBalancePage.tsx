@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle, Eye } from "lucide-react";
+import { Eye, PackagePlus } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockLots } from "./stock-balance.hooks";
+import { useHasPermission } from "@/store/authStore";
+import { AddDirectStockDialog } from "./AddDirectStockDialog";
 import type { StockLot } from "@/types/inventory.types";
 
 interface ItemSummary {
@@ -21,15 +23,16 @@ interface ItemSummary {
 export default function StockBalancePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const canAddDirect = useHasPermission("stock-lots.adjust");
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
+  const [addDirectOpen, setAddDirectOpen] = useState(false);
   const { data, isLoading } = useStockLots(debouncedSearch);
 
   // Gabungkan semua lot jadi 1 baris per item
   const itemSummaries = useMemo<ItemSummary[]>(() => {
     if (!data) return [];
     const map = new Map<string, ItemSummary>();
-
     data.forEach((lot) => {
       const existing = map.get(lot.itemId);
       if (existing) {
@@ -48,13 +51,8 @@ export default function StockBalancePage() {
         });
       }
     });
-
     return Array.from(map.values()).sort((a, b) => (a.itemName ?? "").localeCompare(b.itemName ?? ""));
   }, [data]);
-
-  const lowStockItems = itemSummaries.filter(
-    (item) => item.minStockLevel !== undefined && item.totalBalance <= item.minStockLevel
-  );
 
   const columns: Column<ItemSummary>[] = [
     { header: t("stockBalance.colItemName"), accessor: (r) => r.itemName },
@@ -73,6 +71,15 @@ export default function StockBalancePage() {
           <h2 className="text-2xl font-semibold">{t("stockBalance.title")}</h2>
           <p className="text-sm text-muted-foreground">{t("stockBalance.subtitle")}</p>
         </div>
+        {canAddDirect && (
+          <Button
+            variant="outline"
+            className="border-destructive/40 text-destructive hover:bg-destructive/5"
+            onClick={() => setAddDirectOpen(true)}
+          >
+            <PackagePlus className="h-4 w-4" /> {t("stockBalance.addDirectButton")}
+          </Button>
+        )}
       </div>
 
       <DataTable
@@ -94,6 +101,8 @@ export default function StockBalancePage() {
           </Button>
         )}
       />
+
+      {canAddDirect && <AddDirectStockDialog open={addDirectOpen} onOpenChange={setAddDirectOpen} />}
     </div>
   );
 }

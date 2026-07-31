@@ -199,7 +199,13 @@
     "stockInHistory": "Riwayat Barang Masuk",
     "noStockInHistory": "Belum ada riwayat barang masuk.",
     "stockOutHistory": "Riwayat Barang Keluar",
-    "noStockOutHistory": "Belum ada riwayat barang keluar."
+    "noStockOutHistory": "Belum ada riwayat barang keluar.",
+    "addDirectButton": "Tambah Stok Langsung",
+    "addDirectTitle": "Tambah Stok Langsung",
+    "addDirectWarning": "Ini nambah stok langsung ke saldo, sepenuhnya di luar alur NPR → PO → DO. Pakai cuma buat kasus kayak input stok fisik yang udah ada tapi belum pernah tercatat lewat proses normal.",
+    "qtyToAdd": "Jumlah yang Ditambahkan",
+    "addDirectReasonPlaceholder": "Jelaskan kenapa stok ini ditambah langsung (mis. migrasi data awal, nemu stok fisik yang belum tercatat)...",
+    "confirmAddDirect": "Tambah Stok"
   },
   "master": {
     "title": "Data Master",

@@ -1,5 +1,7 @@
 import { apiClient } from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
 import type { ApiSuccess } from "@/types/api.types";
 import type { StockLot, Item, StockIn, StockOut } from "@/types/inventory.types";
 
@@ -41,5 +43,39 @@ export function useItemStockHistory(itemId?: string) {
     queryKey: ["item-stock-history", itemId],
     queryFn: () => itemHistoryApi.get(itemId as string),
     enabled: !!itemId,
+  });
+}
+
+// ---- Tambah Stok Langsung (Super Admin, tanpa lewat NPR->PO->DO) ----
+export interface AddDirectStockPayload {
+  itemId: string;
+  projectRefId: string;
+  costCentreId: string;
+  costCodeId: string;
+  qty: number;
+  reason: string;
+}
+
+function extractErrorMessage(error: unknown, fallback: string) {
+  return isAxiosError(error) ? (error.response?.data?.message ?? fallback) : fallback;
+}
+
+export const stockLotAdjustmentApi = {
+  addDirect: async (payload: AddDirectStockPayload) => {
+    const { data } = await apiClient.post<ApiSuccess<StockLot>>("/stock-lots/direct-add", payload);
+    return data.data;
+  },
+};
+
+export function useAddDirectStock() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: stockLotAdjustmentApi.addDirect,
+    onSuccess: () => {
+      toast.success("Stok berhasil ditambahkan langsung");
+      qc.invalidateQueries({ queryKey: ["stock-lots"] });
+      qc.invalidateQueries({ queryKey: ["item-stock-history"] });
+    },
+    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menambahkan stok")),
   });
 }
