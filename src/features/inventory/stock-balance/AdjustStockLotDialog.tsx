@@ -1,0 +1,91 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useTranslation } from "react-i18next";
+import { ShieldAlert } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input, Label } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useAdjustStockLot } from "./stock-balance.hooks";
+import type { StockLot } from "@/types/inventory.types";
+
+const schema = z.object({
+  newBalance: z.coerce.number().min(0, "Saldo gak boleh negatif"),
+  reason: z.string().min(5, "Alasan wajib diisi, jelaskan sedikit lebih detail"),
+});
+
+type FormValues = z.infer<typeof schema>;
+
+interface AdjustStockLotDialogProps {
+  lot: StockLot | null;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function AdjustStockLotDialog({ lot, onOpenChange }: AdjustStockLotDialogProps) {
+  const { t } = useTranslation();
+  const adjust = useAdjustStockLot();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+
+  useEffect(() => {
+    if (lot) reset({ newBalance: lot.balance, reason: "" });
+  }, [lot, reset]);
+
+  if (!lot) return null;
+
+  const onSubmit = async (values: FormValues) => {
+    await adjust.mutateAsync({ stockLotId: lot.id, newBalance: values.newBalance, reason: values.reason });
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={!!lot} onOpenChange={onOpenChange}>
+      <DialogContent title={t("stockBalance.adjustTitle")} className="max-w-lg">
+        <div className="mb-3 rounded-md border bg-muted/20 p-3 text-sm">
+          <p className="font-medium">{lot.item?.itemName}</p>
+          <p className="text-xs text-muted-foreground">
+            {lot.projectRef?.code} / {lot.costCentre?.code} / {lot.costCode?.code}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("stockBalance.currentBalance")}: <span className="font-semibold text-foreground">{lot.balance}</span> {lot.item?.unit}
+          </p>
+        </div>
+
+        <div className="mb-4 flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive">
+          <ShieldAlert className="h-4 w-4 shrink-0" />
+          <span>{t("stockBalance.adjustWarning")}</span>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <div>
+            <Label>{t("stockBalance.newBalance")}</Label>
+            <Input type="number" step="any" {...register("newBalance")} />
+            {errors.newBalance && <p className="mt-1 text-xs text-destructive">{errors.newBalance.message}</p>}
+          </div>
+
+          <div>
+            <Label>{t("stockOut.reason")}</Label>
+            <Textarea rows={3} placeholder={t("stockBalance.adjustReasonPlaceholder")} {...register("reason")} />
+            {errors.reason && <p className="mt-1 text-xs text-destructive">{errors.reason.message}</p>}
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button type="submit" variant="destructive" disabled={adjust.isPending}>
+              {adjust.isPending ? t("common.saving") : t("stockBalance.confirmAdjust")}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

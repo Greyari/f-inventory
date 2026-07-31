@@ -195,6 +195,7 @@
     "backToList": "Back to list",
     "totalIn": "Total In",
     "totalOut": "Total Out",
+    "totalManualAdjustment": "Manual Adjustment",
     "currentBalance": "Total Balance",
     "lotBreakdown": "Lot Breakdown",
     "stockInHistory": "Stock In History",
@@ -206,7 +207,16 @@
     "addDirectWarning": "This adds stock straight to the balance, completely bypassing the NPR → PO → DO flow. Use only for cases like entering existing physical stock that was never recorded through the normal process.",
     "qtyToAdd": "Quantity to Add",
     "addDirectReasonPlaceholder": "Explain why this stock is being added directly (e.g. initial data migration, found existing physical stock)...",
-    "confirmAddDirect": "Add Stock"
+    "confirmAddDirect": "Add Stock",
+    "adjustButton": "Correct Balance",
+    "adjustTitle": "Correct Stock Balance",
+    "adjustWarning": "This directly overwrites the lot's balance to a new number. Use only to fix a mistake or reconcile with a physical stock count. Always fill in the reason.",
+    "newBalance": "New Balance",
+    "adjustReasonPlaceholder": "Explain why this balance is being corrected (e.g. physical stock count result, fixing a previous input mistake)...",
+    "confirmAdjust": "Save Correction",
+    "adjustmentHistory": "Manual Adjustment History",
+    "logDirectAddition": "Stock added directly",
+    "logCorrection": "Balance corrected"
   },
   "master": {
     "title": "Master Data",

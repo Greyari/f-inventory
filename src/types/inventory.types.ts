@@ -35,6 +35,24 @@ export interface StockLot {
   balance: number;
 }
 
+// ---- Riwayat penyesuaian manual (koreksi & tambah langsung) Super Admin ----
+export type StockLotAdjustmentType = "correction" | "direct_addition";
+
+export interface StockLotAdjustmentLog {
+  id: string;
+  type: StockLotAdjustmentType;
+  oldBalance: number;
+  newBalance: number;
+  reason: string;
+  stockLot?: {
+    projectRef?: string;
+    costCentre?: string;
+    costCode?: string;
+  };
+  user?: { id: string; name: string } | null;
+  createdAt: string;
+}
+
 // ---- Barang Masuk ----
 // npr -> po -> do. Stok baru bertambah begitu status jadi "do".
 export type StockInStatus = "npr" | "po" | "do";

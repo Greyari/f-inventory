@@ -194,6 +194,7 @@
     "backToList": "Kembali ke daftar",
     "totalIn": "Total Masuk",
     "totalOut": "Total Keluar",
+    "totalManualAdjustment": "Penyesuaian Manual",
     "currentBalance": "Total Saat Ini",
     "lotBreakdown": "Rincian per Lot",
     "stockInHistory": "Riwayat Barang Masuk",
@@ -205,7 +206,16 @@
     "addDirectWarning": "Ini nambah stok langsung ke saldo, sepenuhnya di luar alur NPR → PO → DO. Pakai cuma buat kasus kayak input stok fisik yang udah ada tapi belum pernah tercatat lewat proses normal.",
     "qtyToAdd": "Jumlah yang Ditambahkan",
     "addDirectReasonPlaceholder": "Jelaskan kenapa stok ini ditambah langsung (mis. migrasi data awal, nemu stok fisik yang belum tercatat)...",
-    "confirmAddDirect": "Tambah Stok"
+    "confirmAddDirect": "Tambah Stok",
+    "adjustButton": "Koreksi Saldo",
+    "adjustTitle": "Koreksi Saldo Stok",
+    "adjustWarning": "Ini langsung menimpa saldo lot ini ke angka baru. Pakai cuma buat memperbaiki kesalahan atau menyamakan dengan hasil hitung fisik. Wajib isi alasan.",
+    "newBalance": "Saldo Baru",
+    "adjustReasonPlaceholder": "Jelaskan kenapa saldo ini dikoreksi (mis. hasil stock opname fisik, perbaiki kesalahan input sebelumnya)...",
+    "confirmAdjust": "Simpan Koreksi",
+    "adjustmentHistory": "Riwayat Penyesuaian Manual",
+    "logDirectAddition": "Stok ditambah langsung",
+    "logCorrection": "Saldo dikoreksi"
   },
   "master": {
     "title": "Data Master",
