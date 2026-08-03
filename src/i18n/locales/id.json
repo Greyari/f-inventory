@@ -376,6 +376,7 @@
       "Rusak Ringan": "Rusak Ringan",
       "Rusak Berat": "Rusak Berat",
       "Hilang": "Hilang"
-    }
+    },
+    "alreadyReturned": "This usage record has already been returned."
   }
 }

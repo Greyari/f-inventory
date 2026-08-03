@@ -17,6 +17,14 @@ export function useAssetUsages(params: ListParams & { status?: string; assetId?:
   });
 }
 
+export function useAssetUsageDetail(id?: string) {
+  return useQuery({
+    queryKey: [KEY, id],
+    queryFn: () => assetUsageApi.detail(id as string),
+    enabled: !!id,
+  });
+}
+
 export function useCheckoutAsset() {
   const qc = useQueryClient();
   return useMutation({
@@ -24,7 +32,7 @@ export function useCheckoutAsset() {
     onSuccess: () => {
       toast.success("Pemakaian aset berhasil dicatat");
       qc.invalidateQueries({ queryKey: [KEY] });
-      qc.invalidateQueries({ queryKey: ["assets"] }); // availableQty ikut berubah
+      qc.invalidateQueries({ queryKey: ["assets"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal mencatat pemakaian aset")),
   });
@@ -35,9 +43,10 @@ export function useReturnAsset() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: ReturnAssetPayload }) =>
       assetUsageApi.returnAsset(id, payload),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       toast.success("Pengembalian aset berhasil dicatat");
       qc.invalidateQueries({ queryKey: [KEY] });
+      qc.invalidateQueries({ queryKey: [KEY, variables.id] });
       qc.invalidateQueries({ queryKey: ["assets"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal mencatat pengembalian aset")),

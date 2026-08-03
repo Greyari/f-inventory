@@ -376,6 +376,7 @@
       "Rusak Ringan": "Minor Damage",
       "Rusak Berat": "Major Damage",
       "Hilang": "Lost"
-    }
+    },
+    "alreadyReturned": "Pemakaian ini sudah pernah dikembalikan sebelumnya."
   }
 }

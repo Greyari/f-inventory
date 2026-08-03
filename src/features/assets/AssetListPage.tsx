@@ -6,7 +6,6 @@ import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useAssets, useDeleteAsset, useAssetSummary } from "./asset.hooks";
-import { AssetFormDialog } from "./AssetFormDialog";
 import { useHasPermission } from "@/store/authStore";
 import { useConfirm } from "@/store/confirmStore";
 import { cn } from "@/lib/utils";
@@ -20,24 +19,12 @@ export default function AssetListPage() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [page, setPage] = useState(1);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingData, setEditingData] = useState<Asset | null>(null);
 
   const { data, isLoading } = useAssets({ search: debouncedSearch, page, limit: 10 });
   const { data: summary } = useAssetSummary();
   const deleteMutation = useDeleteAsset();
 
   useEffect(() => setPage(1), [debouncedSearch]);
-
-  const openCreate = () => {
-    setEditingData(null);
-    setDialogOpen(true);
-  };
-
-  const openEdit = (row: Asset) => {
-    setEditingData(row);
-    setDialogOpen(true);
-  };
 
   const handleDelete = async (row: Asset) => {
     const ok = await confirm({
@@ -130,7 +117,7 @@ export default function AssetListPage() {
         onPageChange={setPage}
         actions={
           canManage && (
-            <Button size="sm" onClick={openCreate}>
+            <Button size="sm" onClick={() => navigate("/assets/new")}>
               <Plus className="h-4 w-4" /> {t("asset.addButton")}
             </Button>
           )
@@ -147,7 +134,12 @@ export default function AssetListPage() {
             </Button>
             {canManage && (
               <>
-                <Button variant="ghost" size="icon" onClick={() => openEdit(row)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title={t("common.edit")}
+                  onClick={() => navigate(`/assets/${row.id}/edit`)}
+                >
                   <Pencil className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => handleDelete(row)}>
@@ -158,8 +150,6 @@ export default function AssetListPage() {
           </>
         )}
       />
-
-      <AssetFormDialog open={dialogOpen} onOpenChange={setDialogOpen} editingData={editingData} />
     </div>
   );
 }

@@ -23,6 +23,10 @@ export const assetUsageApi = {
     const { data } = await apiClient.get<ApiSuccess<AssetUsage[]>>("/asset-usages", { params });
     return data;
   },
+  detail: async (id: string) => {
+    const { data } = await apiClient.get<ApiSuccess<AssetUsage>>(`/asset-usages/${id}`);
+    return data.data;
+  },
   checkout: async (payload: AssetUsagePayload) => {
     const { data } = await apiClient.post<ApiSuccess<AssetUsage>>("/asset-usages", payload);
     return data.data;

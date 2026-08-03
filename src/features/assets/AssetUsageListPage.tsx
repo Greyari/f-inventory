@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Plus, Undo2, Trash2, ImageIcon } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
@@ -6,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useAssetUsages, useDeleteAssetUsage } from "./asset-usage.hooks";
-import { AssetUsageFormDialog } from "./AssetUsageFormDialog";
-import { AssetReturnDialog } from "./AssetReturnDialog";
 import { useHasPermission } from "@/store/authStore";
 import { useConfirm } from "@/store/confirmStore";
 import { cn } from "@/lib/utils";
@@ -15,6 +14,7 @@ import type { AssetUsage } from "@/types/asset.types";
 
 export default function AssetUsageListPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const canCheckout = useHasPermission("asset-usages.checkout");
   const canReturn = useHasPermission("asset-usages.return");
   const canDelete = useHasPermission("asset-usages.delete");
@@ -24,8 +24,6 @@ export default function AssetUsageListPage() {
   const debouncedSearch = useDebouncedValue(search);
   const [status, setStatus] = useState<string>("");
   const [page, setPage] = useState(1);
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [returningUsage, setReturningUsage] = useState<AssetUsage | null>(null);
 
   const { data, isLoading } = useAssetUsages({ search: debouncedSearch, status: status || undefined, page, limit: 10 });
   const deleteMutation = useDeleteAssetUsage();
@@ -119,7 +117,7 @@ export default function AssetUsageListPage() {
               <option value="RETURNED">{t("assetUsage.statusReturned")}</option>
             </Select>
             {canCheckout && (
-              <Button size="sm" onClick={() => setCheckoutOpen(true)}>
+              <Button size="sm" onClick={() => navigate("/assets/usage/new")}>
                 <Plus className="h-4 w-4" /> {t("assetUsage.checkoutButton")}
               </Button>
             )}
@@ -132,7 +130,7 @@ export default function AssetUsageListPage() {
                 variant="ghost"
                 size="icon"
                 title={t("assetUsage.returnButton")}
-                onClick={() => setReturningUsage(row)}
+                onClick={() => navigate(`/assets/usage/${row.id}/return`)}
               >
                 <Undo2 className="h-4 w-4 text-primary" />
               </Button>
@@ -145,9 +143,6 @@ export default function AssetUsageListPage() {
           </>
         )}
       />
-
-      <AssetUsageFormDialog open={checkoutOpen} onOpenChange={setCheckoutOpen} />
-      <AssetReturnDialog usage={returningUsage} onOpenChange={(open) => !open && setReturningUsage(null)} />
     </div>
   );
 }
