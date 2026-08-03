@@ -101,7 +101,7 @@ export default function AssetUsageFormPage() {
           </div>
           <div>
             <Label>{t("assetUsage.checkoutDate")}</Label>
-            <Input type="date" {...register("checkoutDate")} />
+            <Input type="datetime-local" {...register("checkoutDate")} />
           </div>
         </div>
 

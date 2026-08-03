@@ -119,7 +119,7 @@ export default function AssetReturnPage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <Label>{t("assetUsage.returnDate")}</Label>
-            <Input type="date" {...register("returnDate")} />
+            <Input type="datetime-local" {...register("returnDate")} />
             {errors.returnDate && <p className="mt-1 text-xs text-destructive">{errors.returnDate.message}</p>}
           </div>
           <div>

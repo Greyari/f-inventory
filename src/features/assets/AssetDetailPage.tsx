@@ -5,6 +5,21 @@ import { cn } from "@/lib/utils";
 import { useAsset } from "./asset.hooks";
 import { useAssetUsages } from "./asset-usage.hooks";
 
+// Helper format tanggal & jam
+const formatDateTime = (dateString?: string | null) => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+};
+
 export default function AssetDetailPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -84,41 +99,45 @@ export default function AssetDetailPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
-                  <th className="px-4 py-2">{t("assetUsage.usedBy")}</th>
-                  <th className="px-4 py-2">{t("assetUsage.purpose")}</th>
-                  <th className="px-4 py-2">{t("asset.qty")}</th>
-                  <th className="px-4 py-2">{t("assetUsage.checkoutDate")}</th>
-                  <th className="px-4 py-2">{t("assetUsage.status")}</th>
-                  <th className="px-4 py-2">{t("assetUsage.returnDate")}</th>
-                  <th className="px-4 py-2">{t("assetUsage.returnCondition")}</th>
-                  <th className="px-4 py-2">{t("assetUsage.returnNotes")}</th>
-                  <th className="px-4 py-2">{t("assetUsage.returnPhoto")}</th>
+                  <th className="px-4 py-3">{t("assetUsage.usedBy")}</th>
+                  <th className="px-4 py-3">{t("assetUsage.purpose")}</th>
+                  <th className="px-4 py-3">{t("asset.qty")}</th>
+                  <th className="px-4 py-3 whitespace-nowrap">{t("assetUsage.checkoutDate")}</th>
+                  <th className="px-4 py-3 whitespace-nowrap">{t("assetUsage.returnDate")}</th>
+                  <th className="px-4 py-3">{t("assetUsage.status")}</th>
+                  <th className="px-4 py-3">{t("assetUsage.returnCondition")}</th>
+                  <th className="px-4 py-3">{t("assetUsage.returnNotes")}</th>
+                  <th className="px-4 py-3">{t("assetUsage.returnPhoto")}</th>
                 </tr>
               </thead>
               <tbody>
                 {usages.map((u) => (
-                  <tr key={u.id} className="border-b last:border-0 align-top">
-                    <td className="px-4 py-2 font-medium">{u.usedBy}</td>
-                    <td className="px-4 py-2 text-muted-foreground">{u.purpose}</td>
-                    <td className="px-4 py-2">{u.qty}</td>
-                    <td className="px-4 py-2">{u.checkoutDate}</td>
-                    <td className="px-4 py-2">
+                  <tr key={u.id} className="border-b last:border-0 align-middle">
+                    <td className="px-4 py-3 font-medium">{u.usedBy}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{u.purpose}</td>
+                    <td className="px-4 py-3">{u.qty}</td>
+                    <td className="px-4 py-3 text-xs whitespace-nowrap">{formatDateTime(u.checkoutDate)}</td>
+                    <td className="px-4 py-3 text-xs whitespace-nowrap">{formatDateTime(u.returnDate)}</td>
+                    <td className="px-4 py-3">
                       <span
                         className={cn(
-                          "rounded-full px-2 py-0.5 text-xs font-medium",
-                          u.status === "IN_USE" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"
+                          "inline-block rounded-md px-2.5 py-1 text-xs font-semibold whitespace-nowrap",
+                          u.status === "IN_USE"
+                            ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                            : "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
                         )}
                       >
                         {u.status === "IN_USE" ? t("assetUsage.statusInUse") : t("assetUsage.statusReturned")}
                       </span>
                     </td>
-                    <td className="px-4 py-2">{u.returnDate || "-"}</td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-3">
                       {u.returnCondition ? (
                         <span
                           className={cn(
-                            "rounded-full px-2 py-0.5 text-xs",
-                            u.returnCondition === "Baik" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                            "inline-block rounded-md px-2 py-0.5 text-xs whitespace-nowrap",
+                            u.returnCondition === "Baik"
+                              ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                              : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
                           )}
                         >
                           {t(`assetUsage.condition.${u.returnCondition}`)}
@@ -127,16 +146,16 @@ export default function AssetDetailPage() {
                         "-"
                       )}
                     </td>
-                    <td className="max-w-[200px] px-4 py-2 text-xs text-muted-foreground">
+                    <td className="max-w-[200px] px-4 py-3 text-xs text-muted-foreground">
                       {u.returnNotes || "-"}
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-3">
                       {u.returnPhotoUrl ? (
                         <a href={u.returnPhotoUrl} target="_blank" rel="noreferrer">
                           <img
                             src={u.returnPhotoUrl}
                             alt={t("assetUsage.returnPhoto")}
-                            className="h-10 w-10 rounded object-cover ring-1 ring-border"
+                            className="h-9 w-9 rounded object-cover ring-1 ring-border transition-transform hover:scale-105"
                           />
                         </a>
                       ) : (

@@ -12,6 +12,21 @@ import { useConfirm } from "@/store/confirmStore";
 import { cn } from "@/lib/utils";
 import type { AssetUsage } from "@/types/asset.types";
 
+// Helper format tanggal & jam
+const formatDateTime = (dateString?: string | null) => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+};
+
 export default function AssetUsageListPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -25,7 +40,12 @@ export default function AssetUsageListPage() {
   const [status, setStatus] = useState<string>("");
   const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useAssetUsages({ search: debouncedSearch, status: status || undefined, page, limit: 10 });
+  const { data, isLoading } = useAssetUsages({
+    search: debouncedSearch,
+    status: status || undefined,
+    page,
+    limit: 10,
+  });
   const deleteMutation = useDeleteAssetUsage();
 
   useEffect(() => setPage(1), [debouncedSearch, status]);
@@ -52,14 +72,33 @@ export default function AssetUsageListPage() {
     { header: t("assetUsage.usedBy"), accessor: (r) => r.usedBy },
     { header: t("assetUsage.purpose"), accessor: (r) => r.purpose, hideOnMobile: true },
     { header: t("asset.qty"), accessor: (r) => r.qty },
-    { header: t("assetUsage.checkoutDate"), accessor: (r) => r.checkoutDate, hideOnMobile: true },
+    {
+      header: t("assetUsage.checkoutDate"),
+      accessor: (r) => (
+        <span className="whitespace-nowrap text-xs">
+          {formatDateTime(r.checkoutDate)}
+        </span>
+      ),
+      hideOnMobile: true,
+    },
+    {
+      header: t("assetUsage.returnDate"),
+      accessor: (r) => (
+        <span className="whitespace-nowrap text-xs">
+          {formatDateTime(r.returnDate)}
+        </span>
+      ),
+      hideOnMobile: true,
+    },
     {
       header: t("assetUsage.status"),
       accessor: (r) => (
         <span
           className={cn(
-            "rounded-full px-2 py-0.5 text-xs font-medium",
-            r.status === "IN_USE" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"
+            "inline-block rounded-md px-2.5 py-1 text-xs font-semibold whitespace-nowrap",
+            r.status === "IN_USE"
+              ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+              : "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
           )}
         >
           {r.status === "IN_USE" ? t("assetUsage.statusInUse") : t("assetUsage.statusReturned")}
@@ -69,24 +108,35 @@ export default function AssetUsageListPage() {
     {
       header: t("assetUsage.returnCondition"),
       accessor: (r) =>
-        r.status === "RETURNED" ? (
-          <div className="flex items-center gap-1.5">
-            <span
-              className={cn(
-                "rounded-full px-2 py-0.5 text-xs",
-                r.returnCondition === "Baik" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
-              )}
-            >
-              {r.returnCondition ? t(`assetUsage.condition.${r.returnCondition}`) : "-"}
-            </span>
-            {r.returnPhotoUrl && (
-              <a href={r.returnPhotoUrl} target="_blank" rel="noreferrer" title={t("assetUsage.returnPhoto")}>
-                <ImageIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-              </a>
+        r.status === "RETURNED" && r.returnCondition ? (
+          <span
+            className={cn(
+              "inline-block rounded-md px-2 py-0.5 text-xs whitespace-nowrap",
+              r.returnCondition === "Baik"
+                ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
             )}
-          </div>
+          >
+            {t(`assetUsage.condition.${r.returnCondition}`)}
+          </span>
         ) : (
           "-"
+        ),
+      hideOnMobile: true,
+    },
+    {
+      header: t("assetUsage.returnPhoto"),
+      accessor: (r) =>
+        r.returnPhotoUrl ? (
+          <a href={r.returnPhotoUrl} target="_blank" rel="noreferrer" className="inline-block">
+            <img
+              src={r.returnPhotoUrl}
+              alt={t("assetUsage.returnPhoto")}
+              className="h-8 w-8 rounded object-cover ring-1 ring-border transition-transform hover:scale-105"
+            />
+          </a>
+        ) : (
+          <span className="text-muted-foreground/40">-</span>
         ),
       hideOnMobile: true,
     },
