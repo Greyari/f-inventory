@@ -14,26 +14,19 @@ const schema = z.object({
   assetCode: z.string().min(1, "Kode aset wajib diisi"),
   assetName: z.string().min(1, "Nama aset wajib diisi"),
   category: z.string().min(1, "Kategori wajib diisi"),
-  recipient: z.string().min(1, "Penerima/lokasi wajib diisi"),
   qty: z.coerce.number().min(0.01, "Qty harus > 0"),
-  condition: z.string().optional(),
-  acquiredDate: z.string().optional(),
   notes: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 const CATEGORY_SUGGESTIONS = ["Elektronik", "Furniture", "Kendaraan", "Peralatan Berat", "Peralatan Kantor"];
-const CONDITION_SUGGESTIONS = ["Baik", "Rusak Ringan", "Rusak Berat", "Dalam Perbaikan"];
 
 const emptyValues = (): FormValues => ({
   assetCode: "",
   assetName: "",
   category: "",
-  recipient: "",
   qty: 1,
-  condition: "",
-  acquiredDate: "",
   notes: "",
 });
 
@@ -61,10 +54,7 @@ export default function AssetFormPage() {
         assetCode: editingData.assetCode,
         assetName: editingData.assetName,
         category: editingData.category,
-        recipient: editingData.recipient,
         qty: editingData.qty,
-        condition: editingData.condition ?? "",
-        acquiredDate: editingData.acquiredDate ?? "",
         notes: editingData.notes ?? "",
       });
     }
@@ -125,31 +115,11 @@ export default function AssetFormPage() {
           {errors.assetName && <p className="mt-1 text-xs text-destructive">{errors.assetName.message}</p>}
         </div>
 
-        <div>
-          <Label>{t("asset.recipient")}</Label>
-          <Input {...register("recipient")} placeholder={t("asset.recipientPlaceholder")} />
-          {errors.recipient && <p className="mt-1 text-xs text-destructive">{errors.recipient.message}</p>}
-          <p className="mt-1 text-xs text-muted-foreground">{t("asset.recipientHint")}</p>
-        </div>
-
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
             <Label>{t("asset.qty")}</Label>
             <Input type="number" step="any" {...register("qty")} />
             {errors.qty && <p className="mt-1 text-xs text-destructive">{errors.qty.message}</p>}
-          </div>
-          <div>
-            <Label>{t("asset.condition")}</Label>
-            <Input {...register("condition")} list="asset-condition-suggestions" placeholder="e.g. Baik" />
-            <datalist id="asset-condition-suggestions">
-              {CONDITION_SUGGESTIONS.map((c) => (
-                <option key={c} value={c} />
-              ))}
-            </datalist>
-          </div>
-          <div>
-            <Label>{t("asset.acquiredDate")}</Label>
-            <Input type="date" {...register("acquiredDate")} />
           </div>
         </div>
 

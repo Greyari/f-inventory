@@ -8,7 +8,6 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useAssets, useDeleteAsset, useAssetSummary } from "./asset.hooks";
 import { useHasPermission } from "@/store/authStore";
 import { useConfirm } from "@/store/confirmStore";
-import { cn } from "@/lib/utils";
 import type { Asset } from "@/types/asset.types";
 
 export default function AssetListPage() {
@@ -39,7 +38,6 @@ export default function AssetListPage() {
     { header: t("asset.assetCode"), accessor: (r) => <span className="font-medium">{r.assetCode}</span> },
     { header: t("asset.assetName"), accessor: (r) => r.assetName },
     { header: t("asset.category"), accessor: (r) => r.category, hideOnMobile: true },
-    { header: t("asset.recipient"), accessor: (r) => r.recipient },
     {
       header: t("asset.qty"),
       accessor: (r) => (
@@ -48,23 +46,6 @@ export default function AssetListPage() {
           {r.inUseQty > 0 && <div className="text-muted-foreground">{t("asset.inUseQty")}: {r.inUseQty}</div>}
         </div>
       ),
-    },
-    {
-      header: t("asset.condition"),
-      accessor: (r) =>
-        r.condition ? (
-          <span
-            className={cn(
-              "rounded-full px-2 py-0.5 text-xs",
-              r.condition === "Baik" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
-            )}
-          >
-            {r.condition}
-          </span>
-        ) : (
-          "-"
-        ),
-      hideOnMobile: true,
     },
   ];
 

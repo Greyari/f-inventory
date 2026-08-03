@@ -39,9 +39,6 @@ export default function AssetDetailPage() {
         <h2 className="text-2xl font-semibold">
           {asset.assetCode} — {asset.assetName}
         </h2>
-        <p className="text-sm text-muted-foreground">
-          {asset.category} · {t("asset.recipient")}: {asset.recipient}
-        </p>
       </div>
 
       {/* Summary cards */}
@@ -64,14 +61,6 @@ export default function AssetDetailPage() {
 
       {/* Info aset lainnya */}
       <div className="mb-6 grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-3">
-        <div>
-          <p className="text-xs text-muted-foreground">{t("asset.condition")}</p>
-          <p className="font-medium">{asset.condition || "-"}</p>
-        </div>
-        <div>
-          <p className="text-xs text-muted-foreground">{t("asset.acquiredDate")}</p>
-          <p className="font-medium">{asset.acquiredDate || "-"}</p>
-        </div>
         <div>
           <p className="text-xs text-muted-foreground">{t("asset.notes")}</p>
           <p className="font-medium">{asset.notes || "-"}</p>

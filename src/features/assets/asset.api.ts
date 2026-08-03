@@ -6,10 +6,7 @@ export interface AssetPayload {
   assetCode: string;
   assetName: string;
   category: string;
-  recipient: string;
   qty: number;
-  condition?: string;
-  acquiredDate?: string;
   notes?: string;
 }
 

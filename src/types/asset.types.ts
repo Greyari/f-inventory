@@ -4,12 +4,9 @@ export interface Asset {
   assetName: string;
   category: string;
   // Nama orang (mis. "Budi Santoso") ATAU nama ruangan (mis. "Ruang Meeting Lt. 2")
-  recipient: string;
   qty: number;
   inUseQty: number;
   availableQty: number;
-  condition?: string | null;
-  acquiredDate?: string | null;
   notes?: string | null;
   createdAt: string;
 }
