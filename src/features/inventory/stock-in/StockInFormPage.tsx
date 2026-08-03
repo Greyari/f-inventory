@@ -185,14 +185,10 @@ export default function StockInFormPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-lg border bg-background p-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
+          <div className="col-span-2">
             <Label>{t("stockIn.prNo")}</Label>
-            <Input {...register("prNo")} placeholder="e.g. GRN-2026-0031" />
+            <Input {...register("prNo")} placeholder="e.g. 123456" />
             {errors.prNo && <p className="mt-1 text-xs text-destructive">{errors.prNo.message}</p>}
-          </div>
-          <div>
-            <Label>{t("stockIn.dateRaised")}</Label>
-            <Input type="date" {...register("dateRaised")} />
           </div>
 
           <div className="col-span-2">
@@ -219,6 +215,12 @@ export default function StockInFormPage() {
             />
             {errors.projectRefId && <p className="mt-1 text-xs text-destructive">{errors.projectRefId.message}</p>}
           </div>
+
+          <div>
+            <Label>{t("stockIn.dateRaised")}</Label>
+            <Input type="date" {...register("dateRaised")} />
+          </div>
+
           <div>
             <Label>{t("stockIn.costCentre")}</Label>
             <Controller
@@ -237,6 +239,7 @@ export default function StockInFormPage() {
             />
             {errors.costCentreId && <p className="mt-1 text-xs text-destructive">{errors.costCentreId.message}</p>}
           </div>
+
           <div>
             <Label>{t("stockIn.costCode")}</Label>
             <Controller
@@ -276,8 +279,8 @@ export default function StockInFormPage() {
 
           <div className="space-y-3">
             {fields.map((field, index) => (
-              <div key={field.id} className="grid grid-cols-1 gap-2 sm:grid-cols-12 sm:items-start">
-                <div className="sm:col-span-5">
+              <div key={field.id} className="flex items-start gap-2">
+                <div className="flex-1">
                   <Controller
                     control={control}
                     name={`items.${index}.itemId`}
@@ -295,8 +298,14 @@ export default function StockInFormPage() {
                       />
                     )}
                   />
+                  {errors.items?.[index]?.itemId && (
+                    <p className="mt-1 text-xs text-destructive">
+                      {errors.items[index]?.itemId?.message}
+                    </p>
+                  )}
                 </div>
-                <div className="sm:col-span-2">
+
+                <div className="w-28 sm:w-36">
                   <Input
                     type="number"
                     step="any"
@@ -304,15 +313,27 @@ export default function StockInFormPage() {
                     disabled={itemsLocked}
                     {...register(`items.${index}.qty`)}
                   />
-                  {rowUnits[index] && <p className="mt-1 text-xs text-muted-foreground">{rowUnits[index]}</p>}
-                </div>
-                <div className="sm:col-span-1">
-                  {!itemsLocked && fields.length > 1 && (
-                    <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveItem(index)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                  {rowUnits[index] && (
+                    <p className="mt-1 text-xs text-muted-foreground">{rowUnits[index]}</p>
+                  )}
+                  {errors.items?.[index]?.qty && (
+                    <p className="mt-1 text-xs text-destructive">
+                      {errors.items[index]?.qty?.message}
+                    </p>
                   )}
                 </div>
+
+                {!itemsLocked && fields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0 text-destructive hover:text-destructive"
+                    onClick={() => handleRemoveItem(index)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             ))}
           </div>
