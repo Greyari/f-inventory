@@ -14,7 +14,7 @@ import { StockInStatusBadge } from "./StockInStatusBadge";
 
 const schema = z.object({
   prNo: z.string().min(1, "Nomor referensi wajib diisi"),
-  dateReceived: z.string().min(1, "Tanggal wajib diisi"),
+  dateRaised: z.string().min(1, "Tanggal wajib diisi"),
   projectName: z.string().min(1, "Nama project wajib diisi"),
   projectRefId: z.string().min(1, "Project Ref wajib dipilih"),
   costCentreId: z.string().min(1, "Cost Centre wajib dipilih"),
@@ -59,7 +59,7 @@ export default function StockInOverridePage() {
     if (stockIn) {
       reset({
         prNo: stockIn.prNo,
-        dateReceived: stockIn.dateReceived,
+        dateRaised: stockIn.dateRaised,
         projectName: stockIn.projectName,
         projectRefId: stockIn.projectRefId,
         costCentreId: stockIn.costCentreId,
@@ -96,7 +96,7 @@ export default function StockInOverridePage() {
       id,
       payload: {
         prNo: values.prNo,
-        dateReceived: values.dateReceived,
+        dateRaised: values.dateRaised,
         projectName: values.projectName,
         projectRefId: values.projectRefId,
         costCentreId: values.costCentreId,
@@ -157,8 +157,8 @@ export default function StockInOverridePage() {
             {errors.prNo && <p className="mt-1 text-xs text-destructive">{errors.prNo.message}</p>}
           </div>
           <div>
-            <Label>{t("stockIn.dateReceived")}</Label>
-            <Input type="date" {...register("dateReceived")} />
+            <Label>{t("stockIn.dateRaised")}</Label>
+            <Input type="date" {...register("dateRaised")} />
           </div>
 
           <div className="col-span-2">

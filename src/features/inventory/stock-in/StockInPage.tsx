@@ -66,7 +66,7 @@ export default function StockInPage() {
         </div>
       ),
     },
-    { header: t("stockIn.colDateReceived"), accessor: (r) => r.dateReceived },
+    { header: t("stockIn.coldateRaised"), accessor: (r) => r.dateRaised },
     {
       header: t("stockIn.colProject"),
       accessor: (r) => (

@@ -8,7 +8,7 @@ const STATUS_LABELS: Record<StockInStatus, string> = { npr: "NPR", po: "PO", do:
 // Key payload "updated"/"override_updated" -> label yang ditampilkan
 const FIELD_LABELS: Record<string, string> = {
   prNo: "No. PR",
-  dateReceived: "Tanggal diterima",
+  dateRaised: "Tanggal diterima",
   projectName: "Nama project",
   projectRefId: "Project Ref",
   costCentreId: "Cost Centre",
@@ -19,7 +19,7 @@ const FIELD_LABELS: Record<string, string> = {
 };
 
 // Field yang nilainya manusiawi (bukan UUID) — ini yang ditampilkan old -> new-nya
-const READABLE_FIELDS = new Set(["prNo", "dateReceived", "projectName"]);
+const READABLE_FIELDS = new Set(["prNo", "dateRaised", "projectName"]);
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("id-ID", {

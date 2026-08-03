@@ -4,7 +4,7 @@ import type { StockIn, StockInActivityLog } from "@/types/inventory.types";
 
 export interface StockInPayload {
   prNo: string;
-  dateReceived: string;
+  dateRaised: string;
   projectName: string;
   projectRefId: string;
   costCentreId: string;
@@ -27,7 +27,7 @@ export interface OverrideStockInItemPayload {
 
 export interface OverrideUpdateStockInPayload {
   prNo?: string;
-  dateReceived?: string;
+  dateRaised?: string;
   projectName?: string;
   projectRefId?: string;
   costCentreId?: string;
@@ -103,7 +103,7 @@ export const stockInApi = {
   overrideUpdate: async (id: string, payload: OverrideUpdateStockInPayload) => {
     const formData = new FormData();
     if (payload.prNo !== undefined) formData.append("prNo", payload.prNo);
-    if (payload.dateReceived !== undefined) formData.append("dateReceived", payload.dateReceived);
+    if (payload.dateRaised !== undefined) formData.append("dateRaised", payload.dateRaised);
     if (payload.projectName !== undefined) formData.append("projectName", payload.projectName);
     if (payload.projectRefId !== undefined) formData.append("projectRefId", payload.projectRefId);
     if (payload.costCentreId !== undefined) formData.append("costCentreId", payload.costCentreId);

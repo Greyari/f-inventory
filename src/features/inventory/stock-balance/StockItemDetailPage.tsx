@@ -101,7 +101,7 @@ export default function StockItemDetailPage() {
                   <thead>
                     <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
                       <th className="px-4 py-2">{t("stockIn.colReference")}</th>
-                      <th className="px-4 py-2">{t("stockIn.colDateReceived")}</th>
+                      <th className="px-4 py-2">{t("stockIn.coldateRaised")}</th>
                       <th className="px-4 py-2">{t("stockIn.colProject")}</th>
                       <th className="px-4 py-2">{t("stockIn.qty")}</th>
                     </tr>
@@ -114,7 +114,7 @@ export default function StockItemDetailPage() {
                             {si.prNo}
                           </Link>
                         </td>
-                        <td className="px-4 py-2">{si.dateReceived}</td>
+                        <td className="px-4 py-2">{si.dateRaised}</td>
                         <td className="px-4 py-2 text-xs text-muted-foreground">
                           {si.projectRef?.code} / {si.costCentre?.code} / {si.costCode?.code}
                         </td>

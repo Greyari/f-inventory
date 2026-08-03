@@ -16,7 +16,7 @@ import { useHasPermission } from "@/store/authStore";
 
 const schema = z.object({
   prNo: z.string().min(1, "Nomor referensi wajib diisi"),
-  dateReceived: z.string().min(1, "Tanggal wajib diisi"),
+  dateRaised: z.string().min(1, "Tanggal wajib diisi"),
   projectName: z.string().min(1, "Nama project wajib diisi"),
   projectRefId: z.string().min(1, "Project Ref wajib dipilih"),
   costCentreId: z.string().min(1, "Cost Centre wajib dipilih"),
@@ -35,7 +35,7 @@ type FormValues = z.infer<typeof schema>;
 
 const emptyValues = (): FormValues => ({
   prNo: "",
-  dateReceived: new Date().toISOString().slice(0, 10),
+  dateRaised: new Date().toISOString().slice(0, 10),
   projectName: "",
   projectRefId: "",
   costCentreId: "",
@@ -45,7 +45,7 @@ const emptyValues = (): FormValues => ({
 
 const valuesFromStockIn = (data: StockIn): FormValues => ({
   prNo: data.prNo,
-  dateReceived: data.dateReceived,
+  dateRaised: data.dateRaised,
   projectName: data.projectName,
   projectRefId: data.projectRefId,
   costCentreId: data.costCentreId,
@@ -191,8 +191,8 @@ export default function StockInFormPage() {
             {errors.prNo && <p className="mt-1 text-xs text-destructive">{errors.prNo.message}</p>}
           </div>
           <div>
-            <Label>{t("stockIn.dateReceived")}</Label>
-            <Input type="date" {...register("dateReceived")} />
+            <Label>{t("stockIn.dateRaised")}</Label>
+            <Input type="date" {...register("dateRaised")} />
           </div>
 
           <div className="col-span-2">

@@ -103,7 +103,7 @@ export interface StockIn {
   // 1 foto per tahap untuk keseluruhan record (bukan per item)
   poPhotoUrl?: string | null;
   doPhotoUrl?: string | null;
-  dateReceived: string;
+  dateRaised: string;
   projectName: string;
   projectRefId: string;
   projectRef?: JobCode;
