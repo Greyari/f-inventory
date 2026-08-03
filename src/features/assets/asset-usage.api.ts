@@ -8,7 +8,6 @@ export interface AssetUsagePayload {
   purpose: string;
   qty: number;
   checkoutDate: string;
-  expectedReturnDate?: string;
 }
 
 export interface ReturnAssetPayload {

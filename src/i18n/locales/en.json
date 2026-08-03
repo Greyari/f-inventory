@@ -353,7 +353,6 @@
     "purpose": "Purpose",
     "purposePlaceholder": "What it's being used for",
     "checkoutDate": "Checkout Date",
-    "expectedReturnDate": "Expected Return (optional)",
     "returnDate": "Return Date",
     "returnCondition": "Condition on Return",
     "returnNotes": "Return Notes",

@@ -35,7 +35,6 @@ export interface AssetUsage {
   purpose: string;
   qty: number;
   checkoutDate: string;
-  expectedReturnDate?: string | null;
   status: AssetUsageStatus;
   returnDate?: string | null;
   returnCondition?: ReturnCondition | null;

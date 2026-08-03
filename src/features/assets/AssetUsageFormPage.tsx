@@ -17,7 +17,6 @@ const schema = z.object({
   purpose: z.string().min(1, "Keperluan wajib diisi"),
   qty: z.coerce.number().min(0.01, "Qty harus > 0"),
   checkoutDate: z.string().min(1, "Tanggal wajib diisi"),
-  expectedReturnDate: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -28,7 +27,6 @@ const emptyValues = (): FormValues => ({
   purpose: "",
   qty: 1,
   checkoutDate: new Date().toISOString().slice(0, 10),
-  expectedReturnDate: "",
 });
 
 export default function AssetUsageFormPage() {
@@ -95,7 +93,7 @@ export default function AssetUsageFormPage() {
           {errors.purpose && <p className="mt-1 text-xs text-destructive">{errors.purpose.message}</p>}
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <Label>{t("asset.qty")}</Label>
             <Input type="number" step="any" {...register("qty")} />
@@ -104,10 +102,6 @@ export default function AssetUsageFormPage() {
           <div>
             <Label>{t("assetUsage.checkoutDate")}</Label>
             <Input type="date" {...register("checkoutDate")} />
-          </div>
-          <div>
-            <Label>{t("assetUsage.expectedReturnDate")}</Label>
-            <Input type="date" {...register("expectedReturnDate")} />
           </div>
         </div>
 
