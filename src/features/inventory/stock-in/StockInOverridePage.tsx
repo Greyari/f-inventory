@@ -151,14 +151,10 @@ export default function StockInOverridePage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-lg border bg-background p-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
+          <div className="col-span-2">
             <Label>{t("stockIn.prNo")}</Label>
             <Input {...register("prNo")} />
             {errors.prNo && <p className="mt-1 text-xs text-destructive">{errors.prNo.message}</p>}
-          </div>
-          <div>
-            <Label>{t("stockIn.dateRaised")}</Label>
-            <Input type="date" {...register("dateRaised")} />
           </div>
 
           <div className="col-span-2">
@@ -184,6 +180,12 @@ export default function StockInOverridePage() {
               )}
             />
           </div>
+
+          <div>
+            <Label>{t("stockIn.dateRaised")}</Label>
+            <Input type="date" {...register("dateRaised")} />
+          </div>
+
           <div>
             <Label>{t("stockIn.costCentre")}</Label>
             <Controller
@@ -201,6 +203,7 @@ export default function StockInOverridePage() {
               )}
             />
           </div>
+
           <div>
             <Label>{t("stockIn.costCode")}</Label>
             <Controller
@@ -230,44 +233,71 @@ export default function StockInOverridePage() {
 
           <div className="space-y-3">
             {fields.map((field, index) => (
-              <div key={field.id} className="rounded-md border p-3">
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-12 sm:items-start">
-                  <div className="sm:col-span-4">
-                    <Controller
-                      control={control}
-                      name={`items.${index}.itemId`}
-                      render={({ field: f }) => (
-                        <ItemPickerField
-                          value={f.value}
-                          onChange={(val, item) => {
-                            f.onChange(val);
-                            setRowUnits((prev) => ({ ...prev, [index]: item?.unit ?? "" }));
-                          }}
-                          selectedSublabel={stockIn.items[index]?.item?.itemName}
-                          placeholder={t("common.selectItem")}
-                          error={!!errors.items?.[index]?.itemId}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <Input type="number" step="any" placeholder={t("stockIn.qty")} {...register(`items.${index}.qty`)} />
-                    {rowUnits[index] && <p className="mt-1 text-xs text-muted-foreground">{rowUnits[index]}</p>}
-                  </div>
-                  <div className="sm:col-span-3">
-                    <Input placeholder={t("stockIn.vendorName")} {...register(`items.${index}.vendorName`)} />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <Input type="number" step="any" placeholder={t("stockIn.price")} {...register(`items.${index}.price`)} />
-                  </div>
-                  <div className="sm:col-span-1">
-                    {fields.length > 1 && (
-                      <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveItem(index)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+              <div key={field.id} className="flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-start">
+                <div className="flex-1">
+                  <Controller
+                    control={control}
+                    name={`items.${index}.itemId`}
+                    render={({ field: f }) => (
+                      <ItemPickerField
+                        value={f.value}
+                        onChange={(val, item) => {
+                          f.onChange(val);
+                          setRowUnits((prev) => ({ ...prev, [index]: item?.unit ?? "" }));
+                        }}
+                        selectedSublabel={stockIn.items[index]?.item?.itemName}
+                        placeholder={t("common.selectItem")}
+                        error={!!errors.items?.[index]?.itemId}
+                      />
                     )}
-                  </div>
+                  />
+                  {errors.items?.[index]?.itemId && (
+                    <p className="mt-1 text-xs text-destructive">{errors.items[index]?.itemId?.message}</p>
+                  )}
                 </div>
+
+                <div className="w-full sm:w-28">
+                  <Input
+                    type="number"
+                    step="any"
+                    placeholder={t("stockIn.qty")}
+                    {...register(`items.${index}.qty`)}
+                  />
+                  {rowUnits[index] && (
+                    <p className="mt-1 text-xs text-muted-foreground">{rowUnits[index]}</p>
+                  )}
+                  {errors.items?.[index]?.qty && (
+                    <p className="mt-1 text-xs text-destructive">{errors.items[index]?.qty?.message}</p>
+                  )}
+                </div>
+
+                <div className="w-full sm:w-44">
+                  <Input
+                    placeholder={t("stockIn.vendorName")}
+                    {...register(`items.${index}.vendorName`)}
+                  />
+                </div>
+
+                <div className="w-full sm:w-32">
+                  <Input
+                    type="number"
+                    step="any"
+                    placeholder={t("stockIn.price")}
+                    {...register(`items.${index}.price`)}
+                  />
+                </div>
+
+                {fields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="self-end sm:self-start shrink-0 text-destructive hover:text-destructive"
+                    onClick={() => handleRemoveItem(index)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             ))}
           </div>
