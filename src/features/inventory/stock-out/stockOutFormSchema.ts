@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 export const allocationSchema = z.object({
-  projectRefId: z.string().min(1, "Wajib dipilih"),
-  costCentreId: z.string().min(1, "Wajib dipilih"),
-  costCodeId: z.string().min(1, "Wajib dipilih"),
+  stockBatchId: z.string().min(1, "Batch sumber wajib dipilih"),
   qty: z.coerce.number().min(0.01, "Qty harus > 0"),
 });
 
@@ -46,7 +44,7 @@ export const emptyStockOutValues = (): StockOutFormValues => ({
   items: [
     {
       itemId: "",
-      allocations: [{ projectRefId: "", costCentreId: "", costCodeId: "", qty: 1 }],
+      allocations: [{ stockBatchId: "", qty: 1 }],
     },
   ],
 });
@@ -65,9 +63,7 @@ export const valuesFromStockOut = (data: StockOut): StockOutEditFormValues => ({
   items: data.items.map((it) => ({
     itemId: it.itemId,
     allocations: it.allocations.map((a) => ({
-      projectRefId: a.projectRefId,
-      costCentreId: a.costCentreId,
-      costCodeId: a.costCodeId,
+      stockBatchId: a.stockBatchId,
       qty: a.qty,
     })),
   })),

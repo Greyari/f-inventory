@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Loader2, ShieldAlert } from "lucide-react";
 import { useStockOutDetail } from "./stock-out.hooks";
@@ -75,6 +75,7 @@ export default function StockOutDetailPage() {
                         <th className="px-3 py-1.5">{t("stockOut.projectRef")}</th>
                         <th className="px-3 py-1.5">{t("stockOut.costCentre")}</th>
                         <th className="px-3 py-1.5">{t("stockOut.costCodeSource")}</th>
+                        <th className="px-3 py-1.5">{t("stockOut.batchSource")}</th>
                         <th className="px-3 py-1.5">{t("stockIn.qty")}</th>
                       </tr>
                     </thead>
@@ -84,6 +85,15 @@ export default function StockOutDetailPage() {
                           <td className="px-3 py-1.5">{a.projectRef?.code ?? "-"}</td>
                           <td className="px-3 py-1.5">{a.costCentre?.code ?? "-"}</td>
                           <td className="px-3 py-1.5">{a.costCode?.code ?? "-"}</td>
+                          <td className="px-3 py-1.5">
+                            {a.batch?.sourceType === "stock_in" && a.batch.stockInId ? (
+                              <Link to={`/inventory/stock-in/${a.batch.stockInId}`} className="text-primary hover:underline">
+                                {a.batch.stockInPrNo}
+                              </Link>
+                            ) : (
+                              <span className="text-amber-700">{t("stockOut.batchDirect")}</span>
+                            )}
+                          </td>
                           <td className="px-3 py-1.5 font-medium">{a.qty}</td>
                         </tr>
                       ))}

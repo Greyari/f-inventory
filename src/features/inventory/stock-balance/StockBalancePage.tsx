@@ -8,7 +8,7 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useStockLots } from "./stock-balance.hooks";
 import { useHasPermission } from "@/store/authStore";
 import { AddDirectStockDialog } from "./AddDirectStockDialog";
-import type { StockLot } from "@/types/inventory.types";
+import type { StockLotSummary } from "@/types/inventory.types";
 
 interface ItemSummary {
   itemId: string;
@@ -16,8 +16,10 @@ interface ItemSummary {
   unit?: string;
   minStockLevel?: number;
   totalBalance: number;
-  lotCount: number;
-  lots: StockLot[];
+  // Jumlah kelompok project berbeda (bukan jumlah batch mentah) yang
+  // nyumbang ke total ini — biar kelihatan kalau 1 item dipesan dari
+  // beberapa project berbeda.
+  groupCount: number;
 }
 
 export default function StockBalancePage() {
@@ -29,25 +31,25 @@ export default function StockBalancePage() {
   const [addDirectOpen, setAddDirectOpen] = useState(false);
   const { data, isLoading } = useStockLots(debouncedSearch);
 
-  // Gabungkan semua lot jadi 1 baris per item
+  // Backend udah nge-group per (item+project ref+cost centre+cost code+
+  // project_name). Di sini digabung lagi jadi 1 baris per ITEM doang buat
+  // tabel ringkasan utama.
   const itemSummaries = useMemo<ItemSummary[]>(() => {
     if (!data) return [];
     const map = new Map<string, ItemSummary>();
-    data.forEach((lot) => {
-      const existing = map.get(lot.itemId);
+    data.forEach((row: StockLotSummary) => {
+      const existing = map.get(row.itemId);
       if (existing) {
-        existing.totalBalance += lot.balance;
-        existing.lotCount += 1;
-        existing.lots.push(lot);
+        existing.totalBalance += row.balance;
+        existing.groupCount += 1;
       } else {
-        map.set(lot.itemId, {
-          itemId: lot.itemId,
-          itemName: lot.item?.itemName,
-          unit: lot.item?.unit,
-          minStockLevel: lot.item?.minStockLevel,
-          totalBalance: lot.balance,
-          lotCount: 1,
-          lots: [lot],
+        map.set(row.itemId, {
+          itemId: row.itemId,
+          itemName: row.item?.itemName,
+          unit: row.item?.unit,
+          minStockLevel: row.item?.minStockLevel,
+          totalBalance: row.balance,
+          groupCount: 1,
         });
       }
     });
@@ -57,7 +59,7 @@ export default function StockBalancePage() {
   const columns: Column<ItemSummary>[] = [
     { header: t("stockBalance.colItemName"), accessor: (r) => r.itemName },
     { header: t("stockBalance.colUnit"), accessor: (r) => r.unit, hideOnMobile: true },
-    { header: t("stockBalance.colLots"), accessor: (r) => r.lotCount, hideOnMobile: true },
+    { header: t("stockBalance.colLots"), accessor: (r) => r.groupCount, hideOnMobile: true },
     {
       header: t("stockBalance.totalBalance"),
       accessor: (r) => <span className="font-semibold">{r.totalBalance}</span>,

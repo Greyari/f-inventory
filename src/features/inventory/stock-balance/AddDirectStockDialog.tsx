@@ -13,6 +13,7 @@ import { useAddDirectStock } from "./stock-balance.hooks";
 
 const schema = z.object({
   itemId: z.string().min(1, "Item wajib dipilih"),
+  projectName: z.string().min(1, "Nama project wajib diisi — ini yang bedain batch ini punya project mana"),
   projectRefId: z.string().min(1, "Wajib dipilih"),
   costCentreId: z.string().min(1, "Wajib dipilih"),
   costCodeId: z.string().min(1, "Wajib dipilih"),
@@ -69,6 +70,13 @@ export function AddDirectStockDialog({ open, onOpenChange }: AddDirectStockDialo
               )}
             />
             {errors.itemId && <p className="mt-1 text-xs text-destructive">{errors.itemId.message}</p>}
+          </div>
+
+          <div>
+            <Label>{t("stockIn.project")}</Label>
+            <Input {...register("projectName")} placeholder="e.g. Batching Plant 5" />
+            <p className="mt-1 text-xs text-muted-foreground">{t("stockBalance.projectNameHint")}</p>
+            {errors.projectName && <p className="mt-1 text-xs text-destructive">{errors.projectName.message}</p>}
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

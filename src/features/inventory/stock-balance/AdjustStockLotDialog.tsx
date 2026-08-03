@@ -9,21 +9,21 @@ import { Input, Label } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAdjustStockLot } from "./stock-balance.hooks";
-import type { StockLot } from "@/types/inventory.types";
+import type { StockBatch } from "@/types/inventory.types";
 
 const schema = z.object({
-  newBalance: z.coerce.number().min(0, "Saldo gak boleh negatif"),
+  newQtyRemaining: z.coerce.number().min(0, "Qty gak boleh negatif"),
   reason: z.string().min(5, "Alasan wajib diisi, jelaskan sedikit lebih detail"),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 interface AdjustStockLotDialogProps {
-  lot: StockLot | null;
+  batch: StockBatch | null;
   onOpenChange: (open: boolean) => void;
 }
 
-export function AdjustStockLotDialog({ lot, onOpenChange }: AdjustStockLotDialogProps) {
+export function AdjustStockLotDialog({ batch, onOpenChange }: AdjustStockLotDialogProps) {
   const { t } = useTranslation();
   const adjust = useAdjustStockLot();
 
@@ -35,26 +35,29 @@ export function AdjustStockLotDialog({ lot, onOpenChange }: AdjustStockLotDialog
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
-    if (lot) reset({ newBalance: lot.balance, reason: "" });
-  }, [lot, reset]);
+    if (batch) reset({ newQtyRemaining: batch.qtyRemaining, reason: "" });
+  }, [batch, reset]);
 
-  if (!lot) return null;
+  if (!batch) return null;
 
   const onSubmit = async (values: FormValues) => {
-    await adjust.mutateAsync({ stockLotId: lot.id, newBalance: values.newBalance, reason: values.reason });
+    await adjust.mutateAsync({ stockBatchId: batch.id, newQtyRemaining: values.newQtyRemaining, reason: values.reason });
     onOpenChange(false);
   };
 
   return (
-    <Dialog open={!!lot} onOpenChange={onOpenChange}>
+    <Dialog open={!!batch} onOpenChange={onOpenChange}>
       <DialogContent title={t("stockBalance.adjustTitle")} className="max-w-lg">
         <div className="mb-3 rounded-md border bg-muted/20 p-3 text-sm">
-          <p className="font-medium">{lot.item?.itemName}</p>
+          <p className="font-medium">{batch.item?.itemName}</p>
           <p className="text-xs text-muted-foreground">
-            {lot.projectRef?.code} / {lot.costCentre?.code} / {lot.costCode?.code}
+            {batch.projectName} · {batch.projectRef?.code} / {batch.costCentre?.code} / {batch.costCode?.code}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {t("stockBalance.currentBalance")}: <span className="font-semibold text-foreground">{lot.balance}</span> {lot.item?.unit}
+            {t("stockBalance.qtyReceived")}: <span className="font-semibold text-foreground">{batch.qtyReceived}</span>
+            {" · "}
+            {t("stockBalance.currentBalance")}: <span className="font-semibold text-foreground">{batch.qtyRemaining}</span>{" "}
+            {batch.item?.unit}
           </p>
         </div>
 
@@ -66,8 +69,8 @@ export function AdjustStockLotDialog({ lot, onOpenChange }: AdjustStockLotDialog
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <div>
             <Label>{t("stockBalance.newBalance")}</Label>
-            <Input type="number" step="any" {...register("newBalance")} />
-            {errors.newBalance && <p className="mt-1 text-xs text-destructive">{errors.newBalance.message}</p>}
+            <Input type="number" step="any" {...register("newQtyRemaining")} />
+            {errors.newQtyRemaining && <p className="mt-1 text-xs text-destructive">{errors.newQtyRemaining.message}</p>}
           </div>
 
           <div>

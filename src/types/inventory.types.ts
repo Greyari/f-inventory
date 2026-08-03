@@ -21,8 +21,11 @@ export interface JobCode {
   isActive: boolean;
 }
 
-// ---- Stock Lot: saldo stok per kombinasi item + project ref + cost centre + cost code ----
-export interface StockLot {
+// ---- Stock Batch: 1 baris = 1 kedatangan stok (dari NPR/DO atau Tambah
+// Langsung), dengan sisa qty-nya sendiri. Ganti total konsep "lot pooled". ----
+export type StockBatchSourceType = "stock_in" | "direct";
+
+export interface StockBatch {
   id: string;
   itemId: string;
   item?: Item;
@@ -32,23 +35,49 @@ export interface StockLot {
   costCentre?: JobCode;
   costCodeId: string;
   costCode?: JobCode;
-  balance: number;
+  // Pembeda utama "punya project mana" — walau job code sama, project_name beda = batch beda
+  projectName: string;
+  sourceType: StockBatchSourceType;
+  // Cuma terisi kalau sourceType = "direct"
+  reason?: string | null;
+  qtyReceived: number;
+  qtyRemaining: number;
+  isDepleted: boolean;
+  // Traceability: link balik ke NPR/DO asalnya (null kalau sourceType = "direct")
+  sourceStockIn?: { id: string; prNo: string; status: StockInStatus } | null;
+  createdAt: string;
 }
 
-// ---- Riwayat penyesuaian manual (koreksi & tambah langsung) Super Admin ----
-export type StockLotAdjustmentType = "correction" | "direct_addition";
+// Ringkasan per kombinasi (item+project ref+cost centre+cost code+project
+// name), dipakai buat list "Stok Tersisa" biar tetap ringkas (gak nampilin
+// tiap batch 1-1). Dari endpoint GET /stock-lots.
+export interface StockLotSummary {
+  itemId: string;
+  item?: Item;
+  projectRefId: string;
+  projectRef?: JobCode;
+  costCentreId: string;
+  costCentre?: JobCode;
+  costCodeId: string;
+  costCode?: JobCode;
+  projectName: string;
+  balance: number;
+  batchCount: number;
+}
 
-export interface StockLotAdjustmentLog {
+// ---- Riwayat koreksi manual (Super Admin) ke qty_remaining 1 batch ----
+export interface StockBatchAdjustmentLog {
   id: string;
-  type: StockLotAdjustmentType;
-  oldBalance: number;
-  newBalance: number;
+  oldQtyRemaining: number;
+  newQtyRemaining: number;
   reason: string;
-  stockLot?: {
+  stockBatch?: {
+    id: string;
+    projectName: string;
     projectRef?: string;
     costCentre?: string;
     costCode?: string;
-  };
+  } | null;
   user?: { id: string; name: string } | null;
   createdAt: string;
 }
@@ -106,6 +135,7 @@ export interface StockInActivityLog {
 
 // ---- Barang Keluar ----
 export interface StockOutAllocation {
+  stockBatchId: string;
   projectRefId: string;
   projectRef?: JobCode;
   costCentreId: string;
@@ -113,6 +143,13 @@ export interface StockOutAllocation {
   costCodeId: string;
   costCode?: JobCode;
   qty: number;
+  // Traceability: batch ini asalnya dari mana (link ke NPR/DO, atau "direct")
+  batch?: {
+    projectName: string;
+    sourceType: StockBatchSourceType;
+    stockInId?: string | null;
+    stockInPrNo?: string | null;
+  } | null;
 }
 
 export interface StockOutItem {
@@ -140,7 +177,7 @@ export interface StockOut {
 }
 
 // ---- Riwayat perubahan (activity log) Barang Keluar ----
-// Cuma ada 'created' & 'updated'
+// Cuma ada 'created' & 'updated' — gak ada status bertahap kayak StockIn.
 export type StockOutActivityAction = "created" | "updated";
 
 export interface StockOutActivityLog {

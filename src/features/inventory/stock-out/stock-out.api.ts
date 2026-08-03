@@ -1,11 +1,9 @@
 import { apiClient } from "@/lib/axios";
 import type { ApiSuccess, ListParams } from "@/types/api.types";
-import type { StockOut, StockOutActivityLog, StockLot } from "@/types/inventory.types";
+import type { StockOut, StockOutActivityLog, StockBatch } from "@/types/inventory.types";
 
 export interface StockOutAllocationPayload {
-  projectRefId: string;
-  costCentreId: string;
-  costCodeId: string;
+  stockBatchId: string;
   qty: number;
 }
 
@@ -55,13 +53,12 @@ export const stockOutApi = {
   },
 };
 
-// Daftar semua lot (kombinasi Project Ref/Cost Centre/Cost Code yang punya saldo) untuk 1 item.
-// Dipakai buat dropdown pilih sumber stok di form Barang Keluar.
-export const stockLotsApi = {
-  listByItem: async (itemId: string) => {
-    const { data } = await apiClient.get<ApiSuccess<StockLot[]>>("/stock-lots", {
-      params: { itemId },
-    });
+// Daftar BATCH (bukan lot pooled lagi) yang masih ada sisanya untuk 1 item.
+// Dipakai buat form Barang Keluar — admin pilih manual batch mana yang
+// mau ditarik, sekalian kelihatan asalnya (link NPR/DO atau "direct").
+export const stockBatchApi = {
+  listAvailableByItem: async (itemId: string) => {
+    const { data } = await apiClient.get<ApiSuccess<StockBatch[]>>(`/items/${itemId}/available-batches`);
     return data.data;
   },
 };

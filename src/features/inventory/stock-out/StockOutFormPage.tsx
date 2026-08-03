@@ -219,7 +219,7 @@ export default function StockOutFormPage() {
               onClick={() =>
                 append({
                   itemId: "",
-                  allocations: [{ projectRefId: "", costCentreId: "", costCodeId: "", qty: 1 }],
+                  allocations: [{ stockBatchId: "", qty: 1 }],
                 })
               }
             >
