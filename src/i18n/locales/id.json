@@ -61,7 +61,7 @@
     "subtitle": "Berikut ringkasan kondisi inventory saat ini.",
     "totalItems": "Total Item Terdaftar",
     "lowStock": "Item Stok Rendah",
-    "totalLots": "Total Lot Stok Aktif",
+    "totalLots": "Total Batch Stok Aktif",
     "stockInThisMonth": "Transaksi Masuk Bulan Ini",
     "stockOutThisMonth": "Transaksi Keluar Bulan Ini",
     "monthlyTrend": "Tren Bulanan",

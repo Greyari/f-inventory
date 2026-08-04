@@ -61,7 +61,7 @@
     "subtitle": "Here's a summary of your current inventory status.",
     "totalItems": "Total Registered Items",
     "lowStock": "Low Stock Items",
-    "totalLots": "Total Active Stock Lots",
+    "totalLots": "Total Active Stock Batches",
     "stockInThisMonth": "Stock In Transactions This Month",
     "stockOutThisMonth": "Stock Out Transactions This Month",
     "monthlyTrend": "Monthly Trend",

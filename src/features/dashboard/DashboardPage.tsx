@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { Package, AlertTriangle, Layers, PackagePlus, PackageMinus } from "lucide-react";
+import { Package, AlertTriangle, Layers, PackagePlus, PackageMinus, Boxes } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, CartesianGrid } from "recharts";
 import { useDashboardSummary } from "./dashboard.hooks";
 import { useCurrentUser } from "@/store/authStore";
@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const CARD_CONFIG = [
   { key: "totalItems", labelKey: "dashboard.totalItems", icon: Package, color: "text-blue-600 bg-blue-100" },
   { key: "lowStockCount", labelKey: "dashboard.lowStock", icon: AlertTriangle, color: "text-red-600 bg-red-100" },
-  { key: "totalLots", labelKey: "dashboard.totalLots", icon: Layers, color: "text-indigo-600 bg-indigo-100" },
+  { key: "totalBatches", labelKey: "dashboard.totalLots", icon: Layers, color: "text-indigo-600 bg-indigo-100" },
   {
     key: "stockInThisMonth",
     labelKey: "dashboard.stockInThisMonth",
@@ -22,6 +22,7 @@ const CARD_CONFIG = [
     icon: PackageMinus,
     color: "text-amber-600 bg-amber-100",
   },
+  { key: "totalAssets", labelKey: "asset.totalAssets", icon: Boxes, color: "text-purple-600 bg-purple-100" },
 ] as const;
 
 export default function DashboardPage() {
@@ -38,7 +39,7 @@ export default function DashboardPage() {
       </p>
 
       {/* Summary cards */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {CARD_CONFIG.map((card) => (
           <div key={card.key} className="rounded-lg border bg-background p-5">
             <div className="mb-3 flex items-center justify-between">
@@ -73,43 +74,64 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Low stock list */}
-        <div className="rounded-lg border bg-background p-5">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-muted-foreground">{t("dashboard.lowStockList")}</h3>
-            {data && data.lowStockCount > 0 && (
-              <button
-                onClick={() => navigate("/inventory/stock-balance")}
-                className="text-xs text-primary hover:underline"
-              >
-                {t("dashboard.viewAll")}
-              </button>
+        <div className="space-y-6 lg:col-span-1">
+          {/* Low stock list */}
+          <div className="rounded-lg border bg-background p-5">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-muted-foreground">{t("dashboard.lowStockList")}</h3>
+              {data && data.lowStockCount > 0 && (
+                <button
+                  onClick={() => navigate("/inventory/stock-balance")}
+                  className="text-xs text-primary hover:underline"
+                >
+                  {t("dashboard.viewAll")}
+                </button>
+              )}
+            </div>
+
+            {!isLoading && data && data.lowStockItems.length === 0 ? (
+              <p className="text-sm text-muted-foreground">{t("dashboard.lowStockEmpty")}</p>
+            ) : (
+              <div className="space-y-3">
+                {data?.lowStockItems.map((item) => (
+                  <button
+                    key={item.itemId}
+                    onClick={() => navigate(`/inventory/stock-balance/${item.itemId}`)}
+                    className="flex w-full items-center justify-between rounded-md border border-red-100 bg-red-50 px-3 py-2 text-left transition-colors hover:bg-red-100"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">{item.itemName}</p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="text-sm font-semibold text-red-700">
+                        {item.balance} {item.unit}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("dashboard.minLevel", { value: `${item.minStockLevel} ${item.unit}` })}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
-          {!isLoading && data && data.lowStockItems.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("dashboard.lowStockEmpty")}</p>
-          ) : (
-            <div className="space-y-3">
-              {data?.lowStockItems.map((item) => (
-                <button
-                  key={item.itemId}
-                  onClick={() => navigate(`/inventory/stock-balance/${item.itemId}`)}
-                  className="flex w-full items-center justify-between rounded-md border border-red-100 bg-red-50 px-3 py-2 text-left transition-colors hover:bg-red-100"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{item.itemName}</p>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <p className="text-sm font-semibold text-red-700">
-                      {item.balance} {item.unit}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {t("dashboard.minLevel", { value: `${item.minStockLevel} ${item.unit}` })}
-                    </p>
-                  </div>
+          {/* Asset category breakdown — digabung dari halaman Aset */}
+          {data && data.totalAssets > 0 && (
+            <div className="rounded-lg border bg-background p-5">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-muted-foreground">{t("asset.categoriesBreakdown")}</h3>
+                <button onClick={() => navigate("/assets")} className="text-xs text-primary hover:underline">
+                  {t("dashboard.viewAll")}
                 </button>
-              ))}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {data.assetsByCategory.map((c) => (
+                  <span key={c.category} className="rounded-full bg-muted px-2 py-1 text-xs">
+                    {c.category}: <span className="font-semibold">{c.count}</span>
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>

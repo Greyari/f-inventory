@@ -26,15 +26,24 @@ export interface MonthlyTrendPoint {
   totalOut: number;
 }
 
+export interface AssetCategoryCount {
+  category: string;
+  count: number;
+}
+
 export interface DashboardSummary {
   totalItems: number;
   lowStockCount: number;
-  totalLots: number;
+  // Ganti dari "totalLots" (lot pooled) -> "totalBatches" (batch individual)
+  totalBatches: number;
   stockInThisMonth: number;
   stockOutThisMonth: number;
   lowStockItems: LowStockItem[];
   recentActivity: RecentActivity[];
   monthlyTrend: MonthlyTrendPoint[];
+  // Digabung dari halaman Aset, gak perlu fetch terpisah lagi
+  totalAssets: number;
+  assetsByCategory: AssetCategoryCount[];
 }
 
 export function useDashboardSummary() {

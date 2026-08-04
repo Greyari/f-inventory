@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2, Eye, Boxes, Layers } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-import { useAssets, useDeleteAsset, useAssetSummary } from "./asset.hooks";
+import { useAssets, useDeleteAsset } from "./asset.hooks";
 import { useHasPermission } from "@/store/authStore";
 import { useConfirm } from "@/store/confirmStore";
 import type { Asset } from "@/types/asset.types";
@@ -20,7 +20,6 @@ export default function AssetListPage() {
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useAssets({ search: debouncedSearch, page, limit: 10 });
-  const { data: summary } = useAssetSummary();
   const deleteMutation = useDeleteAsset();
 
   useEffect(() => setPage(1), [debouncedSearch]);
@@ -51,40 +50,13 @@ export default function AssetListPage() {
 
   return (
     <div>
-      <div className="mb-4">
-        <h2 className="text-2xl font-semibold">{t("asset.title")}</h2>
-        <p className="text-sm text-muted-foreground">{t("asset.subtitle")}</p>
-      </div>
-
-      {/* Ringkasan */}
-      {summary && (
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border bg-background p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">{t("asset.totalAssets")}</span>
-              <div className="rounded-full bg-blue-100 p-2 text-blue-600">
-                <Boxes className="h-4 w-4" />
-              </div>
-            </div>
-            <p className="text-3xl font-semibold">{summary.totalAssets}</p>
-          </div>
-          <div className="rounded-lg border bg-background p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">{t("asset.categoriesBreakdown")}</span>
-              <div className="rounded-full bg-indigo-100 p-2 text-indigo-600">
-                <Layers className="h-4 w-4" />
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {summary.byCategory.map((c) => (
-                <span key={c.category} className="rounded-full bg-muted px-2 py-1 text-xs">
-                  {c.category}: <span className="font-semibold">{c.count}</span>
-                </span>
-              ))}
-            </div>
-          </div>
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold">{t("asset.title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("asset.subtitle")}</p>
         </div>
-      )}
+        <p className="text-xs text-muted-foreground">{t("asset.summaryMovedHint")}</p>
+      </div>
 
       <DataTable
         columns={columns}
