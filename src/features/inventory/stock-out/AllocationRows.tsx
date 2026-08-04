@@ -13,7 +13,7 @@ interface AllocationRowsProps {
   control: Control<StockOutFormValues>;
   itemIndex: number;
   itemId?: string;
-  initialAllocations?: StockOutAllocation[]; // buat prefill label pas mode edit
+  initialAllocations?: StockOutAllocation[];
 }
 
 export function AllocationRows({ control, itemIndex, itemId, initialAllocations }: AllocationRowsProps) {
@@ -28,8 +28,6 @@ export function AllocationRows({ control, itemIndex, itemId, initialAllocations 
   const allocations = useWatch({ control, name: `items.${itemIndex}.allocations` }) ?? [];
   const totalQty = allocations.reduce((sum, a) => sum + (Number(a?.qty) || 0), 0);
 
-  // Semua stockBatchId yang sudah dipilih di baris manapun dalam item ini —
-  // dipakai buat nge-disable pilihan yang sama di baris lain.
   const allUsedBatchIds = allocations.map((a) => a?.stockBatchId).filter((id): id is string => !!id);
 
   const prevItemId = useRef(itemId);
@@ -107,8 +105,9 @@ function AllocationRow({
 
   return (
     <div className="space-y-1">
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-12 sm:items-start">
-        <div className="col-span-2 sm:col-span-8">
+      <div className="flex items-center gap-2 w-full min-w-0">
+        
+        <div className="flex-1 min-w-0">
           <Controller
             control={control}
             name={`items.${itemIndex}.allocations.${allocIndex}.stockBatchId`}
@@ -124,21 +123,28 @@ function AllocationRow({
             )}
           />
         </div>
-        <div className="col-span-1 sm:col-span-3">
+
+        <div className="w-20 sm:w-36 shrink-0">
           <Controller
             control={control}
             name={`items.${itemIndex}.allocations.${allocIndex}.qty`}
             render={({ field }) => <Input type="number" step="any" placeholder={t("stockIn.qty")} {...field} />}
           />
         </div>
-        <div className="col-span-1 sm:col-span-1 flex justify-end sm:block">
-          {onRemove && (
-            <Button type="button" variant="ghost" size="icon" onClick={onRemove}>
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
-          )}
-        </div>
+
+        {onRemove && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
+            onClick={onRemove}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        )}
       </div>
+
       {currentBatch && (
         <p className="pl-1 text-xs text-muted-foreground">
           {t("stockOut.remainingBalance", { balance: currentBatch.qtyRemaining })}

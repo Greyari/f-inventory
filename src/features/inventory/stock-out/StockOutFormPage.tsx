@@ -133,10 +133,6 @@ export default function StockOutFormPage() {
             <Input {...register("bNo")} placeholder="e.g. SO-2026-0031" />
             {errors.bNo && <p className="mt-1 text-xs text-destructive">{errors.bNo.message}</p>}
           </div>
-          <div>
-            <Label>{t("stockOut.dateIssued")}</Label>
-            <Input type="date" {...register("dateIssued")} />
-          </div>
 
           <div>
             <Label>{t("stockOut.issuedTo")}</Label>
@@ -171,6 +167,12 @@ export default function StockOutFormPage() {
             />
             {errors.projectRefId && <p className="mt-1 text-xs text-destructive">{errors.projectRefId.message}</p>}
           </div>
+
+          <div>
+            <Label>{t("stockOut.dateIssued")}</Label>
+            <Input type="date" {...register("dateIssued")} />
+          </div>
+
           <div>
             <Label>{t("stockOut.costCentre")}</Label>
             <Controller
@@ -189,6 +191,7 @@ export default function StockOutFormPage() {
             />
             {errors.costCentreId && <p className="mt-1 text-xs text-destructive">{errors.costCentreId.message}</p>}
           </div>
+
           <div>
             <Label>{t("stockOut.costCodeSource")}</Label>
             <Controller
@@ -285,37 +288,49 @@ function ItemRow({
   const itemId = useWatch({ control, name: `items.${index}.itemId` });
 
   return (
-    <div className="rounded-md border p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground">
+    <div className="rounded-lg border bg-card p-4 shadow-sm">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start">
+
+        <div className="pt-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:w-20 shrink-0">
           {t("stockIn.items")} #{index + 1}
-        </span>
+        </div>
+
+        <div className="flex-1">
+          <Controller
+            control={control}
+            name={`items.${index}.itemId`}
+            render={({ field }) => (
+              <ItemPickerField
+                value={field.value}
+                onChange={field.onChange}
+                selectedSublabel={editingItem?.item?.itemName}
+                placeholder={t("common.selectItem")}
+                error={!!error}
+              />
+            )}
+          />
+          {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
+        </div>
+
         {onRemove && (
-          <Button type="button" variant="ghost" size="icon" onClick={onRemove}>
-            <Trash2 className="h-4 w-4 text-destructive" />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="self-end sm:self-start shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
+            onClick={onRemove}
+          >
+            <Trash2 className="h-4 w-4" />
           </Button>
         )}
       </div>
 
-      <div className="mb-3">
-        <Label>{t("stockIn.items")}</Label>
-        <Controller
-          control={control}
-          name={`items.${index}.itemId`}
-          render={({ field }) => (
-            <ItemPickerField
-              value={field.value}
-              onChange={field.onChange}
-              selectedSublabel={editingItem?.item?.itemName}
-              placeholder={t("common.selectItem")}
-              error={!!error}
-            />
-          )}
-        />
-        {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
-      </div>
-
-      <AllocationRows control={control as any} itemIndex={index} itemId={itemId} initialAllocations={editingItem?.allocations} />
+      <AllocationRows
+        control={control as any}
+        itemIndex={index}
+        itemId={itemId}
+        initialAllocations={editingItem?.allocations}
+      />
     </div>
   );
 }
