@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   X,
+  History,
   Boxes as AssetIcon,
 } from "lucide-react";
 import { useAuthStore, useCurrentUser } from "@/store/authStore";
@@ -26,7 +27,7 @@ const NAV_ITEMS = [
     to: "/assets",
     labelKey: "asset.navLabel",
     icon: AssetIcon,
-    requiredPermission: ["assets.manage"],
+    requiredPermission: ["assets.manage", "asset-usages.checkout", "asset-usages.return"],
   },
   {
     to: "/users",
@@ -39,6 +40,12 @@ const NAV_ITEMS = [
     labelKey: "nav.master",
     icon: Settings,
     requiredPermission: ["job-codes.manage", "items.manage"],
+  },
+  {
+    to: "/activity-logs",
+    labelKey: "nav.activityLog",
+    icon: History,
+    requiredPermission: ["activity-logs.view"],
   },
 ] as const;
 

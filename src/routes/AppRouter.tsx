@@ -24,6 +24,7 @@ const AssetDetailPage = lazy(() => import("@/features/assets/AssetDetailPage"));
 const AssetFormPage = lazy(() => import("@/features/assets/AssetFormPage"));
 const AssetUsageFormPage = lazy(() => import("@/features/assets/AssetUsageFormPage"));
 const AssetReturnPage = lazy(() => import("@/features/assets/AssetReturnPage"));
+const ActivityLogPage = lazy(() => import("@/features/activity-log/ActivityLogPage"));
 
 function Loading() {
   return (
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
           {
             element: <ProtectedRoute requiredPermission={["job-codes.manage", "items.manage"]} />,
             children: [{ path: "/master", element: withSuspense(<MasterDataPage />) }],
+          },
+          {
+            element: <ProtectedRoute requiredPermission="activity-logs.view" />,
+            children: [{ path: "/activity-logs", element: withSuspense(<ActivityLogPage />) }],
           },
           { index: true, element: withSuspense(<DashboardPage />) },
         ],
