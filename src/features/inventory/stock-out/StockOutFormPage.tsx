@@ -78,32 +78,6 @@ export default function StockOutFormPage() {
     );
   }
 
-  // Edit cuma boleh Super Admin. Kalau gak punya permission, form gak
-  // ditampilkan sama sekali — cuma pesan "hubungi Super Admin".
-  if (isEdit && !canOverride) {
-    return (
-      <div className="mx-auto max-w-2xl">
-        <button
-          onClick={() => navigate(`/inventory/stock-out/${id}`)}
-          className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
-        </button>
-
-        <div className="flex flex-col items-center gap-3 rounded-lg border bg-background p-10 text-center">
-          <Lock className="h-8 w-8 text-muted-foreground" />
-          <div>
-            <p className="font-medium">{t("stockOut.formLockedTitle")}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{t("stockOut.formLockedHint")}</p>
-          </div>
-          <Button variant="outline" className="mt-2" onClick={() => navigate(`/inventory/stock-out/${id}`)}>
-            {t("common.backToList")}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-4xl">
       <button

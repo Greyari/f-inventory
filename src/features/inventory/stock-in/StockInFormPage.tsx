@@ -133,40 +133,6 @@ export default function StockInFormPage() {
     );
   }
 
-  if (formLocked) {
-    return (
-      <div className="mx-auto max-w-2xl">
-        <button
-          onClick={() => navigate(`/inventory/stock-in/${id}`)}
-          className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
-        </button>
-
-        <div className="flex flex-col items-center gap-3 rounded-lg border bg-background p-10 text-center">
-          <Lock className="h-8 w-8 text-muted-foreground" />
-          <div>
-            <p className="font-medium">{t("stockIn.formLockedTitle")}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{t("stockIn.formLockedHint")}</p>
-          </div>
-          {canOverride ? (
-            <Button
-              variant="outline"
-              className="mt-2 border-destructive/40 text-destructive hover:bg-destructive/5"
-              onClick={() => navigate(`/inventory/stock-in/${id}/override`)}
-            >
-              <ShieldAlert className="h-4 w-4" /> {t("stockIn.overrideEdit")}
-            </Button>
-          ) : (
-            <Button variant="outline" className="mt-2" onClick={() => navigate(`/inventory/stock-in/${id}`)}>
-              {t("common.backToList")}
-            </Button>
-          )}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-3xl">
       <button

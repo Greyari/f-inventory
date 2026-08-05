@@ -151,7 +151,6 @@
     "overrideEdit": "Edit Super Admin",
     "overrideEditWarning": "Ini mengedit data di luar alur normal PR → PO → DO. Pakai cuma buat koreksi kesalahan, dan wajib isi alasan di bawah.",
     "formLockedTitle": "Data ini gak bisa diedit lewat form biasa lagi",
-    "formLockedHint": "Statusnya sudah bukan PR. Kalau ada yang perlu dikoreksi, silakan hubungi Super Admin.",
     "reason": "Alasan Perubahan",
     "reasonPlaceholder": "Jelaskan kenapa data ini diubah di luar alur normal...",
     "replaceDocumentHint": "Kosongkan kalau gak mau ganti dokumen yang sekarang.",
@@ -201,7 +200,6 @@
     "editSuperAdmin": "Edit Super Admin",
     "overrideEditWarning": "Edit data barang keluar dibatasi cuma buat Super Admin, karena ini mempengaruhi saldo stok yang mungkin udah dipakai di tempat lain. Wajib isi alasan di bawah.",
     "formLockedTitle": "Cuma Super Admin yang bisa edit data ini",
-    "formLockedHint": "Kalau ada yang perlu dikoreksi, silakan hubungi Super Admin.",
     "reason": "Alasan Perubahan",
     "reasonPlaceholder": "Jelaskan kenapa data ini diubah...",
     "confirmOverrideEdit": "Simpan Perubahan"

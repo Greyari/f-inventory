@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2, Eye, Pencil, FileCheck2, PackageCheck, ShieldAlert } from "lucide-react";
+import { Plus, Trash2, Eye, FileCheck2, PackageCheck, ShieldAlert } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -24,7 +24,6 @@ export default function StockInPage() {
   const { t } = useTranslation();
   const canDelete = useHasPermission("stock-in.delete");
   const canCreate = useHasPermission("stock-in.create");
-  const canEdit = useHasPermission("stock-in.edit");
   const canMarkPo = useHasPermission("stock-in.mark-po");
   const canMarkDo = useHasPermission("stock-in.mark-do");
   const canOverride = useHasPermission("stock-in.override");
@@ -43,7 +42,6 @@ export default function StockInPage() {
 
   useEffect(() => setPage(1), [debouncedSearch, status]);
   const openCreate = () => navigate("/inventory/stock-in/new");
-  const openEdit = (row: StockIn) => navigate(`/inventory/stock-in/${row.id}/edit`);
   const openMarkPo = (row: StockIn) => navigate(`/inventory/stock-in/${row.id}/mark-po`);
   const openMarkDo = (row: StockIn) => navigate(`/inventory/stock-in/${row.id}/mark-do`);
 
@@ -149,11 +147,6 @@ export default function StockInPage() {
             <Button variant="ghost" size="icon" title={t("common.detail")} onClick={() => navigate(`/inventory/stock-in/${row.id}`)}>
               <Eye className="h-4 w-4" />
             </Button>
-            {canEdit && (
-              <Button variant="ghost" size="icon" title={t("common.edit")} onClick={() => openEdit(row)}>
-                <Pencil className="h-4 w-4" />
-              </Button>
-            )}
             {canOverride && row.status !== "pr" && (
               <Button
                 variant="ghost"
