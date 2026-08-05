@@ -145,7 +145,7 @@ export default function StockInMarkPoPage() {
               {t("stockIn.uploadPhoto")}
               <input
                 type="file"
-                accept="image/*"
+                accept="application/pdf"
                 className="hidden"
                 onChange={(e) => {
                   setPhotoError(false);

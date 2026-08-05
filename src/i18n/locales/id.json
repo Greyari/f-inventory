@@ -56,7 +56,8 @@
     "notFound": "Data tidak ditemukan",
     "activate": "Aktifkan",
     "deactivate": "Nonaktifkan",
-    "backToList": "Kembali ke daftar"
+    "backToList": "Kembali ke daftar",
+    "open": "Buka"
   },
   "auth": {
     "login": "Masuk",
@@ -98,6 +99,7 @@
     "itemsCount": "{{count}} item"
   },
   "stockIn": {
+    "currentFile": "Dokumen saat ini",
     "title": "Barang Masuk",
     "subtitle": "Setiap barang masuk otomatis bikin/nambah stok lot sesuai Project Ref/Cost Centre/Cost Code-nya.",
     "addButton": "Catat Barang Masuk",

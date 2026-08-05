@@ -56,7 +56,8 @@
     "notFound": "Data not found",
     "activate": "Activate",
     "deactivate": "Deactivate",
-    "backToList": "Back to list"
+    "backToList": "Back to list",
+    "open": "Open"
   },
   "auth": {
     "login": "Sign In",
@@ -98,6 +99,7 @@
     "itemsCount": "{{count}} items"
   },
   "stockIn": {
+    "currentFile": "Current document",
     "title": "Stock In",
     "subtitle": "Every stock-in automatically creates/adds a stock lot based on its Project Ref/Cost Centre/Cost Code.",
     "addButton": "Record Stock In",

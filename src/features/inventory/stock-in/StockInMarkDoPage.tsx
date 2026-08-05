@@ -83,7 +83,7 @@ export default function StockInMarkDoPage() {
               {t("stockIn.uploadPhoto")}
               <input
                 type="file"
-                accept="image/*"
+                accept="application/pdf"
                 className="hidden"
                 onChange={(e) => {
                   setPhotoError(false);

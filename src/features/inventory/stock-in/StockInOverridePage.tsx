@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Trash2, ArrowLeft, Loader2, ShieldAlert, Upload, X } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Loader2, ShieldAlert, Upload, X, ExternalLink, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
@@ -357,14 +357,21 @@ function PhotoReplaceField({
   onChange: (file: File | null) => void;
   hint: string;
 }) {
+  const { t } = useTranslation(); // <-- WAJIB ditambah, ini akar masalah errornya
+
   return (
     <div>
       <Label>{label}</Label>
       <p className="mb-2 text-xs text-muted-foreground">{hint}</p>
       <div className="flex items-center gap-3">
         {currentUrl && !file && (
-          <a href={currentUrl} target="_blank" rel="noreferrer">
-            <img src={currentUrl} alt={label} className="h-14 w-14 rounded border object-cover" />
+          <a
+            href={currentUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 rounded border bg-muted/40 px-2 py-1.5 text-xs text-primary hover:underline"
+          >
+            <FileText className="h-3.5 w-3.5" /> {t("stockIn.currentFile")} <ExternalLink className="h-3 w-3" />
           </a>
         )}
         {file ? (
@@ -376,10 +383,10 @@ function PhotoReplaceField({
           </div>
         ) : (
           <label className="flex cursor-pointer items-center gap-1 rounded border border-dashed px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground">
-            <Upload className="h-3.5 w-3.5" />
+            <Upload className="h-3.5 w-3.5" /> {/* <-- fix typo w-3.5 */}
             <input
               type="file"
-              accept="image/*"
+              accept="application/pdf"
               className="hidden"
               onChange={(e) => onChange(e.target.files?.[0] ?? null)}
             />

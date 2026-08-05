@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Loader2, FileCheck2, PackageCheck, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Loader2, FileCheck2, PackageCheck, ShieldAlert, Download, ExternalLink } from "lucide-react";
 import { useStockInDetail } from "./stock-in.hooks";
 import { StockInStatusBadge } from "./StockInStatusBadge";
 import { StockInActivityTimeline } from "./StockInActivityTimeline";
@@ -74,23 +74,9 @@ export default function StockInDetailPage() {
           </div>
 
           {(data.poPhotoUrl || data.doPhotoUrl) && (
-            <div className="grid grid-cols-1 gap-3 rounded-lg border bg-background p-5 text-sm sm:grid-cols-2">
-              {data.poPhotoUrl && (
-                <div>
-                  <p className="mb-1 text-xs text-muted-foreground">{t("stockIn.poPhoto")}</p>
-                  <a href={data.poPhotoUrl} target="_blank" rel="noreferrer">
-                    <img src={data.poPhotoUrl} alt="Foto PO" className="h-32 w-32 rounded border object-cover" />
-                  </a>
-                </div>
-              )}
-              {data.doPhotoUrl && (
-                <div>
-                  <p className="mb-1 text-xs text-muted-foreground">{t("stockIn.doPhoto")}</p>
-                  <a href={data.doPhotoUrl} target="_blank" rel="noreferrer">
-                    <img src={data.doPhotoUrl} alt="Foto DO" className="h-32 w-32 rounded border object-cover" />
-                  </a>
-                </div>
-              )}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {data.poPhotoUrl && <PdfPreviewCard label={t("stockIn.poPhoto")} url={data.poPhotoUrl} />}
+              {data.doPhotoUrl && <PdfPreviewCard label={t("stockIn.doPhoto")} url={data.doPhotoUrl} />}
             </div>
           )}
 
@@ -136,6 +122,28 @@ function Field({ label, value }: { label: string; value?: string | null }) {
     <div>
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="font-medium">{value || "-"}</p>
+    </div>
+  );
+}
+
+function PdfPreviewCard({ label, url }: { label: string; url: string }) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="rounded-lg border bg-background p-3">
+      <p className="mb-2 text-xs text-muted-foreground">{label}</p>
+      <div className="overflow-hidden rounded-md border">
+        <object data={url} type="application/pdf" className="h-64 w-full">
+          <div className="flex h-64 flex-col items-center justify-center gap-2 bg-muted/20 text-sm text-muted-foreground">
+            <p>Preview tidak tersedia, gunakan tombol di bawah</p>
+          </div>
+        </object>
+        <div className="flex items-center justify-end gap-3 border-t bg-muted/20 px-3 py-2">
+          <a href={url} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs text-primary hover:underline">
+            <ExternalLink className="h-3.5 w-3.5" /> {t("common.open")}
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
