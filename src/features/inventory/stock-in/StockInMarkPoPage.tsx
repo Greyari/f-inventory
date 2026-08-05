@@ -125,8 +125,8 @@ export default function StockInMarkPoPage() {
         </div>
 
         <div className="border-t pt-4">
-          <Label>{t("stockIn.poPhoto")}</Label>
-          <p className="mb-2 text-xs text-muted-foreground">{t("stockIn.poPhotoHint")}</p>
+          <Label>{t("stockIn.poDocument")}</Label>
+          <p className="mb-2 text-xs text-muted-foreground">{t("stockIn.poDocumentHint")}</p>
 
           {poPhoto ? (
             <div className="flex items-center gap-2 rounded border bg-muted/40 px-3 py-2 text-sm">
@@ -142,7 +142,7 @@ export default function StockInMarkPoPage() {
           ) : (
             <label className="flex w-fit cursor-pointer items-center gap-2 rounded border border-dashed px-3 py-2 text-sm text-muted-foreground hover:text-foreground">
               <Upload className="h-4 w-4" />
-              {t("stockIn.uploadPhoto")}
+              {t("stockIn.uploadDocument")}
               <input
                 type="file"
                 accept="application/pdf"
@@ -154,7 +154,7 @@ export default function StockInMarkPoPage() {
               />
             </label>
           )}
-          {photoError && <p className="mt-1 text-xs text-destructive">{t("stockIn.photoRequired")}</p>}
+          {photoError && <p className="mt-1 text-xs text-destructive">{t("stockIn.documentRequired")}</p>}
         </div>
 
         <div className="flex justify-end gap-2 border-t pt-4">

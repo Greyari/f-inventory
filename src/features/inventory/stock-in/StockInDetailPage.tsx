@@ -75,8 +75,8 @@ export default function StockInDetailPage() {
 
           {(data.poPhotoUrl || data.doPhotoUrl) && (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {data.poPhotoUrl && <PdfPreviewCard label={t("stockIn.poPhoto")} url={data.poPhotoUrl} />}
-              {data.doPhotoUrl && <PdfPreviewCard label={t("stockIn.doPhoto")} url={data.doPhotoUrl} />}
+              {data.poPhotoUrl && <PdfPreviewCard label={t("stockIn.poDocument")} url={data.poPhotoUrl} />}
+              {data.doPhotoUrl && <PdfPreviewCard label={t("stockIn.doDocument")} url={data.doPhotoUrl} />}
             </div>
           )}
 

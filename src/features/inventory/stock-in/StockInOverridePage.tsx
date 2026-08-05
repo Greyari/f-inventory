@@ -305,18 +305,18 @@ export default function StockInOverridePage() {
 
         <div className="grid grid-cols-1 gap-4 border-t pt-4 sm:grid-cols-2">
           <PhotoReplaceField
-            label={t("stockIn.poPhoto")}
+            label={t("stockIn.poDocument")}
             currentUrl={stockIn.poPhotoUrl}
             file={poPhoto}
             onChange={setPoPhoto}
-            hint={t("stockIn.replacePhotoHint")}
+            hint={t("stockIn.replaceDocumentHint")}
           />
           <PhotoReplaceField
-            label={t("stockIn.doPhoto")}
+            label={t("stockIn.doDocument")}
             currentUrl={stockIn.doPhotoUrl}
             file={doPhoto}
             onChange={setDoPhoto}
-            hint={t("stockIn.replacePhotoHint")}
+            hint={t("stockIn.replaceDocumentHint")}
           />
         </div>
 

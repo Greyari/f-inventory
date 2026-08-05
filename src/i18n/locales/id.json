@@ -57,7 +57,8 @@
     "activate": "Aktifkan",
     "deactivate": "Nonaktifkan",
     "backToList": "Kembali ke daftar",
-    "open": "Buka"
+    "open": "Buka",
+    "download": "Unduh"
   },
   "auth": {
     "login": "Masuk",
@@ -126,20 +127,20 @@
     "filterPo": "PO",
     "filterDo": "DO",
     "markAsPo": "Ubah ke PO",
-    "markAsPoSubtitle": "Lengkapi vendor & harga tiap item di \"{{ref}}\", plus 1 foto PO untuk keseluruhan data ini.",
+    "markAsPoSubtitle": "Lengkapi vendor & harga tiap item di \"{{ref}}\", plus 1 dokumen PO untuk keseluruhan data ini.",
     "markAsDo": "Ubah ke DO",
-    "markAsDoSubtitle": "Upload foto DO untuk \"{{ref}}\". Stok akan ditambahkan setelah dikonfirmasi.",
+    "markAsDoSubtitle": "Upload dokumen DO untuk \"{{ref}}\". Stok akan ditambahkan setelah dikonfirmasi.",
     "markAsDoStockHint": "Setelah dikonfirmasi, saldo stok item ini akan bertambah dan bisa langsung dipakai untuk Barang Keluar.",
     "itemsLockedHint": "Terkunci (sudah PO/DO)",
     "vendorName": "Nama Vendor",
     "vendorNamePlaceholder": "mis. PT Sumber Jaya",
     "price": "Harga",
-    "poPhoto": "Foto PO",
-    "poPhotoHint": "1 foto untuk keseluruhan data ini (mis. foto dokumen purchase order).",
-    "doPhoto": "Foto DO",
-    "doPhotoHint": "1 foto untuk keseluruhan data ini (mis. foto dokumen delivery order).",
-    "uploadPhoto": "Upload foto",
-    "photoRequired": "Foto wajib diupload",
+    "poDocument": "Dokumen PO",
+    "poDocumentHint": "1 dokumen untuk keseluruhan data ini (mis. scan dokumen purchase order).",
+    "doDocument": "Dokumen DO",
+    "doDocumentHint": "1 dokumen untuk keseluruhan data ini (mis. scan dokumen delivery order).",
+    "uploadDocument": "Upload dokumen",
+    "documentRequired": "Dokumen wajib diupload",
     "confirmMarkAsPo": "Konfirmasi PO",
     "confirmMarkAsDo": "Konfirmasi & Tambah Stok",
     "notNprNotice": "Data ini statusnya bukan PR lagi.",
@@ -153,7 +154,7 @@
     "formLockedHint": "Statusnya sudah bukan PR. Kalau ada yang perlu dikoreksi, silakan hubungi Super Admin.",
     "reason": "Alasan Perubahan",
     "reasonPlaceholder": "Jelaskan kenapa data ini diubah di luar alur normal...",
-    "replacePhotoHint": "Kosongkan kalau gak mau ganti foto yang sekarang.",
+    "replaceDocumentHint": "Kosongkan kalau gak mau ganti dokumen yang sekarang.",
     "confirmOverrideEdit": "Simpan Perubahan"
   },
   "stockOut": {
@@ -411,6 +412,6 @@
       "Rusak Berat": "Rusak Berat",
       "Hilang": "Hilang"
     },
-    "alreadyReturned": "This usage record has already been returned."
+    "alreadyReturned": "Pemakaian ini sudah pernah dikembalikan sebelumnya."
   }
 }
