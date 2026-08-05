@@ -48,13 +48,13 @@ export default function AssetUsageFormPage() {
 
   const onSubmit = async (values: FormValues) => {
     await checkoutMutation.mutateAsync(values);
-    navigate("/assets");
+    navigate("/assets?tab=usage");
   };
 
   return (
     <div className="mx-auto max-w-2xl">
       <button
-        onClick={() => navigate("/assets")}
+        onClick={() => navigate("/assets?tab=usage")}
         className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
@@ -106,7 +106,7 @@ export default function AssetUsageFormPage() {
         </div>
 
         <div className="flex justify-end gap-2 border-t pt-4">
-          <Button type="button" variant="outline" onClick={() => navigate("/assets")}>
+          <Button type="button" variant="outline" onClick={() => navigate("/assets?tab=usage")}>
             {t("common.cancel")}
           </Button>
           <Button type="submit" disabled={checkoutMutation.isPending}>

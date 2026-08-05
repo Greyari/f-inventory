@@ -55,7 +55,6 @@ export default function AssetListPage() {
           <h2 className="text-2xl font-semibold">{t("asset.title")}</h2>
           <p className="text-sm text-muted-foreground">{t("asset.subtitle")}</p>
         </div>
-        <p className="text-xs text-muted-foreground">{t("asset.summaryMovedHint")}</p>
       </div>
 
       <DataTable

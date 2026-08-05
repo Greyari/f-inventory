@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useHasPermission } from "@/store/authStore";
 import AssetListPage from "./AssetListPage";
@@ -17,7 +17,13 @@ export default function AssetPage() {
     { key: "usage", label: t("asset.tabUsage"), visible: canSeeUsage || canManageAssets },
   ];
 
-  const [tab, setTab] = useState<Tab>("list");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const tab: Tab = tabParam === "usage" ? "usage" : "list";
+
+  const setTab = (next: Tab) => {
+    setSearchParams(next === "list" ? {} : { tab: next }, { replace: true });
+  };
 
   return (
     <div>
