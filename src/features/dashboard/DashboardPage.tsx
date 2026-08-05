@@ -1,8 +1,17 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { Package, AlertTriangle, Layers, PackagePlus, PackageMinus, Boxes } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, CartesianGrid } from "recharts";
-import { useDashboardSummary } from "./dashboard.hooks";
+import {
+  Package,
+  AlertTriangle,
+  Layers,
+  PackagePlus,
+  PackageMinus,
+  Boxes,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+} from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, CartesianGrid } from "recharts";
+import { useDashboardSummary, type RecentActivity, type RecentActivityType } from "./dashboard.hooks";
 import { useCurrentUser } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 
@@ -23,13 +32,46 @@ const CARD_CONFIG = [
     color: "text-amber-600 bg-amber-100",
   },
   { key: "totalAssets", labelKey: "asset.totalAssets", icon: Boxes, color: "text-purple-600 bg-purple-100" },
+  {
+    key: "assetsInUseQty",
+    labelKey: "dashboard.assetsInUse",
+    icon: ArrowUpFromLine,
+    color: "text-orange-600 bg-orange-100",
+  },
 ] as const;
+
+const ACTIVITY_ICON: Record<RecentActivityType, typeof PackagePlus> = {
+  in: PackagePlus,
+  out: PackageMinus,
+  asset_checkout: ArrowUpFromLine,
+  asset_return: ArrowDownToLine,
+};
+
+const ACTIVITY_COLOR: Record<RecentActivityType, string> = {
+  in: "bg-green-100 text-green-600",
+  out: "bg-amber-100 text-amber-600",
+  asset_checkout: "bg-orange-100 text-orange-600",
+  asset_return: "bg-teal-100 text-teal-600",
+};
+
+const ACTIVITY_BADGE: Record<RecentActivityType, string> = {
+  in: "bg-green-100 text-green-700",
+  out: "bg-amber-100 text-amber-700",
+  asset_checkout: "bg-orange-100 text-orange-700",
+  asset_return: "bg-teal-100 text-teal-700",
+};
 
 export default function DashboardPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const user = useCurrentUser();
   const { data, isLoading } = useDashboardSummary();
+
+  const goToActivity = (activity: RecentActivity) => {
+    if (activity.type === "in") navigate(`/inventory/stock-in/${activity.id}`);
+    else if (activity.type === "out") navigate(`/inventory/stock-out/${activity.id}`);
+    else navigate("/assets");
+  };
 
   return (
     <div>
@@ -39,7 +81,7 @@ export default function DashboardPage() {
       </p>
 
       {/* Summary cards */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
         {CARD_CONFIG.map((card) => (
           <div key={card.key} className="rounded-lg border bg-background p-5">
             <div className="mb-3 flex items-center justify-between">
@@ -54,21 +96,49 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Monthly trend chart */}
+        {/* Monthly trend — garis melengkung (area chart, smooth) */}
         <div className="rounded-lg border bg-background p-5 lg:col-span-2">
           <h3 className="mb-4 text-sm font-semibold text-muted-foreground">{t("dashboard.monthlyTrend")}</h3>
           <div className="h-full pb-5">
             {!isLoading && data && (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.monthlyTrend}>
+                <AreaChart data={data.monthlyTrend}>
+                  <defs>
+                    <linearGradient id="fillIn" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="oklch(0.65 0.18 145)" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="oklch(0.65 0.18 145)" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="fillOut" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="oklch(0.75 0.15 70)" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="oklch(0.75 0.15 70)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="totalIn" name={t("dashboard.activityIn")} fill="oklch(0.65 0.18 145)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="totalOut" name={t("dashboard.activityOut")} fill="oklch(0.75 0.15 70)" radius={[4, 4, 0, 0]} />
-                </BarChart>
+                  <Area
+                    type="monotone"
+                    dataKey="totalIn"
+                    name={t("dashboard.activityIn")}
+                    stroke="oklch(0.65 0.18 145)"
+                    strokeWidth={2.5}
+                    fill="url(#fillIn)"
+                    dot={{ r: 3 }}
+                    activeDot={{ r: 5 }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="totalOut"
+                    name={t("dashboard.activityOut")}
+                    stroke="oklch(0.75 0.15 70)"
+                    strokeWidth={2.5}
+                    fill="url(#fillOut)"
+                    dot={{ r: 3 }}
+                    activeDot={{ r: 5 }}
+                  />
+                </AreaChart>
               </ResponsiveContainer>
             )}
           </div>
@@ -116,7 +186,7 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* Asset category breakdown — digabung dari halaman Aset */}
+          {/* Asset category breakdown */}
           {data && data.totalAssets > 0 && (
             <div className="rounded-lg border bg-background p-5">
               <div className="mb-4 flex items-center justify-between">
@@ -137,7 +207,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Recent activity */}
+      {/* Recent activity — gabungan Barang Masuk, Barang Keluar, & Aset (checkout/return) */}
       <div className="mt-6 rounded-lg border bg-background p-5">
         <h3 className="mb-4 text-sm font-semibold text-muted-foreground">{t("dashboard.recentActivity")}</h3>
 
@@ -145,49 +215,32 @@ export default function DashboardPage() {
           <p className="text-sm text-muted-foreground">{t("dashboard.recentActivityEmpty")}</p>
         ) : (
           <div className="divide-y">
-            {data?.recentActivity.map((activity) => (
-              <button
-                key={`${activity.type}-${activity.id}`}
-                onClick={() =>
-                  navigate(
-                    activity.type === "in"
-                      ? `/inventory/stock-in/${activity.id}`
-                      : `/inventory/stock-out/${activity.id}`
-                  )
-                }
-                className="flex w-full items-center gap-3 py-3 text-left first:pt-0 last:pb-0 hover:bg-muted/30"
-              >
-                <div
-                  className={cn(
-                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
-                    activity.type === "in" ? "bg-green-100 text-green-600" : "bg-amber-100 text-amber-600"
-                  )}
+            {data?.recentActivity.map((activity) => {
+              const Icon = ACTIVITY_ICON[activity.type];
+              return (
+                <button
+                  key={`${activity.type}-${activity.id}`}
+                  onClick={() => goToActivity(activity)}
+                  className="flex w-full items-center gap-3 py-3 text-left first:pt-0 last:pb-0 hover:bg-muted/30"
                 >
-                  {activity.type === "in" ? (
-                    <PackagePlus className="h-4 w-4" />
-                  ) : (
-                    <PackageMinus className="h-4 w-4" />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="truncate text-sm font-medium">{activity.prNo}</p>
-                    <span className="shrink-0 text-xs text-muted-foreground">{activity.date}</span>
+                  <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full", ACTIVITY_COLOR[activity.type])}>
+                    <Icon className="h-4 w-4" />
                   </div>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {activity.projectName} · {t("dashboard.itemsCount", { count: activity.itemCount })} ·{" "}
-                  </p>
-                </div>
-                <span
-                  className={cn(
-                    "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
-                    activity.type === "in" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
-                  )}
-                >
-                  {activity.type === "in" ? t("dashboard.activityIn") : t("dashboard.activityOut")}
-                </span>
-              </button>
-            ))}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate text-sm font-medium">{activity.refNo}</p>
+                      <span className="shrink-0 text-xs text-muted-foreground">{activity.date}</span>
+                    </div>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {activity.subtitle} · {t("dashboard.itemsCount", { count: activity.itemCount })}
+                    </p>
+                  </div>
+                  <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-xs font-medium", ACTIVITY_BADGE[activity.type])}>
+                    {t(`dashboard.activity_${activity.type}`)}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>

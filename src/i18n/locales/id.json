@@ -8,7 +8,24 @@
     "stockOut": "Barang Keluar",
     "stockBalance": "Stok Tersisa",
     "users": "Manajemen User",
-    "master": "Data Master"
+    "master": "Data Master",
+    "activityLog": "Log Aktivitas"
+  },
+  "activityLog": {
+    "title": "Log Aktivitas",
+    "subtitle": "Catatan global dari semua aksi buat/ubah/hapus di seluruh sistem.",
+    "searchPlaceholder": "Cari deskripsi atau subjek...",
+    "colTime": "Waktu",
+    "colModule": "Modul",
+    "colAction": "Aksi",
+    "colDescription": "Deskripsi",
+    "colUser": "User",
+    "filterModule": "Modul",
+    "filterAction": "Aksi",
+    "filterDateFrom": "Dari",
+    "filterDateTo": "Sampai",
+    "allModules": "Semua modul",
+    "allActions": "Semua aksi"
   },
   "common": {
     "save": "Simpan",
@@ -67,6 +84,11 @@
     "monthlyTrend": "Tren Bulanan",
     "activityIn": "Masuk",
     "activityOut": "Keluar",
+    "assetsInUse": "Aset Sedang Dipakai",
+    "activity_in": "Barang Masuk",
+    "activity_out": "Barang Keluar",
+    "activity_asset_checkout": "Aset Dipinjam",
+    "activity_asset_return": "Aset Dikembalikan",
     "lowStockList": "Daftar Stok Rendah",
     "viewAll": "Lihat semua",
     "lowStockEmpty": "Tidak ada item dengan stok rendah saat ini.",

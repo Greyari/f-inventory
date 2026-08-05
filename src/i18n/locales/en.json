@@ -8,7 +8,24 @@
     "stockOut": "Stock Out",
     "stockBalance": "Stock Balance",
     "users": "User Management",
-    "master": "Master Data"
+    "master": "Master Data",
+    "activityLog": "Activity Log"
+  },
+  "activityLog": {
+    "title": "Activity Log",
+    "subtitle": "A global record of every create, update, and delete action across the system.",
+    "searchPlaceholder": "Search description or subject...",
+    "colTime": "Time",
+    "colModule": "Module",
+    "colAction": "Action",
+    "colDescription": "Description",
+    "colUser": "User",
+    "filterModule": "Module",
+    "filterAction": "Action",
+    "filterDateFrom": "From",
+    "filterDateTo": "To",
+    "allModules": "All modules",
+    "allActions": "All actions"
   },
   "common": {
     "save": "Save",
@@ -67,6 +84,11 @@
     "monthlyTrend": "Monthly Trend",
     "activityIn": "In",
     "activityOut": "Out",
+    "assetsInUse": "Assets In Use",
+    "activity_in": "Stock In",
+    "activity_out": "Stock Out",
+    "activity_asset_checkout": "Asset Checkout",
+    "activity_asset_return": "Asset Return",
     "lowStockList": "Low Stock List",
     "viewAll": "View all",
     "lowStockEmpty": "No low stock items right now.",

@@ -10,12 +10,14 @@ export interface LowStockItem {
   minStockLevel: number;
 }
 
+export type RecentActivityType = "in" | "out" | "asset_checkout" | "asset_return";
+
 export interface RecentActivity {
-  type: "in" | "out";
+  type: RecentActivityType;
   id: string;
-  prNo: string;
+  refNo: string;
   date: string;
-  projectName: string;
+  subtitle: string;
   itemCount: number;
 }
 
@@ -34,16 +36,16 @@ export interface AssetCategoryCount {
 export interface DashboardSummary {
   totalItems: number;
   lowStockCount: number;
-  // Ganti dari "totalLots" (lot pooled) -> "totalBatches" (batch individual)
   totalBatches: number;
   stockInThisMonth: number;
   stockOutThisMonth: number;
   lowStockItems: LowStockItem[];
   recentActivity: RecentActivity[];
   monthlyTrend: MonthlyTrendPoint[];
-  // Digabung dari halaman Aset, gak perlu fetch terpisah lagi
   totalAssets: number;
   assetsByCategory: AssetCategoryCount[];
+  // Total qty aset yang lagi dipakai (status IN_USE), digabung lintas semua aset
+  assetsInUseQty: number;
 }
 
 export function useDashboardSummary() {
