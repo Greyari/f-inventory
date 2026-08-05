@@ -67,11 +67,11 @@ export default function StockInFormPage() {
   // Kalau sudah PO atau DO, daftar item terkunci karena vendor/harga
   // (dan akhirnya saldo stok, kalau sudah DO) sudah nempel ke situ.
   // Cuma field header (tanggal, project, dst) yang masih bisa diubah.
-  const itemsLocked = isEdit && editingData?.status !== "npr";
+  const itemsLocked = isEdit && editingData?.status !== "pr";
   const canOverride = useHasPermission("stock-in.override");
-  // Begitu bukan NPR lagi, form edit BIASA gak bisa dipakai sama sekali —
+  // Begitu bukan PR lagi, form edit BIASA gak bisa dipakai sama sekali —
   // cuma bisa lewat halaman Override (Super Admin).
-  const formLocked = isEdit && editingData && editingData.status !== "npr";
+  const formLocked = isEdit && editingData && editingData.status !== "pr";
 
   const [rowUnits, setRowUnits] = useState<Record<number, string>>({});
 

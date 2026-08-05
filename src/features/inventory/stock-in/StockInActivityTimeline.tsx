@@ -3,7 +3,7 @@ import { PlusCircle, Pencil, ArrowRightCircle, ShieldAlert, Loader2 } from "luci
 import { useStockInActivityLogs } from "./stock-in.hooks";
 import type { StockInActivityLog, StockInStatus } from "@/types/inventory.types";
 
-const STATUS_LABELS: Record<StockInStatus, string> = { npr: "NPR", po: "PO", do: "DO" };
+const STATUS_LABELS: Record<StockInStatus, string> = { pr: "PR", po: "PO", do: "DO" };
 
 // Key payload "updated"/"override_updated" -> label yang ditampilkan
 const FIELD_LABELS: Record<string, string> = {
@@ -74,7 +74,7 @@ function ChangedFieldsList({ changes }: { changes: Record<string, unknown> }) {
 
 function ActivityDescription({ log }: { log: StockInActivityLog }) {
   if (log.action === "created") {
-    return <span>Data NPR dibuat</span>;
+    return <span>Data PR dibuat</span>;
   }
 
   if (log.action === "status_changed") {
@@ -102,7 +102,7 @@ function ActivityDescription({ log }: { log: StockInActivityLog }) {
     );
   }
 
-  // updated (edit normal, cuma bisa terjadi pas masih status NPR)
+  // updated (edit normal, cuma bisa terjadi pas masih status PR)
   const changes = (log.changes ?? {}) as Record<string, unknown>;
   return (
     <div>

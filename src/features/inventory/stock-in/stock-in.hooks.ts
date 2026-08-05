@@ -39,10 +39,10 @@ export function useCreateStockIn() {
   return useMutation({
     mutationFn: stockInApi.create,
     onSuccess: () => {
-      toast.success("NPR berhasil dicatat");
+      toast.success("PR berhasil dicatat");
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal mencatat NPR")),
+    onError: (error) => toast.error(extractErrorMessage(error, "Gagal mencatat PR")),
   });
 }
 

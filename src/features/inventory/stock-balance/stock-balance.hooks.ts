@@ -65,7 +65,7 @@ function invalidateStockQueries(qc: ReturnType<typeof useQueryClient>) {
   qc.invalidateQueries({ queryKey: ["available-batches"] });
 }
 
-// ---- Tambah Stok Langsung (Super Admin, tanpa lewat NPR->PO->DO) ----
+// ---- Tambah Stok Langsung (Super Admin, tanpa lewat PR->PO->DO) ----
 export interface AddDirectStockPayload {
   itemId: string;
   projectRefId: string;

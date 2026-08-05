@@ -67,7 +67,7 @@ export const stockInApi = {
     const { data } = await apiClient.patch<ApiSuccess<StockIn>>(`/stock-in/${id}`, payload);
     return data.data;
   },
-  /** NPR -> PO: vendor + harga per item, plus 1 foto PO untuk seluruh record. */
+  /** PR -> PO: vendor + harga per item, plus 1 foto PO untuk seluruh record. */
   markAsPo: async (id: string, items: MarkStockInPoItemPayload[], poPhoto: File) => {
     const formData = new FormData();
     items.forEach((item, index) => {

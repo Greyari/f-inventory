@@ -21,7 +21,7 @@ export interface JobCode {
   isActive: boolean;
 }
 
-// ---- Stock Batch: 1 baris = 1 kedatangan stok (dari NPR/DO atau Tambah
+// ---- Stock Batch: 1 baris = 1 kedatangan stok (dari PR/DO atau Tambah
 // Langsung), dengan sisa qty-nya sendiri. Ganti total konsep "lot pooled". ----
 export type StockBatchSourceType = "stock_in" | "direct";
 
@@ -43,7 +43,7 @@ export interface StockBatch {
   qtyReceived: number;
   qtyRemaining: number;
   isDepleted: boolean;
-  // Traceability: link balik ke NPR/DO asalnya (null kalau sourceType = "direct")
+  // Traceability: link balik ke PR/DO asalnya (null kalau sourceType = "direct")
   sourceStockIn?: { id: string; prNo: string; status: StockInStatus } | null;
   createdAt: string;
 }
@@ -83,8 +83,8 @@ export interface StockBatchAdjustmentLog {
 }
 
 // ---- Barang Masuk ----
-// npr -> po -> do. Stok baru bertambah begitu status jadi "do".
-export type StockInStatus = "npr" | "po" | "do";
+// pr -> po -> do. Stok baru bertambah begitu status jadi "do".
+export type StockInStatus = "pr" | "po" | "do";
 
 export interface StockInItem {
   id: string;
@@ -125,7 +125,7 @@ export interface StockInActivityLog {
   toStatus?: StockInStatus | null;
   // Bentuknya beda-beda tergantung action:
   // - updated / override_updated: { [field]: { old: string; new: string } | true }
-  // - status_changed (khusus npr->po): { items: { vendorName; price }[] }
+  // - status_changed (khusus pr->po): { items: { vendorName; price }[] }
   changes?: Record<string, unknown> | null;
   // Wajib terisi untuk action = "override_updated" (alasan edit di luar alur)
   reason?: string | null;
@@ -143,7 +143,7 @@ export interface StockOutAllocation {
   costCodeId: string;
   costCode?: JobCode;
   qty: number;
-  // Traceability: batch ini asalnya dari mana (link ke NPR/DO, atau "direct")
+  // Traceability: batch ini asalnya dari mana (link ke PR/DO, atau "direct")
   batch?: {
     projectName: string;
     sourceType: StockBatchSourceType;

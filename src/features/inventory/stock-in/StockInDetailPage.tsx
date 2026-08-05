@@ -39,7 +39,7 @@ export default function StockInDetailPage() {
           <StockInStatusBadge status={data.status} />
         </div>
         <div className="flex gap-2">
-          {canMarkPo && data.status === "npr" && (
+          {canMarkPo && data.status === "pr" && (
             <Button size="sm" onClick={() => navigate(`/inventory/stock-in/${data.id}/mark-po`)}>
               <FileCheck2 className="h-4 w-4" /> {t("stockIn.markAsPo")}
             </Button>
@@ -92,7 +92,7 @@ export default function StockInDetailPage() {
                     </span>
                   </div>
 
-                  {data.status !== "npr" && (
+                  {data.status !== "pr" && (
                     <div className="mt-2 grid grid-cols-1 gap-2 border-t pt-2 text-xs sm:grid-cols-2">
                       <Field label={t("stockIn.vendorName")} value={it.vendorName} />
                       <Field

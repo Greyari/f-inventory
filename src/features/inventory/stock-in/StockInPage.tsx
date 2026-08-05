@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 const STATUS_TABS: { value: StockInStatus | "all"; labelKey: string }[] = [
   { value: "all", labelKey: "stockIn.filterAll" },
-  { value: "npr", labelKey: "stockIn.filterNpr" },
+  { value: "pr", labelKey: "stockIn.filterNpr" },
   { value: "po", labelKey: "stockIn.filterPo" },
   { value: "do", labelKey: "stockIn.filterDo" },
 ];
@@ -136,7 +136,7 @@ export default function StockInPage() {
         }
         rowActions={(row) => (
           <>
-            {canMarkPo && row.status === "npr" && (
+            {canMarkPo && row.status === "pr" && (
               <Button variant="ghost" size="icon" title={t("stockIn.markAsPo")} onClick={() => openMarkPo(row)}>
                 <FileCheck2 className="h-4 w-4 text-sky-600" />
               </Button>
@@ -154,7 +154,7 @@ export default function StockInPage() {
                 <Pencil className="h-4 w-4" />
               </Button>
             )}
-            {canOverride && row.status !== "npr" && (
+            {canOverride && row.status !== "pr" && (
               <Button
                 variant="ghost"
                 size="icon"

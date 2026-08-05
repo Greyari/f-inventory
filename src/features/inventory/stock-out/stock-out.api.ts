@@ -55,7 +55,7 @@ export const stockOutApi = {
 
 // Daftar BATCH (bukan lot pooled lagi) yang masih ada sisanya untuk 1 item.
 // Dipakai buat form Barang Keluar — admin pilih manual batch mana yang
-// mau ditarik, sekalian kelihatan asalnya (link NPR/DO atau "direct").
+// mau ditarik, sekalian kelihatan asalnya (link PR/DO atau "direct").
 export const stockBatchApi = {
   listAvailableByItem: async (itemId: string) => {
     const { data } = await apiClient.get<ApiSuccess<StockBatch[]>>(`/items/${itemId}/available-batches`);

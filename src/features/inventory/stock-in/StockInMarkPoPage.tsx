@@ -58,7 +58,7 @@ export default function StockInMarkPoPage() {
     );
   }
 
-  if (stockIn.status !== "npr") {
+  if (stockIn.status !== "pr") {
     return (
       <div className="mx-auto max-w-2xl py-10 text-center text-sm text-muted-foreground">
         {t("stockIn.notNprNotice")}

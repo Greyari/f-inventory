@@ -70,7 +70,7 @@ export default function StockItemDetailPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           {/* Batch list — pengganti "Rincian per Lot": 1 baris = 1 kedatangan
-              stok, link ke NPR/DO asalnya, abu-abu kalau udah habis. */}
+              stok, link ke PR/DO asalnya, abu-abu kalau udah habis. */}
           <div className="rounded-lg border bg-background">
             <div className="border-b p-4">
               <h3 className="text-sm font-semibold text-muted-foreground">{t("stockBalance.batchList")}</h3>
