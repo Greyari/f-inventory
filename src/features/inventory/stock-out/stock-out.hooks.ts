@@ -42,7 +42,7 @@ export function useCreateStockOut() {
       toast.success("Barang keluar berhasil dicatat");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
-      qc.invalidateQueries({ queryKey: ["stock-lots-by-item"] });
+      qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal mencatat barang keluar")),
   });
@@ -59,7 +59,7 @@ export function useUpdateStockOut() {
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
       qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
-      qc.invalidateQueries({ queryKey: ["stock-lots-by-item"] });
+      qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal memperbarui data")),
   });
@@ -73,7 +73,7 @@ export function useDeleteStockOut() {
       toast.success("Data barang keluar berhasil dihapus");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
-      qc.invalidateQueries({ queryKey: ["stock-lots-by-item"] });
+      qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal menghapus data")),
   });

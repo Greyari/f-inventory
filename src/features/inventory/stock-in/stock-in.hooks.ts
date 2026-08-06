@@ -85,6 +85,7 @@ export function useMarkStockInDo() {
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
       qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
+      qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal mengubah status ke DO")),
   });
@@ -101,6 +102,7 @@ export function useOverrideUpdateStockIn() {
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
       qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
+      qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal menyimpan perubahan")),
   });
@@ -114,6 +116,7 @@ export function useDeleteStockIn() {
       toast.success("Data barang masuk berhasil dihapus");
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
+      qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
     onError: (error) => toast.error(extractErrorMessage(error, "Gagal menghapus data")),
   });
