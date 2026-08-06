@@ -25,7 +25,10 @@
     "filterDateFrom": "From",
     "filterDateTo": "To",
     "allModules": "All modules",
-    "allActions": "All actions"
+    "allActions": "All actions",
+    "viewDetail": "View change detail",
+    "detailTitle": "Activity Detail",
+    "noChangeDetail": "No field-level detail for this entry."
   },
   "common": {
     "save": "Save",

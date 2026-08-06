@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { History, ChevronDown } from "lucide-react";
+import { History, ChevronDown, Eye } from "lucide-react";
 import { DataTable, type Column } from "@/components/common/DataTable";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useActivityLogs, useActivityLogFilterOptions } from "./activity-log.hooks";
 import type { ActivityLog } from "./activity-log.api";
@@ -25,6 +27,14 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
 }
 
+// Label field yang enak dibaca untuk kunci-kunci umum di 'changes'
+const FIELD_LABELS: Record<string, string> = {
+  prNo: "No. PR", bNo: "No. B", dateRaised: "Tanggal", dateIssued: "Tanggal",
+  projectName: "Project", projectRefId: "Project Ref", costCentreId: "Cost Centre",
+  costCodeId: "Cost Code", items: "Daftar Item", issuedTo: "Diserahkan Ke",
+  poPhoto: "Foto PO", doPhoto: "Foto DO",
+};
+
 export default function ActivityLogPage() {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -34,6 +44,7 @@ export default function ActivityLogPage() {
   const [action, setAction] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [detailLog, setDetailLog] = useState<ActivityLog | null>(null);
 
   const { data: filterOptions } = useActivityLogFilterOptions();
   const { data, isLoading } = useActivityLogs({
@@ -80,6 +91,7 @@ export default function ActivityLogPage() {
   return (
     <div>
       <div className="mb-4 flex items-center gap-2">
+        <History className="h-5 w-5 text-muted-foreground" />
         <div>
           <h2 className="text-2xl font-semibold">{t("activityLog.title")}</h2>
           <p className="text-sm text-muted-foreground">{t("activityLog.subtitle")}</p>
@@ -132,8 +144,71 @@ export default function ActivityLogPage() {
         keyExtractor={(r) => r.id}
         meta={data?.meta}
         onPageChange={setPage}
+        rowActions={(row) =>
+          row.changes && Object.keys(row.changes).length > 0 ? (
+            <Button variant="ghost" size="icon" title={t("activityLog.viewDetail")} onClick={() => setDetailLog(row)}>
+              <Eye className="h-4 w-4" />
+            </Button>
+          ) : null
+        }
       />
+
+      <ActivityLogDetailDialog log={detailLog} onOpenChange={(open) => !open && setDetailLog(null)} />
     </div>
+  );
+}
+
+function ActivityLogDetailDialog({ log, onOpenChange }: { log: ActivityLog | null; onOpenChange: (open: boolean) => void }) {
+  const { t } = useTranslation();
+  if (!log) return null;
+
+  const changes = (log.changes ?? {}) as Record<string, unknown>;
+  const fieldKeys = Object.keys(changes);
+
+  return (
+    <Dialog open={!!log} onOpenChange={onOpenChange}>
+      <DialogContent title={t("activityLog.detailTitle")} className="max-w-lg">
+        <div className="mb-3 rounded-md border bg-muted/20 p-3 text-sm">
+          <p className="font-medium">{log.description}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {log.subjectType} · {log.user?.name ?? t("stockIn.activityLogSystem")} · {formatDate(log.createdAt)}
+          </p>
+        </div>
+
+        {fieldKeys.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t("activityLog.noChangeDetail")}</p>
+        ) : (
+          <div className="space-y-2">
+            {fieldKeys.map((key) => {
+              const label = FIELD_LABELS[key] ?? key;
+              const entry = changes[key];
+              const isDiff = entry && typeof entry === "object" && ("old" in (entry as object) || "new" in (entry as object));
+
+              if (isDiff) {
+                const { old: oldVal, new: newVal } = entry as { old?: unknown; new?: unknown };
+                return (
+                  <div key={key} className="rounded-md border p-2 text-xs">
+                    <p className="mb-1 font-medium text-foreground">{label}</p>
+                    <p className="text-muted-foreground">
+                      <span className="text-destructive">{oldVal !== undefined ? String(oldVal) : "-"}</span>
+                      {" → "}
+                      <span className="text-emerald-700">{newVal !== undefined ? String(newVal) : "-"}</span>
+                    </p>
+                  </div>
+                );
+              }
+
+              return (
+                <div key={key} className="rounded-md border p-2 text-xs">
+                  <p className="mb-1 font-medium text-foreground">{label}</p>
+                  <p className="text-muted-foreground">{String(entry)}</p>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
 

@@ -25,7 +25,10 @@
     "filterDateFrom": "Dari",
     "filterDateTo": "Sampai",
     "allModules": "Semua modul",
-    "allActions": "Semua aksi"
+    "allActions": "Semua aksi",
+    "viewDetail": "Lihat rincian perubahan",
+    "detailTitle": "Detail Aktivitas",
+    "noChangeDetail": "Gak ada rincian per-field buat entry ini."
   },
   "common": {
     "save": "Simpan",
