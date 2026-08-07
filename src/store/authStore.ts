@@ -40,7 +40,7 @@ export const useAuthStore = create<AuthState>()(
         const currentRefreshToken = get().refreshToken;
         if (!currentRefreshToken) throw new Error("No refresh token");
 
-        const baseURL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1";
+        const baseURL = import.meta.env.VITE_API_BASE_URL ?? "/api";
         const { data } = await axios.post(`${baseURL}/auth/refresh`, {
           refreshToken: currentRefreshToken,
         });
