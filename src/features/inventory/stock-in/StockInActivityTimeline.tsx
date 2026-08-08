@@ -18,7 +18,8 @@ const FIELD_LABELS: Record<string, string> = {
   doPhoto: "Foto DO",
 };
 
-const READABLE_FIELDS = new Set(["prNo", "dateRaised", "projectName", "items"]);
+// Field yang nilainya manusiawi (bukan UUID) — ini yang ditampilkan old -> new-nya
+const READABLE_FIELDS = new Set(["prNo", "dateRaised", "projectName"]);
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("id-ID", {

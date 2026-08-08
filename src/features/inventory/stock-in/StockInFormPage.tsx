@@ -31,7 +31,8 @@ const schema = z.object({
     .min(1, "Minimal 1 item"),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 const emptyValues = (): FormValues => ({
   prNo: "",
@@ -81,7 +82,7 @@ export default function StockInFormPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: emptyValues() });
+  } = useForm<FormInput, unknown, FormValues>({ resolver: zodResolver(schema), defaultValues: emptyValues() });
 
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
 
@@ -129,6 +130,33 @@ export default function StockInFormPage() {
     return (
       <div className="flex items-center justify-center py-20 text-muted-foreground">
         <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
+
+  if (formLocked) {
+    return (
+      <div className="mx-auto max-w-3xl">
+        <button
+          onClick={() => navigate("/inventory/stock-in")}
+          className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
+        </button>
+
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6">
+          <div className="flex items-center gap-2 text-destructive">
+            <ShieldAlert className="h-5 w-5" />
+            <h2 className="text-lg font-semibold">{t("stockIn.editLockedTitle")}</h2>
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">{t("stockIn.editLockedHint")}</p>
+
+          {canOverride && id && (
+            <Button className="mt-4" onClick={() => navigate(`/inventory/stock-in/${id}/override`)}>
+              {t("stockIn.goToOverride")}
+            </Button>
+          )}
+        </div>
       </div>
     );
   }

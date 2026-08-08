@@ -32,7 +32,8 @@ const schema = z.object({
   reason: z.string().min(5, "Alasan wajib diisi, jelaskan sedikit lebih detail"),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 export default function StockInOverridePage() {
   const { t } = useTranslation();
@@ -51,7 +52,7 @@ export default function StockInOverridePage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<FormInput, unknown, FormValues>({ resolver: zodResolver(schema) });
 
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
 

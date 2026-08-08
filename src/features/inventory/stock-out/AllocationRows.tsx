@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BatchPickerModal } from "./BatchPickerModal";
 import { useItemBatches } from "./useItemBatches";
-import type { StockOutFormValues } from "./stockOutFormSchema";
+import type { StockOutEditFormValues, StockOutEditFormInput } from "./stockOutFormSchema";
 import type { StockOutAllocation } from "@/types/inventory.types";
 
 interface AllocationRowsProps {
-  control: Control<StockOutFormValues>;
+  control: Control<StockOutEditFormInput, unknown, StockOutEditFormValues>;
   itemIndex: number;
   itemId?: string;
   initialAllocations?: StockOutAllocation[];
@@ -86,7 +86,7 @@ function AllocationRow({
   usedBatchIds,
   onRemove,
 }: {
-  control: Control<StockOutFormValues>;
+  control: Control<StockOutEditFormInput, unknown, StockOutEditFormValues>;
   itemIndex: number;
   allocIndex: number;
   batches: import("@/types/inventory.types").StockBatch[];
@@ -128,7 +128,15 @@ function AllocationRow({
           <Controller
             control={control}
             name={`items.${itemIndex}.allocations.${allocIndex}.qty`}
-            render={({ field }) => <Input type="number" step="any" placeholder={t("stockIn.qty")} {...field} />}
+            render={({ field }) => (
+              <Input
+                type="number"
+                step="any"
+                placeholder={t("stockIn.qty")}
+                {...field}
+                value={(field.value as string | number | undefined) ?? ""}
+              />
+            )}
           />
         </div>
 

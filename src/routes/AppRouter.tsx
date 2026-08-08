@@ -68,13 +68,23 @@ const router = createBrowserRouter([
           { path: "/inventory/stock-in/:id/edit", element: withSuspense(<StockInFormPage />) },
           { path: "/inventory/stock-in/:id/mark-po", element: withSuspense(<StockInMarkPoPage />) },
           { path: "/inventory/stock-in/:id/mark-do", element: withSuspense(<StockInMarkDoPage />) },
-          { path: "/inventory/stock-in/:id/override", element: withSuspense(<StockInOverridePage />) },
+          {
+            element: <ProtectedRoute requiredPermission="stock-in.override" />,
+            children: [
+              { path: "/inventory/stock-in/:id/override", element: withSuspense(<StockInOverridePage />) },
+            ],
+          },
 
           /* Stock Out Routes */
           { path: "/inventory/stock-out", element: withSuspense(<StockOutPage />) },
           { path: "/inventory/stock-out/new", element: withSuspense(<StockOutFormPage />) },
           { path: "/inventory/stock-out/:id", element: withSuspense(<StockOutDetailPage />) },
-          { path: "/inventory/stock-out/:id/edit", element: withSuspense(<StockOutFormPage />) },
+          {
+            element: <ProtectedRoute requiredPermission="stock-out.override" />,
+            children: [
+              { path: "/inventory/stock-out/:id/edit", element: withSuspense(<StockOutFormPage />) },
+            ],
+          },
 
           /* Stock Balance Routes */
           { path: "/inventory/stock-balance", element: withSuspense(<StockBalancePage />) },

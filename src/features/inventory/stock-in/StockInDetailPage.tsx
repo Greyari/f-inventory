@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Loader2, FileCheck2, PackageCheck, ShieldAlert, Download, ExternalLink } from "lucide-react";
+import { ArrowLeft, Loader2, FileCheck2, PackageCheck, ShieldAlert, ExternalLink } from "lucide-react";
 import { useStockInDetail } from "./stock-in.hooks";
 import { StockInStatusBadge } from "./StockInStatusBadge";
 import { StockInActivityTimeline } from "./StockInActivityTimeline";

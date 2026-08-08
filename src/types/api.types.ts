@@ -3,6 +3,8 @@ export interface ApiMeta {
   per_page: number;
   total: number;
   last_page: number;
+  from: number | null;
+  to: number | null;
 }
 
 export interface ApiSuccess<T> {

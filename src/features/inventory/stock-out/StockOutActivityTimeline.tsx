@@ -14,7 +14,8 @@ const FIELD_LABELS: Record<string, string> = {
   items: "Item & sumber stok",
 };
 
-const READABLE_FIELDS = new Set(["bNo", "dateIssued", "issuedTo", "projectName", "items"]);
+// Field yang nilainya manusiawi (bukan UUID) — ini yang ditampilkan old -> new-nya
+const READABLE_FIELDS = new Set(["bNo", "dateIssued", "issuedTo", "projectName"]);
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("id-ID", {
@@ -55,15 +56,7 @@ function ChangedFieldsList({ changes }: { changes: Record<string, unknown> }) {
 
 function ActivityDescription({ log }: { log: StockOutActivityLog }) {
   if (log.action === "created") {
-    const itemSummary = (log.changes as Record<string, unknown> | undefined)?.items;
-    return (
-      <div>
-        <span>Data barang keluar dibuat</span>
-        {typeof itemSummary === "string" && itemSummary && (
-          <p className="mt-1 text-xs text-muted-foreground">{itemSummary}</p>
-        )}
-      </div>
-    );
+    return <span>Data barang keluar dibuat</span>;
   }
 
   // updated (selalu oleh Super Admin, selalu ada reason)

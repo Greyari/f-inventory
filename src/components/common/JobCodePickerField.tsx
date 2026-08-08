@@ -161,7 +161,7 @@ export function JobCodePickerField({
                 </button>
                 <button
                   type="button"
-                  disabled={data.meta.to !== undefined && data.meta.total !== undefined && data.meta.to >= data.meta.total}
+                  disabled={data.meta.to != null && data.meta.total !== undefined && data.meta.to >= data.meta.total}
                   onClick={() => setPage((p) => p + 1)}
                   className="rounded-md border p-1.5 disabled:opacity-40"
                 >

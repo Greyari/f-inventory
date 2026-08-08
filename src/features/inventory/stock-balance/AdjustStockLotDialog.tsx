@@ -16,7 +16,8 @@ const schema = z.object({
   reason: z.string().min(5, "Alasan wajib diisi, jelaskan sedikit lebih detail"),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 interface AdjustStockLotDialogProps {
   batch: StockBatch | null;
@@ -32,7 +33,7 @@ export function AdjustStockLotDialog({ batch, onOpenChange }: AdjustStockLotDial
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<FormInput, unknown, FormValues>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
     if (batch) reset({ newQtyRemaining: batch.qtyRemaining, reason: "" });

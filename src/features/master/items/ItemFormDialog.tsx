@@ -17,7 +17,8 @@ const schema = z.object({
   description: z.string().optional(),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 const UNIT_SUGGESTIONS = ["pcs", "m", "kg", "liter", "box", "roll", "set", "unit", "sheet"];
 
@@ -38,7 +39,7 @@ export function ItemFormDialog({ open, onOpenChange, editingData }: ItemFormDial
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<FormInput, unknown, FormValues>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
     if (open) {

@@ -30,8 +30,10 @@ export const stockOutEditSchema = z.object({
   reason: z.string().min(5, "Alasan wajib diisi, jelaskan sedikit lebih detail"),
 });
 
-export type StockOutFormValues = z.infer<typeof stockOutSchema>;
-export type StockOutEditFormValues = z.infer<typeof stockOutEditSchema>;
+export type StockOutFormValues = z.output<typeof stockOutSchema>;
+export type StockOutEditFormValues = z.output<typeof stockOutEditSchema>;
+export type StockOutFormInput = z.input<typeof stockOutSchema>;
+export type StockOutEditFormInput = z.input<typeof stockOutEditSchema>;
 
 export const emptyStockOutValues = (): StockOutFormValues => ({
   bNo: "",

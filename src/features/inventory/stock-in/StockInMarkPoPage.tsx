@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ArrowLeft, Loader2, Upload, X } from "lucide-react";
@@ -19,7 +19,8 @@ const schema = z.object({
   ),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 export default function StockInMarkPoPage() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export default function StockInMarkPoPage() {
   const [poPhoto, setPoPhoto] = useState<File | null>(null);
   const [photoError, setPhotoError] = useState(false);
 
-  const { control, register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+  const { control, register, handleSubmit, reset, formState: { errors } } = useForm<FormInput, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { items: [] },
   });

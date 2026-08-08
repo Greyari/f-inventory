@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import type { User } from "@/types/auth.types";
+import { API_BASE_URL } from "@/lib/config";
 
 interface AuthState {
   user: User | null;
@@ -40,8 +41,7 @@ export const useAuthStore = create<AuthState>()(
         const currentRefreshToken = get().refreshToken;
         if (!currentRefreshToken) throw new Error("No refresh token");
 
-        const baseURL = import.meta.env.VITE_API_BASE_URL ?? "/api";
-        const { data } = await axios.post(`${baseURL}/auth/refresh`, {
+        const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
           refreshToken: currentRefreshToken,
         });
 

@@ -27,7 +27,6 @@ const emptyNewItem = () => ({
 });
 
 export function ItemPickerField({
-  value,
   onChange,
   selectedLabel,
   selectedSublabel,
@@ -249,7 +248,7 @@ export function ItemPickerField({
                       <button
                         type="button"
                         disabled={
-                          data.meta.to !== undefined &&
+                          data.meta.to != null &&
                           data.meta.total !== undefined &&
                           data.meta.to >= data.meta.total
                         }

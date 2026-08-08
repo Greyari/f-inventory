@@ -21,7 +21,8 @@ const schema = z.object({
   reason: z.string().min(5, "Alasan wajib diisi, jelaskan sedikit lebih detail"),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 interface AddDirectStockDialogProps {
   open: boolean;
@@ -38,7 +39,7 @@ export function AddDirectStockDialog({ open, onOpenChange }: AddDirectStockDialo
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<FormInput, unknown, FormValues>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (values: FormValues) => {
     await addDirect.mutateAsync(values);

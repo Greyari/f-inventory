@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
+import { useForm, useFieldArray, Controller, useWatch, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, ArrowLeft, Loader2, Lock, ShieldAlert } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Loader2, ShieldAlert } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
@@ -9,27 +9,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ItemPickerField } from "@/components/common/ItemPickerField";
 import { useCreateStockOut, useUpdateStockOut, useStockOutDetail } from "./stock-out.hooks";
-import { useHasPermission } from "@/store/authStore";
 import { AllocationRows } from "./AllocationRows";
 import {
   stockOutSchema,
   stockOutEditSchema,
   emptyStockOutValues,
   valuesFromStockOut,
-  type StockOutFormValues,
   type StockOutEditFormValues,
+  type StockOutEditFormInput,
 } from "./stockOutFormSchema";
 import type { StockOut } from "@/types/inventory.types";
 import { JobCodePickerField } from "@/components/common/JobCodePickerField";
 
-type FormValues = StockOutFormValues | StockOutEditFormValues;
+// StockOutEditFormValues/Input adalah superset dari versi create (base fields
+// + 'reason'), jadi dipakai sebagai tipe form tunggal di sini. Untuk mode
+// create, field 'reason' cuma didefaultkan "" dan gak pernah dikirim ke API
+// (lihat onSubmit di bawah).
+type FormInput = StockOutEditFormInput;
+type FormValues = StockOutEditFormValues;
 
 export default function StockOutFormPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const isEdit = !!id;
-  const canOverride = useHasPermission("stock-out.override");
 
   const { data: editingData, isLoading: isLoadingDetail } = useStockOutDetail(id);
   const createMutation = useCreateStockOut();
@@ -42,9 +45,13 @@ export default function StockOutFormPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(isEdit ? stockOutEditSchema : stockOutSchema),
-    defaultValues: emptyStockOutValues(),
+  } = useForm<FormInput, unknown, FormValues>({
+    // Skema dipilih di runtime (create vs edit), jadi TypeScript gak bisa
+    // infer satu tipe Resolver yang pasti dari ternary ini — cast eksplisit
+    // di sini aman karena FormInput/FormValues sudah mencakup superset field
+    // dari kedua skema (stockOutSchema adalah subset dari stockOutEditSchema).
+    resolver: zodResolver(isEdit ? stockOutEditSchema : stockOutSchema) as unknown as Resolver<FormInput, unknown, FormValues>,
+    defaultValues: { ...emptyStockOutValues(), reason: "" },
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
@@ -62,10 +69,11 @@ export default function StockOutFormPage() {
     }));
 
     if (isEdit && id) {
-      const { reason, ...header } = values as StockOutEditFormValues;
+      const { reason, ...header } = values;
       await updateMutation.mutateAsync({ id, payload: { ...header, items, reason } });
     } else {
-      await createMutation.mutateAsync({ ...(values as StockOutFormValues), items });
+      const { reason: _reason, ...header } = values;
+      await createMutation.mutateAsync({ ...header, items });
     }
     navigate(isEdit ? `/inventory/stock-out/${id}` : "/inventory/stock-out");
   };
@@ -221,10 +229,8 @@ export default function StockOutFormPage() {
         {isEdit && (
           <div className="border-t pt-4">
             <Label>{t("stockOut.reason")}</Label>
-            <Textarea rows={3} placeholder={t("stockOut.reasonPlaceholder")} {...register("reason" as never)} />
-            {"reason" in errors && errors.reason && (
-              <p className="mt-1 text-xs text-destructive">{(errors as any).reason?.message}</p>
-            )}
+            <Textarea rows={3} placeholder={t("stockOut.reasonPlaceholder")} {...register("reason")} />
+            {errors.reason && <p className="mt-1 text-xs text-destructive">{errors.reason.message}</p>}
           </div>
         )}
 
@@ -252,7 +258,7 @@ function ItemRow({
   onRemove,
   error,
 }: {
-  control: ReturnType<typeof useForm<FormValues>>["control"];
+  control: ReturnType<typeof useForm<FormInput, unknown, FormValues>>["control"];
   index: number;
   editingItem?: StockOut["items"][number];
   onRemove?: () => void;

@@ -18,7 +18,8 @@ const schema = z.object({
   notes: z.string().optional(),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 const CATEGORY_SUGGESTIONS = ["Elektronik", "Furniture", "Kendaraan", "Peralatan Berat", "Peralatan Kantor"];
 
@@ -46,7 +47,7 @@ export default function AssetFormPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: emptyValues() });
+  } = useForm<FormInput, unknown, FormValues>({ resolver: zodResolver(schema), defaultValues: emptyValues() });
 
   useEffect(() => {
     if (isEdit && editingData) {

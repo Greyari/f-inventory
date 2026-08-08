@@ -136,7 +136,7 @@ export default function AssetUsageListPage() {
             />
           </a>
         ) : (
-          <span className="text-muted-foreground/40">-</span>
+          <ImageIcon className="h-4 w-4 text-muted-foreground/40" aria-hidden />
         ),
       hideOnMobile: true,
     },

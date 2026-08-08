@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -27,6 +27,17 @@ const editSchema = z.object({
     .optional(),
 });
 
+// Union field-field dari createSchema & editSchema — dipakai sebagai satu
+// tipe form tunggal, karena skema aktualnya dipilih di runtime (isEdit) dan
+// TypeScript gak bisa infer 1 tipe Resolver pasti dari situasi begitu.
+interface FormValues {
+  name: string;
+  email: string;
+  roleId: string;
+  password?: string;
+  isActive?: boolean;
+}
+
 interface UserFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -48,8 +59,10 @@ export function UserFormDialog({ open, onOpenChange, editingData }: UserFormDial
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<z.infer<typeof createSchema> & Partial<z.infer<typeof editSchema>>>({
-    resolver: zodResolver(schema as never),
+  } = useForm<FormValues>({
+    // Cast eksplisit sama seperti di StockOutFormPage — aman karena FormValues
+    // sudah mencakup superset field dari kedua skema.
+    resolver: zodResolver(schema) as Resolver<FormValues>,
   });
 
   useEffect(() => {
@@ -61,26 +74,26 @@ export function UserFormDialog({ open, onOpenChange, editingData }: UserFormDial
           roleId: editingData.roleId,
           isActive: editingData.isActive,
           password: "",
-        } as never);
+        });
       } else {
-        reset({ name: "", email: "", password: "", roleId: "" } as never);
+        reset({ name: "", email: "", password: "", roleId: "" });
       }
     }
   }, [open, editingData, reset]);
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
-  const onSubmit = async (values: never) => {
-    const payload = { ...(values as Record<string, unknown>) };
+  const onSubmit = async (values: FormValues) => {
+    const payload: Partial<FormValues> = { ...values };
 
     if (isEdit && !payload.password) {
       delete payload.password;
     }
 
     if (isEdit && editingData) {
-      await updateMutation.mutateAsync({ id: editingData.id, payload: payload as never });
+      await updateMutation.mutateAsync({ id: editingData.id, payload });
     } else {
-      await createMutation.mutateAsync(payload as never);
+      await createMutation.mutateAsync(payload as Required<Omit<FormValues, "isActive">>);
     }
     onOpenChange(false);
   };

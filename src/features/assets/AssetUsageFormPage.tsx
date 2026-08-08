@@ -19,7 +19,8 @@ const schema = z.object({
   checkoutDate: z.string().min(1, "Tanggal wajib diisi"),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 const emptyValues = (): FormValues => ({
   assetId: "",
@@ -40,7 +41,7 @@ export default function AssetUsageFormPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: emptyValues() });
+  } = useForm<FormInput, unknown, FormValues>({ resolver: zodResolver(schema), defaultValues: emptyValues() });
 
   useEffect(() => {
     reset(emptyValues());
