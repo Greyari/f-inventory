@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Trash2, ArrowLeft, Loader2, Lock, ShieldAlert } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Loader2, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input, Label } from "@/components/ui/input";
@@ -68,11 +68,10 @@ export default function StockInFormPage() {
   // Kalau sudah PO atau DO, daftar item terkunci karena vendor/harga
   // (dan akhirnya saldo stok, kalau sudah DO) sudah nempel ke situ.
   // Cuma field header (tanggal, project, dst) yang masih bisa diubah.
+  // Kalau item-nya sendiri perlu diubah setelah PO/DO, itu cuma bisa lewat
+  // menu Edit Super Admin (override) — ditandai lewat canOverride di bawah.
   const itemsLocked = isEdit && editingData?.status !== "pr";
   const canOverride = useHasPermission("stock-in.override");
-  // Begitu bukan PR lagi, form edit BIASA gak bisa dipakai sama sekali —
-  // cuma bisa lewat halaman Override (Super Admin).
-  const formLocked = isEdit && editingData && editingData.status !== "pr";
 
   const [rowUnits, setRowUnits] = useState<Record<number, string>>({});
 
@@ -130,33 +129,6 @@ export default function StockInFormPage() {
     return (
       <div className="flex items-center justify-center py-20 text-muted-foreground">
         <Loader2 className="h-6 w-6 animate-spin" />
-      </div>
-    );
-  }
-
-  if (formLocked) {
-    return (
-      <div className="mx-auto max-w-3xl">
-        <button
-          onClick={() => navigate("/inventory/stock-in")}
-          className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> {t("common.backToList")}
-        </button>
-
-        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6">
-          <div className="flex items-center gap-2 text-destructive">
-            <ShieldAlert className="h-5 w-5" />
-            <h2 className="text-lg font-semibold">{t("stockIn.editLockedTitle")}</h2>
-          </div>
-          <p className="mt-2 text-sm text-muted-foreground">{t("stockIn.editLockedHint")}</p>
-
-          {canOverride && id && (
-            <Button className="mt-4" onClick={() => navigate(`/inventory/stock-in/${id}/override`)}>
-              {t("stockIn.goToOverride")}
-            </Button>
-          )}
-        </div>
       </div>
     );
   }
@@ -261,6 +233,15 @@ export default function StockInFormPage() {
               {itemsLocked && (
                 <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
                   <Lock className="h-3 w-3" /> {t("stockIn.itemsLockedHint")}
+                  {canOverride && id && (
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/inventory/stock-in/${id}/override`)}
+                      className="ml-1 text-primary underline underline-offset-2 hover:no-underline"
+                    >
+                      {t("stockIn.goToOverride")}
+                    </button>
+                  )}
                 </span>
               )}
             </Label>

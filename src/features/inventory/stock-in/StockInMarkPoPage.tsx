@@ -62,7 +62,7 @@ export default function StockInMarkPoPage() {
   if (stockIn.status !== "pr") {
     return (
       <div className="mx-auto max-w-2xl py-10 text-center text-sm text-muted-foreground">
-        {t("stockIn.notNprNotice")}
+        {t("stockIn.notPrNotice")}
         <div className="mt-4">
           <Button variant="outline" onClick={() => navigate(`/inventory/stock-in/${id}`)}>
             {t("common.backToList")}

@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 const STATUS_TABS: { value: StockInStatus | "all"; labelKey: string }[] = [
   { value: "all", labelKey: "stockIn.filterAll" },
-  { value: "pr", labelKey: "stockIn.filterNpr" },
+  { value: "pr", labelKey: "stockIn.filterPr" },
   { value: "po", labelKey: "stockIn.filterPo" },
   { value: "do", labelKey: "stockIn.filterDo" },
 ];
