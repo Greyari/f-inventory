@@ -46,8 +46,8 @@ export function ItemPickerField({
 
   const { data, isLoading } = useItems({ search: debouncedSearch, page, limit: 10 });
   const createMutation = useCreateItem();
-  const currentLabel = selected?.itemName ?? selectedLabel;
-  const currentSublabel = selected ? `${selected.category} · ${selected.unit}` : selectedSublabel;
+  const currentLabel = selected?.itemName ?? (selectedLabel || selectedSublabel);
+  const currentSublabel = selected ? `${selected.category} · ${selected.unit}` : (selectedLabel ? selectedSublabel : undefined);
 
   const handlePick = (item: Item) => {
     setSelected(item);
