@@ -18,8 +18,11 @@ const FIELD_LABELS: Record<string, string> = {
   doPhoto: "Foto DO",
 };
 
-// Field yang nilainya manusiawi (bukan UUID) — ini yang ditampilkan old -> new-nya
-const READABLE_FIELDS = new Set(["prNo", "dateRaised", "projectName"]);
+// NOTE: field projectRefId/costCentreId/costCodeId dulu isinya UUID mentah
+// (gak enak dibaca), jadi sengaja disembunyikan ("diubah" tanpa nilai) lewat
+// OPAQUE_FIELDS. Sekarang backend sudah resolve UUID -> nama sebelum
+// disimpan ke activity log, jadi field ini bisa ditampilkan normal seperti
+// field lain (old -> new) lewat ChangedFieldsList di bawah.
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("id-ID", {
@@ -51,13 +54,23 @@ function ChangedFieldsList({ changes }: { changes: Record<string, unknown> }) {
       {fieldKeys.map((key) => {
         const label = FIELD_LABELS[key] ?? key;
         const entry = changes[key];
-        const isReadable = READABLE_FIELDS.has(key) && entry && typeof entry === "object" && "old" in (entry as object);
 
-        if (isReadable) {
-          const { old: oldVal, new: newVal } = entry as { old: string; new: string };
+        // kasus "created": entry cuma string biasa, bukan {old,new}
+        if (typeof entry === "string") {
           return (
             <li key={key} className="text-xs text-muted-foreground">
-              <span className="font-medium text-foreground">{label}</span>: {oldVal || "-"} → {newVal || "-"}
+              <span className="font-medium text-foreground">{label}</span>: {entry}
+            </li>
+          );
+        }
+
+        // kasus updated/override_updated: entry {old?, new}
+        if (entry && typeof entry === "object" && "new" in (entry as object)) {
+          const { old: oldVal, new: newVal } = entry as { old?: string; new: string };
+          return (
+            <li key={key} className="text-xs text-muted-foreground">
+              <span className="font-medium text-foreground">{label}</span>:{" "}
+              {oldVal ? `${oldVal} → ${newVal}` : String(newVal)}
             </li>
           );
         }
