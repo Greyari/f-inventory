@@ -206,6 +206,7 @@ function BatchRow({
   onAdjust: () => void;
 }) {
   const { t } = useTranslation();
+  const isFromPo = Boolean(batch.sourceStockIn);
 
   return (
     <div className={cn("p-4", batch.isDepleted && "bg-muted/30 opacity-60")}>
@@ -229,13 +230,13 @@ function BatchRow({
       </div>
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        {batch.sourceStockIn ? (
+        {isFromPo ? (
           <Link
-            to={`/inventory/stock-in/${batch.sourceStockIn.id}`}
+            to={`/inventory/stock-in/${batch.sourceStockIn?.id}`}
             className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
           >
             <ExternalLink className="h-3 w-3" />
-            {t("stockBalance.fromPo", { ref: batch.sourceStockIn.prNo })}
+            {t("stockBalance.fromPo", { ref: batch.sourceStockIn?.prNo })}
           </Link>
         ) : (
           <div className="flex items-center gap-1 text-xs text-amber-700">
@@ -247,7 +248,7 @@ function BatchRow({
           </div>
         )}
 
-        {canAdjust && (
+        {canAdjust && !isFromPo && (
           <Button variant="ghost" size="icon" title={t("stockBalance.adjustButton")} onClick={onAdjust}>
             <Pencil className="h-4 w-4 text-destructive" />
           </Button>

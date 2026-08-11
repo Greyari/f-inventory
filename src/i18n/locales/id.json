@@ -121,7 +121,7 @@
     "confirmDelete": "Hapus data barang masuk \"{{ref}}\"? Saldo stok TIDAK otomatis di-rollback.",
     "colReference": "No. PR",
     "coldateRaised": "Tanggal Diajukan",
-    "colProject": "Project / Ref / Cost Centre / Cost Code",
+    "colProject": "Project Ref / Cost Centre / Cost Code",
     "colItems": "Item",
     "detailTitle": "Detail Barang Masuk",
     "detailReference": "Nomor PR",

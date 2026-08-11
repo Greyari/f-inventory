@@ -121,7 +121,7 @@
     "confirmDelete": "Delete stock-in record \"{{ref}}\"? Stock balance will NOT be automatically rolled back.",
     "colReference": "PR No.",
     "coldateRaised": "Date Raised",
-    "colProject": "Project / Ref / Cost Centre / Cost Code",
+    "colProject": "Project Ref / Cost Centre / Cost Code",
     "colItems": "Items",
     "detailTitle": "Stock In Detail",
     "detailReference": "PR Number",
