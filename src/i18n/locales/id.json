@@ -417,5 +417,27 @@
       "Hilang": "Hilang"
     },
     "alreadyReturned": "Pemakaian ini sudah pernah dikembalikan sebelumnya."
+  },
+    "profile": {
+    "title": "Profil Saya",
+    "subtitle": "Kelola detail pribadi dan keamanan akun kamu.",
+    "detailsTitle": "Detail Pribadi",
+    "name": "Nama",
+    "email": "Email",
+    "passwordTitle": "Ubah Password",
+    "currentPassword": "Password Saat Ini",
+    "newPassword": "Password Baru",
+    "confirmPassword": "Konfirmasi Password Baru",
+    "changePasswordButton": "Ubah Password",
+    "passwordChangedHint": "Password berhasil diganti",
+    "toastPasswordChanged": "Password berhasil diganti",
+    "toastPasswordChangeFailed": "Gagal mengganti password",
+    "validation": {
+      "currentPasswordRequired": "Password saat ini wajib diisi",
+      "newPasswordMin": "Password baru minimal 6 karakter",
+      "confirmPasswordRequired": "Konfirmasi password wajib diisi",
+      "confirmPasswordMismatch": "Konfirmasi password tidak sama dengan password baru",
+      "newPasswordSameAsCurrent": "Password baru tidak boleh sama dengan password lama"
+    }
   }
 }

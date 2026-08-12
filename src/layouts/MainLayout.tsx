@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
@@ -13,6 +13,9 @@ import {
   X,
   History,
   Boxes as AssetIcon,
+  UserCircle2,
+  MoreVertical,
+  User,
 } from "lucide-react";
 import { useAuthStore, useCurrentUser } from "@/store/authStore";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
@@ -51,10 +54,23 @@ const NAV_ITEMS = [
 
 export function MainLayout() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const user = useCurrentUser();
   const userPermissions = user?.permissions ?? [];
   const logout = useAuthStore((s) => s.logout);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const canAccess = (required: readonly string[] | null) =>
     !required || required.some((p) => userPermissions.includes(p));
@@ -91,25 +107,60 @@ export function MainLayout() {
         ))}
       </nav>
 
-      <div className="p-3 border-t">
-        <div className="px-3 py-2 mb-1">
-          <p className="text-sm font-medium truncate">{user?.name}</p>
-          <p className="text-xs text-muted-foreground truncate">{user?.role?.name}</p>
+      {/* Area Bottom User Profile */}
+      <div className="relative p-3 border-t flex items-center justify-between gap-2" ref={menuRef}>
+        <div className="flex items-center gap-2 min-w-0">
+          <UserCircle2 className="h-8 w-8 shrink-0 text-muted-foreground" />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">{user?.name}</p>
+            <p className="truncate text-xs text-muted-foreground">{user?.role?.name}</p>
+          </div>
         </div>
+
+        {/* Tombol Titik Tiga */}
         <button
-          onClick={logout}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-destructive"
+          type="button"
+          onClick={() => setIsMenuOpen((prev) => !prev)}
+          className="p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
         >
-          <LogOut className="h-4 w-4" />
-          {t("auth.logout")}
+          <MoreVertical className="h-4 w-4" />
         </button>
+
+        {/* Menu Popover Custom */}
+        {isMenuOpen && (
+          <div className="absolute bottom-14 right-3 z-50 w-44 rounded-md border bg-popover p-1 shadow-md text-popover-foreground">
+            <button
+              type="button"
+              onClick={() => {
+                setIsMenuOpen(false);
+                setMobileOpen(false);
+                navigate("/profile");
+              }}
+              className="flex w-full items-center gap-2 rounded-sm px-2.5 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
+              <User className="h-4 w-4" />
+              <span>{t("profile.title") || "Profile"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsMenuOpen(false);
+                logout();
+              }}
+              className="flex w-full items-center gap-2 rounded-sm px-2.5 py-1.5 text-sm text-destructive transition-colors hover:bg-destructive/10"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>{t("auth.logout") || "Logout"}</span>
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
 
   return (
     <div className="flex h-screen bg-muted/30">
-      {/* Sidebar — desktop: statis, mobile: drawer */}
       <aside className="hidden md:flex w-64 shrink-0 flex-col border-r bg-background">
         {SidebarContent}
       </aside>

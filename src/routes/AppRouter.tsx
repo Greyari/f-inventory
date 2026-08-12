@@ -8,6 +8,7 @@ const LoginPage = lazy(() => import("@/features/auth/LoginPage"));
 const ForbiddenPage = lazy(() => import("@/features/auth/ForbiddenPage"));
 const NotFoundPage = lazy(() => import("@/features/auth/NotFoundPage"));
 const DashboardPage = lazy(() => import("@/features/dashboard/DashboardPage"));
+const ProfilePage = lazy(() => import("@/features/profile/ProfilePage"));
 
 // Inventory Components
 const StockInPage = lazy(() => import("@/features/inventory/stock-in/StockInPage"));
@@ -60,6 +61,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: withSuspense(<DashboardPage />) },
           { path: "/dashboard", element: withSuspense(<DashboardPage />) },
+          { path: "/profile", element: withSuspense(<ProfilePage />) },
 
           /* Stock In Routes */
           { path: "/inventory/stock-in", element: withSuspense(<StockInPage />) },

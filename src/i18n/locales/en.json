@@ -417,5 +417,27 @@
       "Hilang": "Lost"
     },
     "alreadyReturned": "Pemakaian ini sudah pernah dikembalikan sebelumnya."
+  },
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your personal details and account security.",
+    "detailsTitle": "Personal Details",
+    "name": "Name",
+    "email": "Email",
+    "passwordTitle": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "changePasswordButton": "Change Password",
+    "passwordChangedHint": "Password changed successfully",
+    "toastPasswordChanged": "Password changed successfully",
+    "toastPasswordChangeFailed": "Failed to change password",
+    "validation": {
+        "currentPasswordRequired": "Current password is required",
+        "newPasswordMin": "New password must be at least 6 characters",
+        "confirmPasswordRequired": "Password confirmation is required",
+        "confirmPasswordMismatch": "Password confirmation does not match the new password",
+        "newPasswordSameAsCurrent": "New password cannot be the same as the current password"
+    }
   }
 }
