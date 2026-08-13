@@ -21,13 +21,6 @@ export function useAsset(id?: string) {
   });
 }
 
-export function useAssetSummary() {
-  return useQuery({
-    queryKey: [KEY, "summary"],
-    queryFn: assetApi.summary,
-  });
-}
-
 export function useCreateAsset() {
   const qc = useQueryClient();
   return useMutation({

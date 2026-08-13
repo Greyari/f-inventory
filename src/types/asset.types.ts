@@ -11,18 +11,6 @@ export interface Asset {
   createdAt: string;
 }
 
-export interface AssetCategorySummary {
-  category: string;
-  count: number;
-  totalQty: number;
-}
-
-export interface AssetSummary {
-  totalAssets: number;
-  totalQty: number;
-  byCategory: AssetCategorySummary[];
-}
-
 export type AssetUsageStatus = "IN_USE" | "RETURNED";
 
 export type ReturnCondition = "Baik" | "Rusak Ringan" | "Rusak Berat" | "Hilang";

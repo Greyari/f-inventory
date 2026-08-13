@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios";
 import type { ApiSuccess, ListParams } from "@/types/api.types";
-import type { Asset, AssetSummary } from "@/types/asset.types";
+import type { Asset } from "@/types/asset.types";
 
 export interface AssetPayload {
   assetCode: string;
@@ -30,9 +30,5 @@ export const assetApi = {
   remove: async (id: string) => {
     const { data } = await apiClient.delete<ApiSuccess<null>>(`/assets/${id}`);
     return data;
-  },
-  summary: async () => {
-    const { data } = await apiClient.get<ApiSuccess<AssetSummary>>("/assets/summary");
-    return data.data;
   },
 };
