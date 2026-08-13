@@ -42,14 +42,15 @@ export const stockOutApi = {
   },
   create: async (payload: StockOutPayload) => {
     const { data } = await apiClient.post<ApiSuccess<StockOut>>("/stock-out", payload);
-    return data.data;
+    return data;
   },
   update: async (id: string, payload: UpdateStockOutPayload) => {
     const { data } = await apiClient.patch<ApiSuccess<StockOut>>(`/stock-out/${id}`, payload);
-    return data.data;
+    return data;
   },
   remove: async (id: string) => {
-    await apiClient.delete(`/stock-out/${id}`);
+    const { data } = await apiClient.delete<ApiSuccess<null>>(`/stock-out/${id}`);
+    return data;
   },
 };
 

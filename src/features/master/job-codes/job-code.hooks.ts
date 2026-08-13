@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/api-error";
 import { jobCodeApi } from "./job-code.api";
 import type { ListParams } from "@/types/api.types";
 import type { JobCode } from "@/types/inventory.types";
@@ -17,11 +18,11 @@ export function useCreateJobCode() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: Partial<JobCode>) => jobCodeApi.create(payload),
-    onSuccess: () => {
-      toast.success("Job code berhasil ditambahkan");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal menambahkan job code"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to add job code")),
   });
 }
 
@@ -30,11 +31,11 @@ export function useUpdateJobCode() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: Partial<JobCode> }) =>
       jobCodeApi.update(id, payload),
-    onSuccess: () => {
-      toast.success("Job code berhasil diperbarui");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal memperbarui job code"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update job code")),
   });
 }
 
@@ -42,10 +43,10 @@ export function useDeleteJobCode() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => jobCodeApi.remove(id),
-    onSuccess: () => {
-      toast.success("Job code berhasil dihapus");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal menghapus job code"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to delete job code")),
   });
 }

@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { isAxiosError } from "axios";
+import { getErrorMessage } from "@/lib/api-error";
 import type { ApiSuccess } from "@/types/api.types";
 import type {
   StockLotSummary,
@@ -55,10 +55,6 @@ export function useItemStockHistory(itemId?: string) {
   });
 }
 
-function extractErrorMessage(error: unknown, fallback: string) {
-  return isAxiosError(error) ? (error.response?.data?.message ?? fallback) : fallback;
-}
-
 function invalidateStockQueries(qc: ReturnType<typeof useQueryClient>) {
   qc.invalidateQueries({ queryKey: ["stock-lots"] });
   qc.invalidateQueries({ queryKey: ["item-stock-history"] });
@@ -80,11 +76,11 @@ export interface AddDirectStockPayload {
 export const stockLotAdjustmentApi = {
   addDirect: async (payload: AddDirectStockPayload) => {
     const { data } = await apiClient.post<ApiSuccess<StockBatch>>("/stock-lots/direct-add", payload);
-    return data.data;
+    return data;
   },
   adjust: async (stockBatchId: string, payload: { newQtyRemaining: number; reason: string }) => {
     const { data } = await apiClient.patch<ApiSuccess<StockBatch>>(`/stock-lots/${stockBatchId}/adjust`, payload);
-    return data.data;
+    return data;
   },
 };
 
@@ -92,11 +88,11 @@ export function useAddDirectStock() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: stockLotAdjustmentApi.addDirect,
-    onSuccess: () => {
-      toast.success("Stok berhasil ditambahkan langsung");
+    onSuccess: (result) => {
+      toast.success(result.message);
       invalidateStockQueries(qc);
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menambahkan stok")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to add stock")),
   });
 }
 
@@ -113,10 +109,10 @@ export function useAdjustStockLot() {
       newQtyRemaining: number;
       reason: string;
     }) => stockLotAdjustmentApi.adjust(stockBatchId, { newQtyRemaining, reason }),
-    onSuccess: () => {
-      toast.success("Saldo batch berhasil dikoreksi");
+    onSuccess: (result) => {
+      toast.success(result.message);
       invalidateStockQueries(qc);
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal mengoreksi saldo batch")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to correct batch balance")),
   });
 }

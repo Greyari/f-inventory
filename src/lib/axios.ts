@@ -61,7 +61,7 @@ apiClient.interceptors.response.use(
     ) {
       const message =
         (error.response.data as { message?: string } | undefined)?.message ??
-        "Gagal memuat data";
+        "Failed to load data";
       toast.error(message);
     }
 

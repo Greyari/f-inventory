@@ -9,7 +9,6 @@ import { JobCodeFormDialog } from "./JobCodeFormDialog";
 import { useHasPermission } from "@/store/authStore";
 import { useConfirm } from "@/store/confirmStore";
 import type { JobCode } from "@/types/inventory.types";
-import { toast } from "sonner";
 
 export default function JobCodeListPage() {
   const { t } = useTranslation();
@@ -46,12 +45,7 @@ export default function JobCodeListPage() {
       confirmText: t("common.confirmDelete"),
     });
     if (ok) {
-      deleteMutation.mutate(row.id, {
-        onError: (err: any) => {
-          const msg = err?.response?.data?.message;
-          if (msg) toast.error(msg);
-        },
-      });
+      deleteMutation.mutate(row.id);
     }
   };
 

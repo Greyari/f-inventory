@@ -9,13 +9,14 @@ export const jobCodeApi = {
   },
   create: async (payload: Partial<JobCode>) => {
     const { data } = await apiClient.post<ApiSuccess<JobCode>>("/job-codes", payload);
-    return data.data;
+    return data;
   },
   update: async (id: string, payload: Partial<JobCode>) => {
     const { data } = await apiClient.patch<ApiSuccess<JobCode>>(`/job-codes/${id}`, payload);
-    return data.data;
+    return data;
   },
   remove: async (id: string) => {
-    await apiClient.delete(`/job-codes/${id}`);
+    const { data } = await apiClient.delete<ApiSuccess<null>>(`/job-codes/${id}`);
+    return data;
   },
 };

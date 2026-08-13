@@ -70,8 +70,6 @@
     "password": "Password",
     "loginButton": "Masuk",
     "loggingIn": "Memproses...",
-    "loginSuccess": "Selamat datang, {{name}}",
-    "loginFailed": "Email atau password salah",
     "logout": "Keluar"
   },
   "forbidden": {
@@ -160,7 +158,8 @@
     "reason": "Alasan Perubahan",
     "reasonPlaceholder": "Jelaskan kenapa data ini diubah di luar alur normal...",
     "replaceDocumentHint": "Kosongkan kalau gak mau ganti dokumen yang sekarang.",
-    "confirmOverrideEdit": "Simpan Perubahan"
+    "confirmOverrideEdit": "Simpan Perubahan",
+    "formLockedHint": "Statusnya sudah bukan PR lagi. Kalau ada yang perlu dikoreksi, hubungi Super Admin."
   },
   "stockOut": {
     "title": "Barang Keluar",
@@ -255,7 +254,8 @@
     "fromPo": "Dari PO/DO: {{ref}}",
     "notFromPo": "Bukan dari PO — tambah langsung",
     "projectNameHint": "Ini yang bedain batch ini punya project mana, walau kode di atas dipakai berulang di tempat lain.",
-    "qtyReceived": "Qty Diterima"
+    "qtyReceived": "Qty Diterima",
+    "detailReference": "Nomor PR"
   },
   "master": {
     "title": "Data Master",
@@ -322,17 +322,7 @@
     "passwordEditHint": "(kosongkan jika tidak ingin mengubah)",
     "confirmDelete": "Hapus user \"{{name}}\" secara permanen? Tindakan ini tidak bisa dibatalkan.",
     "confirmDeleteButton": "Ya, Hapus Permanen",
-    "deleteTooltip": "Hapus Permanen",
-    "toastCreated": "User berhasil ditambahkan",
-    "toastCreateFailed": "Gagal menambahkan user",
-    "toastUpdated": "User berhasil diperbarui",
-    "toastUpdateFailed": "Gagal memperbarui user",
-    "toastActivated": "User berhasil diaktifkan",
-    "toastDeactivated": "User berhasil dinonaktifkan",
-    "toastActivateFailed": "Gagal mengaktifkan user",
-    "toastDeactivateFailed": "Gagal menonaktifkan user",
-    "toastDeleted": "User berhasil dihapus permanen",
-    "toastDeleteFailed": "Gagal menghapus user"
+    "deleteTooltip": "Hapus Permanen"
   },
   "roles": {
     "addButton": "Tambah Role",
@@ -418,7 +408,7 @@
     },
     "alreadyReturned": "Pemakaian ini sudah pernah dikembalikan sebelumnya."
   },
-    "profile": {
+  "profile": {
     "title": "Profil Saya",
     "subtitle": "Kelola detail pribadi dan keamanan akun kamu.",
     "detailsTitle": "Detail Pribadi",
@@ -430,8 +420,6 @@
     "confirmPassword": "Konfirmasi Password Baru",
     "changePasswordButton": "Ubah Password",
     "passwordChangedHint": "Password berhasil diganti",
-    "toastPasswordChanged": "Password berhasil diganti",
-    "toastPasswordChangeFailed": "Gagal mengganti password",
     "validation": {
       "currentPasswordRequired": "Password saat ini wajib diisi",
       "newPasswordMin": "Password baru minimal 6 karakter",

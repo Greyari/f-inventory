@@ -70,8 +70,8 @@ export function ItemPickerField({
 
   const handleCreateItem = async () => {
     if (!newItem.itemName || !newItem.unit) return;
-    const created = await createMutation.mutateAsync(newItem);
-    if (created) handlePick(created);
+    const result = await createMutation.mutateAsync(newItem);
+    if (result.data) handlePick(result.data);
   };
 
   return (

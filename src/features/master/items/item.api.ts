@@ -9,13 +9,14 @@ export const itemApi = {
   },
   create: async (payload: Partial<Item>) => {
     const { data } = await apiClient.post<ApiSuccess<Item>>("/items", payload);
-    return data.data;
+    return data;
   },
   update: async (id: string, payload: Partial<Item>) => {
     const { data } = await apiClient.patch<ApiSuccess<Item>>(`/items/${id}`, payload);
-    return data.data;
+    return data;
   },
   remove: async (id: string) => {
-    await apiClient.delete(`/items/${id}`);
+    const { data } = await apiClient.delete<ApiSuccess<null>>(`/items/${id}`);
+    return data;
   },
 };

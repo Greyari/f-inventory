@@ -14,17 +14,18 @@ export const userApi = {
   },
   create: async (payload: { name: string; email: string; password: string; roleId: string }) => {
     const { data } = await apiClient.post<ApiSuccess<User>>("/users", payload);
-    return data.data;
+    return data;
   },
   update: async (id: string, payload: UpdateUserPayload) => {
     const { data } = await apiClient.patch<ApiSuccess<User>>(`/users/${id}`, payload);
-    return data.data;
+    return data;
   },
   setActiveStatus: async (id: string, isActive: boolean) => {
     const { data } = await apiClient.patch<ApiSuccess<User>>(`/users/${id}`, { isActive });
-    return data.data;
+    return data;
   },
   remove: async (id: string) => {
-    await apiClient.delete(`/users/${id}`);
+    const { data } = await apiClient.delete<ApiSuccess<null>>(`/users/${id}`);
+    return data;
   },
 };

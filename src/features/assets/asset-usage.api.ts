@@ -28,7 +28,7 @@ export const assetUsageApi = {
   },
   checkout: async (payload: AssetUsagePayload) => {
     const { data } = await apiClient.post<ApiSuccess<AssetUsage>>("/asset-usages", payload);
-    return data.data;
+    return data;
   },
   returnAsset: async (id: string, payload: ReturnAssetPayload) => {
     const formData = new FormData();
@@ -42,9 +42,10 @@ export const assetUsageApi = {
       formData,
       { headers: { "Content-Type": "multipart/form-data" } }
     );
-    return data.data;
+    return data;
   },
   remove: async (id: string) => {
-    await apiClient.delete(`/asset-usages/${id}`);
+    const { data } = await apiClient.delete<ApiSuccess<null>>(`/asset-usages/${id}`);
+    return data;
   },
 };

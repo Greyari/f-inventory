@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { apiClient } from "@/lib/axios";
+import { getErrorMessage } from "@/lib/api-error";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import type { ApiSuccess } from "@/types/api.types";
 import type { LoginResponse } from "@/types/auth.types";
@@ -37,10 +38,10 @@ export default function LoginPage() {
         values
       );
       setSession(data.data);
-      toast.success(t("auth.loginSuccess", { name: data.data.user.name }));
+      toast.success(data.message);
       navigate("/dashboard");
-    } catch {
-      toast.error(t("auth.loginFailed"));
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Login failed"));
     }
   };
 

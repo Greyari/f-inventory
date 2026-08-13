@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { isAxiosError } from "axios";
+import { getErrorMessage } from "@/lib/api-error";
 import { roleApi, permissionApi } from "./role.api";
 import type { ListParams } from "@/types/api.types";
 
@@ -21,19 +21,15 @@ export function usePermissions() {
   });
 }
 
-function extractErrorMessage(error: unknown, fallback: string) {
-  return isAxiosError(error) ? (error.response?.data?.message ?? fallback) : fallback;
-}
-
 export function useCreateRole() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: roleApi.create,
-    onSuccess: () => {
-      toast.success("Role berhasil dibuat");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal membuat role")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to create role")),
   });
 }
 
@@ -47,11 +43,11 @@ export function useUpdateRole() {
       id: string;
       payload: { name?: string; description?: string; permissionIds?: string[] };
     }) => roleApi.update(id, payload),
-    onSuccess: () => {
-      toast.success("Role berhasil diperbarui");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal memperbarui role")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update role")),
   });
 }
 
@@ -59,10 +55,10 @@ export function useDeleteRole() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: roleApi.remove,
-    onSuccess: () => {
-      toast.success("Role berhasil dihapus");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menghapus role")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to delete role")),
   });
 }

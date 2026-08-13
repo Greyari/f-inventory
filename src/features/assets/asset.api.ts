@@ -21,14 +21,15 @@ export const assetApi = {
   },
   create: async (payload: AssetPayload) => {
     const { data } = await apiClient.post<ApiSuccess<Asset>>("/assets", payload);
-    return data.data;
+    return data;
   },
   update: async (id: string, payload: Partial<AssetPayload>) => {
     const { data } = await apiClient.patch<ApiSuccess<Asset>>(`/assets/${id}`, payload);
-    return data.data;
+    return data;
   },
   remove: async (id: string) => {
-    await apiClient.delete(`/assets/${id}`);
+    const { data } = await apiClient.delete<ApiSuccess<null>>(`/assets/${id}`);
+    return data;
   },
   summary: async () => {
     const { data } = await apiClient.get<ApiSuccess<AssetSummary>>("/assets/summary");

@@ -61,11 +61,11 @@ export const stockInApi = {
   },
   create: async (payload: StockInPayload) => {
     const { data } = await apiClient.post<ApiSuccess<StockIn>>("/stock-in", payload);
-    return data.data;
+    return data;
   },
   update: async (id: string, payload: StockInPayload) => {
     const { data } = await apiClient.patch<ApiSuccess<StockIn>>(`/stock-in/${id}`, payload);
-    return data.data;
+    return data;
   },
   /** PR -> PO: vendor + harga per item, plus 1 foto PO untuk seluruh record. */
   markAsPo: async (id: string, items: MarkStockInPoItemPayload[], poPhoto: File) => {
@@ -82,7 +82,7 @@ export const stockInApi = {
       withMethodSpoof(formData),
       { headers: { "Content-Type": "multipart/form-data" } }
     );
-    return data.data;
+    return data;
   },
   /** PO -> DO: 1 foto DO. Di titik ini stok baru ditambahkan di backend. */
   markAsDo: async (id: string, doPhoto: File) => {
@@ -94,10 +94,11 @@ export const stockInApi = {
       withMethodSpoof(formData),
       { headers: { "Content-Type": "multipart/form-data" } }
     );
-    return data.data;
+    return data;
   },
   remove: async (id: string) => {
-    await apiClient.delete(`/stock-in/${id}`);
+    const { data } = await apiClient.delete<ApiSuccess<null>>(`/stock-in/${id}`);
+    return data;
   },
   /** Edit bebas oleh Super Admin — bypass batasan alur normal. Reason wajib. */
   overrideUpdate: async (id: string, payload: OverrideUpdateStockInPayload) => {
@@ -125,6 +126,6 @@ export const stockInApi = {
       withMethodSpoof(formData),
       { headers: { "Content-Type": "multipart/form-data" } }
     );
-    return data.data;
+    return data;
   },
 };

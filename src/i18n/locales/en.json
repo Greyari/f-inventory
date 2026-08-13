@@ -70,8 +70,6 @@
     "password": "Password",
     "loginButton": "Sign In",
     "loggingIn": "Signing in...",
-    "loginSuccess": "Welcome, {{name}}",
-    "loginFailed": "Invalid email or password",
     "logout": "Log Out"
   },
   "forbidden": {
@@ -208,7 +206,8 @@
     "overrideEditWarning": "Editing a stock-out record is restricted to Super Admins, since it affects stock balances that may already be relied on elsewhere. Always fill in the reason below.",
     "reason": "Reason for Change",
     "reasonPlaceholder": "Explain why this record is being changed...",
-    "confirmOverrideEdit": "Save Changes"
+    "confirmOverrideEdit": "Save Changes",
+    "formLockedTitle": "Only Super Admin can edit this data"
   },
   "stockBalance": {
     "title": "Stock Balance",
@@ -323,16 +322,7 @@
     "passwordEditHint": "(leave blank to keep unchanged)",
     "confirmDelete": "Permanently delete user \"{{name}}\"? This action cannot be undone.",
     "confirmDeleteButton": "Yes, Delete Permanently",
-    "deleteTooltip": "Delete Permanently",
-    "toastCreated": "User created successfully",
-    "toastCreateFailed": "Failed to create user",
-    "toastUpdated": "User updated successfully",
-    "toastUpdateFailed": "Failed to update user",
-    "toastActivated": "User activated successfully",
-    "toastDeactivated": "User deactivated successfully",
-    "toastActivateFailed": "Failed to activate user",
-    "toastDeactivateFailed": "Failed to deactivate user",
-    "toastDeleted": "User permanently deleted"
+    "deleteTooltip": "Delete Permanently"
   },
   "roles": {
     "addButton": "Add Role",
@@ -416,7 +406,7 @@
       "Rusak Berat": "Major Damage",
       "Hilang": "Lost"
     },
-    "alreadyReturned": "Pemakaian ini sudah pernah dikembalikan sebelumnya."
+    "alreadyReturned": "This usage has already been returned before."
   },
   "profile": {
     "title": "My Profile",
@@ -430,14 +420,12 @@
     "confirmPassword": "Confirm New Password",
     "changePasswordButton": "Change Password",
     "passwordChangedHint": "Password changed successfully",
-    "toastPasswordChanged": "Password changed successfully",
-    "toastPasswordChangeFailed": "Failed to change password",
     "validation": {
-        "currentPasswordRequired": "Current password is required",
-        "newPasswordMin": "New password must be at least 6 characters",
-        "confirmPasswordRequired": "Password confirmation is required",
-        "confirmPasswordMismatch": "Password confirmation does not match the new password",
-        "newPasswordSameAsCurrent": "New password cannot be the same as the current password"
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordMin": "New password must be at least 6 characters",
+      "confirmPasswordRequired": "Password confirmation is required",
+      "confirmPasswordMismatch": "Password confirmation does not match the new password",
+      "newPasswordSameAsCurrent": "New password cannot be the same as the current password"
     }
   }
 }

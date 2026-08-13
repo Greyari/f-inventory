@@ -1,15 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { isAxiosError } from "axios";
+import { getErrorMessage } from "@/lib/api-error";
 import { stockInApi, type MarkStockInPoItemPayload, type OverrideUpdateStockInPayload, type StockInPayload } from "./stock-in.api";
 import type { ListParams } from "@/types/api.types";
 
 const KEY = "stock-in";
 const ACTIVITY_KEY = "stock-in-activity-logs";
-
-function extractErrorMessage(error: unknown, fallback: string) {
-  return isAxiosError(error) ? (error.response?.data?.message ?? fallback) : fallback;
-}
 
 export function useStockIns(params: ListParams & { status?: string }) {
   return useQuery({
@@ -38,11 +34,11 @@ export function useCreateStockIn() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: stockInApi.create,
-    onSuccess: () => {
-      toast.success("PR berhasil dicatat");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal mencatat PR")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to record PR")),
   });
 }
 
@@ -50,13 +46,13 @@ export function useUpdateStockIn() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: StockInPayload }) => stockInApi.update(id, payload),
-    onSuccess: (_data, variables) => {
-      toast.success("Data berhasil diperbarui");
+    onSuccess: (result, variables) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
       qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal memperbarui data")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update data")),
   });
 }
 
@@ -65,13 +61,13 @@ export function useMarkStockInPo() {
   return useMutation({
     mutationFn: ({ id, items, poPhoto }: { id: string; items: MarkStockInPoItemPayload[]; poPhoto: File }) =>
       stockInApi.markAsPo(id, items, poPhoto),
-    onSuccess: (_data, variables) => {
-      toast.success("Status berhasil diubah menjadi PO");
+    onSuccess: (result, variables) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
       qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal mengubah status ke PO")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to change status to PO")),
   });
 }
 
@@ -79,15 +75,15 @@ export function useMarkStockInDo() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, doPhoto }: { id: string; doPhoto: File }) => stockInApi.markAsDo(id, doPhoto),
-    onSuccess: (_data, variables) => {
-      toast.success("Status berhasil diubah menjadi DO, stok sudah ditambahkan");
+    onSuccess: (result, variables) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
       qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
       qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal mengubah status ke DO")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to change status to DO")),
   });
 }
 
@@ -96,15 +92,15 @@ export function useOverrideUpdateStockIn() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: OverrideUpdateStockInPayload }) =>
       stockInApi.overrideUpdate(id, payload),
-    onSuccess: (_data, variables) => {
-      toast.success("Data berhasil diperbarui (edit Super Admin)");
+    onSuccess: (result, variables) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
       qc.invalidateQueries({ queryKey: [ACTIVITY_KEY, variables.id] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
       qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menyimpan perubahan")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to save changes")),
   });
 }
 
@@ -112,12 +108,12 @@ export function useDeleteStockIn() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: stockInApi.remove,
-    onSuccess: () => {
-      toast.success("Data barang masuk berhasil dihapus");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: ["stock-lots"] });
       qc.invalidateQueries({ queryKey: ["available-batches"] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menghapus data")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to delete data")),
   });
 }

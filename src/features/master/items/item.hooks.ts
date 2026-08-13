@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/api-error";
 import { itemApi } from "./item.api";
 import type { ListParams } from "@/types/api.types";
 import type { Item } from "@/types/inventory.types";
@@ -17,11 +18,11 @@ export function useCreateItem() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: Partial<Item>) => itemApi.create(payload),
-    onSuccess: () => {
-      toast.success("Item berhasil ditambahkan");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal menambahkan item"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to add item")),
   });
 }
 
@@ -30,11 +31,11 @@ export function useUpdateItem() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: Partial<Item> }) =>
       itemApi.update(id, payload),
-    onSuccess: () => {
-      toast.success("Item berhasil diperbarui");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal memperbarui item"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update item")),
   });
 }
 
@@ -42,10 +43,10 @@ export function useDeleteItem() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => itemApi.remove(id),
-    onSuccess: () => {
-      toast.success("Item berhasil dihapus");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error("Gagal menghapus item"),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to delete item")),
   });
 }

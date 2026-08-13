@@ -1,14 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { isAxiosError } from "axios";
+import { getErrorMessage } from "@/lib/api-error";
 import { assetApi, type AssetPayload } from "./asset.api";
 import type { ListParams } from "@/types/api.types";
 
 const KEY = "assets";
-
-function extractErrorMessage(error: unknown, fallback: string) {
-  return isAxiosError(error) ? (error.response?.data?.message ?? fallback) : fallback;
-}
 
 export function useAssets(params: ListParams) {
   return useQuery({
@@ -36,11 +32,11 @@ export function useCreateAsset() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: AssetPayload) => assetApi.create(payload),
-    onSuccess: () => {
-      toast.success("Aset berhasil ditambahkan");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menambahkan aset")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to add asset")),
   });
 }
 
@@ -49,12 +45,12 @@ export function useUpdateAsset() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: Partial<AssetPayload> }) =>
       assetApi.update(id, payload),
-    onSuccess: (_data, variables) => {
-      toast.success("Aset berhasil diperbarui");
+    onSuccess: (result, variables) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: [KEY, variables.id] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal memperbarui aset")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update asset")),
   });
 }
 
@@ -62,10 +58,10 @@ export function useDeleteAsset() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => assetApi.remove(id),
-    onSuccess: () => {
-      toast.success("Aset berhasil dihapus");
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (error) => toast.error(extractErrorMessage(error, "Gagal menghapus aset")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to delete asset")),
   });
 }

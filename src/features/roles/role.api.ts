@@ -9,17 +9,18 @@ export const roleApi = {
   },
   create: async (payload: { name: string; description?: string; permissionIds: string[] }) => {
     const { data } = await apiClient.post<ApiSuccess<Role>>("/roles", payload);
-    return data.data;
+    return data;
   },
   update: async (
     id: string,
     payload: { name?: string; description?: string; permissionIds?: string[] }
   ) => {
     const { data } = await apiClient.patch<ApiSuccess<Role>>(`/roles/${id}`, payload);
-    return data.data;
+    return data;
   },
   remove: async (id: string) => {
-    await apiClient.delete(`/roles/${id}`);
+    const { data } = await apiClient.delete<ApiSuccess<null>>(`/roles/${id}`);
+    return data;
   },
 };
 

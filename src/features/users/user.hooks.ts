@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/api-error";
 import { userApi, type UpdateUserPayload } from "./user.api";
 import type { ListParams } from "@/types/api.types";
 
@@ -14,57 +14,55 @@ export function useUsers(params: ListParams) {
 }
 
 export function useCreateUser() {
-  const { t } = useTranslation();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: userApi.create,
-    onSuccess: () => {
-      toast.success(t("users.toastCreated"));
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error(t("users.toastCreateFailed")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to create user")),
   });
 }
 
 export function useUpdateUser() {
-  const { t } = useTranslation();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateUserPayload }) =>
       userApi.update(id, payload),
-    onSuccess: () => {
-      toast.success(t("users.toastUpdated"));
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error(t("users.toastUpdateFailed")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to update user")),
   });
 }
 
 export function useSetActiveStatus() {
-  const { t } = useTranslation();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
       userApi.setActiveStatus(id, isActive),
-    onSuccess: (_data, variables) => {
-      toast.success(variables.isActive ? t("users.toastActivated") : t("users.toastDeactivated"));
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (_err, variables) => {
-      toast.error(variables.isActive ? t("users.toastActivateFailed") : t("users.toastDeactivateFailed"));
+    onError: (error, variables) => {
+      toast.error(
+        getErrorMessage(error, variables.isActive ? "Failed to activate user" : "Failed to deactivate user")
+      );
     },
   });
 }
 
 export function useDeleteUser() {
-  const { t } = useTranslation();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: userApi.remove,
-    onSuccess: () => {
-      toast.success(t("users.toastDeleted"));
+    onSuccess: (result) => {
+      toast.success(result.message);
       qc.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: () => toast.error(t("users.toastDeleteFailed")),
+    onError: (error) => toast.error(getErrorMessage(error, "Failed to delete user")),
   });
 }
